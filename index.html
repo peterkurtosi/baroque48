@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAROQUE 48</title>
+<meta name="description" content="A small computer with a deliberate limit. ESP32-S3, its own DOS, BASIC, and floppies you can hold.">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BAROQUE 48">
+<meta property="og:description" content="A small computer with a deliberate limit. 49152 bytes free — and that is a promise, not a shortage.">
+
+<!-- ⚠ NO EXTERNAL REQUESTS. No web fonts, no analytics, no trackers.
+     The type is a system monospace stack: it is already on every machine,
+     it looks right for this subject, and it sends nothing anywhere.
+     (Same rule as vigyazokrad.hu — and here it also happens to be correct
+     typography: this page is a terminal.) -->
+<style>
+/* ── THE PHOSPHORS ───────────────────────────────────────────────
+   Not decoration: these were the real phosphor colours.
+   P3 amber, P1 green, P4 white. The page wears what the machine wears,
+   and the switch below is the machine's own MODE command. */
+:root{
+  --ground:#0B0D12;          /* ⭐ not pure black: the real panel's black is
+                                slightly blue. The page tells the truth. */
+  --glow:#FFB000;            /* P3 — amber */
+  --dim:#9A6A06;
+  --edge:#1C2029;
+}
+:root[data-mode="green"]{ --glow:#33FF33; --dim:#1B8F1B; }
+:root[data-mode="paper"]{ --glow:#E8E8E8; --dim:#8A8A8A; }
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--ground); color:var(--glow);
+  font-family:ui-monospace,"Cascadia Mono","SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  font-size:17px; line-height:1.75;
+  padding:clamp(18px,4vw,44px) 20px 64px;
+  display:flex; flex-direction:column; align-items:center;
+}
+main{width:100%; max-width:68ch}
+
+h1,h2{font-weight:700; line-height:1.2; text-wrap:balance}
+h2{
+  font-size:1.05rem; letter-spacing:.14em; text-transform:uppercase;
+  margin:clamp(40px,7vw,64px) 0 14px; color:var(--glow);
+  display:flex; align-items:center; gap:14px;
+}
+h2::after{content:"";flex:1;height:1px;background:var(--edge)}
+p{margin:0 0 14px; color:var(--dim)}
+p strong,li strong{color:var(--glow); font-weight:700}
+a{color:var(--glow)}
+
+/* ── THE MONITOR ────────────────────────────────────────────────
+   The hero is not a photo of the boot screen — it IS the boot screen,
+   drawn live, with the cursor blinking at the same half-second the
+   machine uses. A photo would be a picture of the thing; this is the thing. */
+.monitor{
+  border:1px solid var(--edge); border-radius:6px;
+  background:var(--ground);
+  padding:clamp(20px,5vw,34px);
+  box-shadow:inset 0 0 90px rgba(0,0,0,.55);
+  overflow-x:auto;
+}
+.monitor pre{
+  font:inherit; font-size:clamp(13px,2.7vw,20px); line-height:1.6;
+  color:var(--glow); white-space:pre;
+  text-shadow:0 0 12px color-mix(in srgb, var(--glow) 38%, transparent);
+}
+.monitor .nev{font-size:1.9em; font-weight:700; letter-spacing:.06em; display:block; margin-bottom:.35em}
+.monitor .halk{color:var(--dim); text-shadow:none}
+#kurzor{display:inline-block; width:.62em; height:1.05em; background:var(--glow);
+        vertical-align:-.16em; animation:villog 1s steps(1,end) infinite}
+@keyframes villog{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){#kurzor{animation:none}}
+
+/* ── MODE ────────────────────────────────────────────────────── */
+.mode{display:flex; gap:0; margin:18px 0 0; flex-wrap:wrap;
+      border:1px solid var(--edge); border-radius:6px; overflow:hidden; width:fit-content}
+.mode button{
+  font:inherit; font-size:.82rem; letter-spacing:.1em;
+  background:transparent; color:var(--dim); border:0;
+  border-right:1px solid var(--edge); padding:9px 16px; cursor:pointer;
+}
+.mode button:last-child{border-right:0}
+.mode button:hover{color:var(--glow)}
+.mode button[aria-pressed="true"]{color:var(--ground); background:var(--glow); font-weight:700}
+.mode button:focus-visible{outline:2px solid var(--glow); outline-offset:-2px}
+.modesor{font-size:.82rem; color:var(--dim); margin-top:10px}
+
+ul{list-style:none; margin:0 0 14px}
+li{color:var(--dim); padding:7px 0; display:flex; gap:12px; align-items:flex-start}
+li::before{content:"\203A"; color:var(--glow); flex:none}
+/* ⚠ The "not yet" list uses a DASH, not a chevron: it is a list of negations,
+     and that has to read in black and white too. */
+ul.nem li::before{content:"\2014"; color:var(--dim)}
+
+figure{margin:22px 0 0}
+figure img{display:block; width:100%; height:auto; border:1px solid var(--edge); border-radius:4px}
+figcaption{font-size:.8rem; color:var(--dim); margin-top:9px; line-height:1.55}
+.harom{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:22px}
+.harom figure{margin:0}
+
+.doboz{border-left:3px solid var(--glow); padding:2px 0 2px 18px; margin:20px 0}
+.doboz p:last-child{margin-bottom:0}
+
+.gomb{
+  display:inline-block; margin-top:8px; padding:13px 24px;
+  background:var(--glow); color:var(--ground); text-decoration:none;
+  border-radius:4px; font-weight:700; letter-spacing:.06em;
+}
+.gomb:hover,.gomb:focus-visible{filter:brightness(1.15)}
+
+footer{margin-top:clamp(48px,9vw,76px); padding-top:22px; border-top:1px solid var(--edge);
+       font-size:.8rem; color:var(--dim); line-height:1.7}
+</style>
+</head>
+<body>
+<main>
+
+  <!-- ══ THE MACHINE, SPEAKING FOR ITSELF ══ -->
+  <div class="monitor">
+    <pre><span class="nev">BAROQUE 48</span><span class="halk">(C) 2026 Creative Pearls</span>
+
+49152 BYTES FREE
+
+READY
+<span id="kurzor"></span></pre>
+  </div>
+
+  <div class="mode" role="group" aria-label="Monitor phosphor">
+    <button type="button" data-mode="amber" aria-pressed="true">AMBER</button>
+    <button type="button" data-mode="green" aria-pressed="false">GREEN</button>
+    <button type="button" data-mode="paper" aria-pressed="false">PAPER</button>
+  </div>
+  <p class="modesor">On the machine this is a command: <strong>MODE GREEN</strong>.
+  The phosphors are the real ones &mdash; P3 amber, P1 green, P4 white.</p>
+
+  <h2>What it is</h2>
+  <p>A small computer that boots into <strong>BASIC</strong>, keeps its programs on
+  <strong>floppies you can hold</strong>, and screeches like a tape deck when it loads them.
+  It has its own DOS-like shell and file manager &mdash; ours, written for this machine,
+  not an emulation of anyone else's.</p>
+  <p>It runs on an <strong>ESP32-S3</strong> with a 7&Prime; 800&times;480 panel,
+  16&nbsp;MB of flash and 8&nbsp;MB of PSRAM.</p>
+
+  <h2>Why 48</h2>
+  <div class="doboz">
+    <p>The machine has 8&nbsp;MB of memory. BASIC gets <strong>49&nbsp;152 bytes</strong> of it.</p>
+    <p>That is not nostalgia and it is not a joke. It is a promise: <strong>whatever you write
+    here will fit on a real 48K machine</strong>. The number in the name is a compatibility
+    guarantee, and it is why the limit is the product rather than a shortage.</p>
+    <p class="halk">The figure on the boot screen is measured, not printed: the machine writes a
+    changing pattern to every byte of that workspace, reads it back, and counts the good ones.
+    If one byte failed, the number would be smaller.</p>
+  </div>
+  <p>The abundance goes into <em>how many</em> programs, never into how big any one of them is.
+  What those machines taught was not the memory &mdash; it was that a child could
+  <strong>LIST</strong> a game and change it. Nobody lists a four-megabyte game.</p>
+
+  <h2>On real hardware</h2>
+  <figure>
+    <img src="kep/b48-borostyan.jpg" width="1200" height="650" alt="A 7-inch LCD panel on a workbench showing the BAROQUE 48 boot screen in amber text: the name, the copyright line, 49152 BYTES FREE, READY, and a cursor block." loading="lazy">
+    <figcaption>The first boot, 21 September 2026. Amber &mdash; P3 phosphor.</figcaption>
+  </figure>
+  <div class="harom">
+    <figure>
+      <img src="kep/b48-zold.jpg" width="1200" height="691" alt="The same boot screen in green phosphor." loading="lazy">
+      <figcaption>GREEN &mdash; P1, the Hercules green.</figcaption>
+    </figure>
+    <figure>
+      <img src="kep/b48-papir.jpg" width="1200" height="659" alt="The same boot screen in white phosphor." loading="lazy">
+      <figcaption>PAPER &mdash; P4, paper white.</figcaption>
+    </figure>
+  </div>
+
+  <h2>Where we are</h2>
+  <p><strong>Working, measured, on the bench:</strong></p>
+  <ul>
+    <li>the boot screen, on a real 7&Prime; panel</li>
+    <li>three phosphor modes, switchable</li>
+    <li>the 48&nbsp;K workspace, verified byte by byte at power-on</li>
+    <li>an I&sup2;S amplifier on the board, ready for the tape sound</li>
+  </ul>
+  <p><strong>Not there yet &mdash; and that is most of it:</strong></p>
+  <ul class="nem">
+    <li>the DOS-like shell and the file manager</li>
+    <li>BASIC</li>
+    <li>the tape-loading sound &mdash; the experiment that decides the project</li>
+    <li>the floppies, the case, the keyboard</li>
+  </ul>
+  <p class="halk">This page exists because a hundred people said they wanted one before a single
+  line of it was written. It seemed only fair to show them exactly how far along it really is.</p>
+
+  <h2>Tell me when</h2>
+  <p>No list, no newsletter, no tracking &mdash; this page sends nothing anywhere.
+  If you want to know when the BAROQUE 48 can be ordered, write one line:</p>
+  <p><a class="gomb" href="mailto:peter.kurtosi@gmail.com?subject=BAROQUE%2048%20%E2%80%94%20tell%20me%20when&amp;body=I'd%20like%20to%20know%20when%20the%20BAROQUE%2048%20can%20be%20ordered.">Write to us</a></p>
+
+  <footer>
+    <p><strong>BAROQUE 48</strong> &mdash; a baroque pearl is the irregular one, prized for it.<br>
+    Creative Pearls &middot; Peter Kurtosi &middot; 2026</p>
+    <p>This page loads no fonts, no scripts and no images from anywhere but its own server.
+    It sets no cookies and counts no visitors.</p>
+  </footer>
+
+</main>
+
+<script>
+/* The MODE switch — the machine's own command, on its own page.
+   ⚠ The choice is kept only in this browser, and only as a convenience.
+     If storage is blocked, the page simply forgets; nothing breaks. */
+(function () {
+  var MODOK = ['amber', 'green', 'paper'];
+  function biztos(fn, alap) { try { return fn(); } catch (e) { return alap; } }
+
+  function allit(m) {
+    if (MODOK.indexOf(m) < 0) return;
+    document.documentElement.setAttribute('data-mode', m);
+    document.querySelectorAll('.mode button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.mode === m));
+    });
+    biztos(function () { return localStorage.setItem('baroque48-mode', m); });
+  }
+
+  document.querySelectorAll('.mode button').forEach(function (b) {
+    b.addEventListener('click', function () { allit(b.dataset.mode); });
+  });
+
+  var mentett = biztos(function () { return localStorage.getItem('baroque48-mode'); }, null);
+  allit(MODOK.indexOf(mentett) >= 0 ? mentett : 'amber');
+})();
+</script>
+</body>
+</html>
