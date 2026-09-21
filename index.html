@@ -1,31 +1,40 @@
 <!doctype html>
-<html lang="en">
+<html lang="hu">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BAROQUE 48</title>
-<meta name="description" content="A small computer with a deliberate limit. ESP32-S3, its own DOS, BASIC, and floppies you can hold.">
+<meta name="description" content="Egy kis számítógép vállalt korláttal. ESP32-S3, saját DOS, BASIC, és kézbe vehető floppyk.">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BAROQUE 48">
-<meta property="og:description" content="A small computer with a deliberate limit. 49152 bytes free — and that is a promise, not a shortage.">
+<meta property="og:description" content="Egy kis számítógép vállalt korláttal. 49152 bájt szabad — és ez ígéret, nem hiány.">
 
-<!-- ⚠ NO EXTERNAL REQUESTS. No web fonts, no analytics, no trackers.
-     The type is a system monospace stack: it is already on every machine,
-     it looks right for this subject, and it sends nothing anywhere.
-     (Same rule as vigyazokrad.hu — and here it also happens to be correct
-     typography: this page is a terminal.) -->
+<!-- ⚠ SEMMILYEN KÜLSŐ KÉRÉS. Nincs webfont, nincs statisztika, nincs nyomkövetés.
+     A betű rendszer-monospace: már minden gépen ott van, pont úgy néz ki, ahogy
+     ehhez a témához kell, és nem küld sehova semmit.
+     (Ugyanaz a szabály, mint a vigyazokrad.hu-n — és itt ráadásul tipográfiailag
+     is ez a helyes: ez a lap egy terminál.)
+
+     ⭐ HÁROM NYELV: a MAGYAR a HTML-ben áll, tehát JavaScript nélkül is az olvasható,
+     és alapból mindig az jön — a böngésző nyelvétől függetlenül (Peter szabálya).
+     A német és az angol a lap alján lévő szótárból íródik a `data-t` jelű elemekbe.
+
+     ⚠⚠ A KÉPEKNÉL AZ EGÉSZ <figure> ÁLL data-t ALATT, nem csak a képaláírás.
+       Azért, mert a fordító az innerHTML-t cseréli, az `alt` viszont ATTRIBÚTUM —
+       ha a <figure> nem lenne benne, egy német vak látogató MAGYARUL hallaná a
+       képleírást. Ennek az ára: a fájlnév három helyen szerepel. -->
 <style>
-/* ── THE PHOSPHORS ───────────────────────────────────────────────
-   Not decoration: these were the real phosphor colours.
-   P3 amber, P1 green, P4 white. The page wears what the machine wears,
-   and the switch below is the machine's own MODE command. */
+/* ── A FÉNYPOROK ────────────────────────────────────────────────
+   Nem dekoráció: ezek voltak a valódi fényporszínek.
+   P3 borostyán, P1 zöld, P4 fehér. A lap azt viseli, amit a gép,
+   és az alatta lévő kapcsoló a gép saját MODE parancsa. */
 :root{
-  --ground:#0B0D12;          /* ⭐ not pure black: the real panel's black is
-                                slightly blue. The page tells the truth. */
-  --glow:#FFB000;            /* P3 — amber */
-  --dim:#C08A10;          /* ⚠ 2026-09-21: a korabbi #9A6A06 csak 4,0:1 volt
-                            a hatteren — az AA kuszob 4,5. Most 6,2:1. */
+  --ground:#0B0D12;          /* ⭐ nem tiszta fekete: az igazi panel feketéje is
+                                enyhén kék. A lap igazat mond. */
+  --glow:#FFB000;            /* P3 — borostyán */
+  --dim:#C08A10;             /* ⚠ 2026-09-21: a korábbi #9A6A06 csak 4,0:1 volt
+                                a háttéren — az AA küszöb 4,5. Most 6,2:1. */
   --edge:#1C2029;
 }
 :root[data-mode="green"]{ --glow:#33FF33; --dim:#2FB82F; }   /* 7,0:1 */
@@ -36,7 +45,7 @@ html{-webkit-text-size-adjust:100%}
 body{
   background:var(--ground); color:var(--glow);
   font-family:ui-monospace,"Cascadia Mono","SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
-  font-size:18px; line-height:1.75;   /* a haz szabalya: nagy alapmeret */
+  font-size:18px; line-height:1.75;   /* a ház szabálya: nagy alapméret */
   padding:clamp(18px,4vw,44px) 20px 64px;
   display:flex; flex-direction:column; align-items:center;
 }
@@ -53,10 +62,27 @@ p{margin:0 0 14px; color:var(--dim)}
 p strong,li strong{color:var(--glow); font-weight:700}
 a{color:var(--glow)}
 
-/* ── THE MONITOR ────────────────────────────────────────────────
-   The hero is not a photo of the boot screen — it IS the boot screen,
-   drawn live, with the cursor blinking at the same half-second the
-   machine uses. A photo would be a picture of the thing; this is the thing. */
+/* ── kapcsolósorok: nyelv és fénypor ────────────────────────────
+   ⚠ A jelentést a SZÓ hordozza, nem a szín — a kiválasztottat nem csak
+     a háttér jelöli, hanem a félkövér betű is. */
+.sor{display:flex; gap:0; flex-wrap:wrap; width:fit-content;
+     border:1px solid var(--edge); border-radius:6px; overflow:hidden}
+.sor button{
+  font:inherit; font-size:.82rem; letter-spacing:.1em;
+  background:transparent; color:var(--dim); border:0;
+  border-right:1px solid var(--edge); padding:9px 16px; cursor:pointer;
+}
+.sor button:last-child{border-right:0}
+.sor button:hover{color:var(--glow)}
+.sor button[aria-pressed="true"]{color:var(--ground); background:var(--glow); font-weight:700}
+.sor button:focus-visible{outline:2px solid var(--glow); outline-offset:-2px}
+.nyelvsor{margin-bottom:22px}
+.modesor{font-size:.82rem; color:var(--dim); margin-top:10px}
+
+/* ── A MONITOR ──────────────────────────────────────────────────
+   A fejléc nem FOTÓ az indulási képernyőről — hanem MAGA az indulási
+   képernyő, élőben rajzolva, ugyanazzal a fél másodperces kurzorral,
+   amit a gép használ. Egy fotó a dologról szóló kép; ez maga a dolog. */
 .monitor{
   border:1px solid var(--edge); border-radius:6px;
   background:var(--ground);
@@ -76,25 +102,11 @@ a{color:var(--glow)}
 @keyframes villog{0%,50%{opacity:1}50.01%,100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){#kurzor{animation:none}}
 
-/* ── MODE ────────────────────────────────────────────────────── */
-.mode{display:flex; gap:0; margin:18px 0 0; flex-wrap:wrap;
-      border:1px solid var(--edge); border-radius:6px; overflow:hidden; width:fit-content}
-.mode button{
-  font:inherit; font-size:.82rem; letter-spacing:.1em;
-  background:transparent; color:var(--dim); border:0;
-  border-right:1px solid var(--edge); padding:9px 16px; cursor:pointer;
-}
-.mode button:last-child{border-right:0}
-.mode button:hover{color:var(--glow)}
-.mode button[aria-pressed="true"]{color:var(--ground); background:var(--glow); font-weight:700}
-.mode button:focus-visible{outline:2px solid var(--glow); outline-offset:-2px}
-.modesor{font-size:.82rem; color:var(--dim); margin-top:10px}
-
 ul{list-style:none; margin:0 0 14px}
 li{color:var(--dim); padding:7px 0; display:flex; gap:12px; align-items:flex-start}
 li::before{content:"\203A"; color:var(--glow); flex:none}
-/* ⚠ The "not yet" list uses a DASH, not a chevron: it is a list of negations,
-     and that has to read in black and white too. */
+/* ⚠ A „még nincs" lista jele GONDOLATJEL, nem nyíl: tagadásokat sorol,
+     és ennek fekete-fehéren is látszania kell. */
 ul.nem li::before{content:"\2014"; color:var(--dim)}
 
 figure{margin:22px 0 0}
@@ -105,6 +117,7 @@ figcaption{font-size:.8rem; color:var(--dim); margin-top:9px; line-height:1.55}
 
 .doboz{border-left:3px solid var(--glow); padding:2px 0 2px 18px; margin:20px 0}
 .doboz p:last-child{margin-bottom:0}
+.doboz .halk{color:var(--dim)}
 
 .gomb{
   display:inline-block; margin-top:8px; padding:13px 24px;
@@ -120,7 +133,15 @@ footer{margin-top:clamp(48px,9vw,76px); padding-top:22px; border-top:1px solid v
 <body>
 <main>
 
-  <!-- ══ THE MACHINE, SPEAKING FOR ITSELF ══ -->
+  <div class="sor nyelvsor" role="group" aria-label="Nyelv / Sprache / Language">
+    <button type="button" data-nyelv="hu" aria-pressed="true">MAGYAR</button>
+    <button type="button" data-nyelv="de" aria-pressed="false">DEUTSCH</button>
+    <button type="button" data-nyelv="en" aria-pressed="false">ENGLISH</button>
+  </div>
+
+  <!-- ══ A GÉP, SAJÁT SZAVÁVAL ══
+       ⚠ EZ NEM FORDUL. A gép angolul beszél — ahogy minden korabeli gép tette,
+         és ahogy a mi panelunkon is látszik. Ez idézet, nem szöveg. -->
   <div class="monitor">
     <pre><span class="nev">BAROQUE 48</span><span class="halk">(C) 2026 Creative Pearls</span>
 
@@ -130,107 +151,278 @@ READY
 <span id="kurzor"></span></pre>
   </div>
 
-  <div class="mode" role="group" aria-label="Monitor phosphor">
+  <div class="sor" role="group" aria-label="Fénypor / Phosphor">
     <button type="button" data-mode="amber" aria-pressed="true">AMBER</button>
     <button type="button" data-mode="green" aria-pressed="false">GREEN</button>
     <button type="button" data-mode="paper" aria-pressed="false">PAPER</button>
   </div>
-  <p class="modesor">On the machine this is a command: <strong>MODE GREEN</strong>.
-  The phosphors are the real ones &mdash; P3 amber, P1 green, P4 white.</p>
+  <p class="modesor" data-t="modesor">A gépen ez egy parancs: <strong>MODE GREEN</strong>.
+  A fényporok az igaziak &mdash; P3 borostyán, P1 zöld, P4 fehér.</p>
 
-  <h2>What it is</h2>
-  <p>A small computer that boots into <strong>BASIC</strong>, keeps its programs on
-  <strong>floppies you can hold</strong>, and screeches like a tape deck when it loads them.
-  It has its own DOS-like shell and file manager &mdash; ours, written for this machine,
-  not an emulation of anyone else's.</p>
-  <p>It runs on an <strong>ESP32-S3</strong> with a 7&Prime; 800&times;480 panel,
-  16&nbsp;MB of flash and 8&nbsp;MB of PSRAM.</p>
-
-  <h2>Why 48</h2>
-  <div class="doboz">
-    <p>The machine has 8&nbsp;MB of memory. BASIC gets <strong>49&nbsp;152 bytes</strong> of it.</p>
-    <p>That is not nostalgia and it is not a joke. It is a promise: <strong>whatever you write
-    here will fit on a real 48K machine</strong>. The number in the name is a compatibility
-    guarantee, and it is why the limit is the product rather than a shortage.</p>
-    <p class="halk">The figure on the boot screen is measured, not printed: the machine writes a
-    changing pattern to every byte of that workspace, reads it back, and counts the good ones.
-    If one byte failed, the number would be smaller.</p>
+  <h2 data-t="c_mi">Mi ez</h2>
+  <div data-t="mi">
+    <p>Egy kis számítógép, amely <strong>BASIC</strong>-be indul, a programjait
+    <strong>kézbe vehető floppykon</strong> tartja, és magnó módjára sivít, amikor betölti
+    őket. Saját DOS-szerű héja és fájlkezelője van &mdash; a miénk, ehhez a géphez írva,
+    nem másé utánozva.</p>
+    <p><strong>ESP32-S3</strong>-on fut, 7 colos 800&times;480-as panellel,
+    16&nbsp;MB flashsel és 8&nbsp;MB PSRAM-mal.</p>
   </div>
-  <p>The abundance goes into <em>how many</em> programs, never into how big any one of them is.
-  What those machines taught was not the memory &mdash; it was that a child could
-  <strong>LIST</strong> a game and change it. Nobody lists a four-megabyte game.</p>
 
-  <h2>On real hardware</h2>
-  <figure>
-    <img src="kep/b48-borostyan.jpg" width="1200" height="650" alt="A 7-inch LCD panel on a workbench showing the BAROQUE 48 boot screen in amber text: the name, the copyright line, 49152 BYTES FREE, READY, and a cursor block." loading="lazy">
-    <figcaption>The first boot, 21 September 2026. Amber &mdash; P3 phosphor.</figcaption>
+  <h2 data-t="c_miert">Miért 48</h2>
+  <div data-t="miert">
+    <div class="doboz">
+      <p>A gépben 8&nbsp;MB memória van. Ebből a BASIC <strong>49&nbsp;152 bájtot</strong> kap.</p>
+      <p>Ez nem nosztalgia és nem vicc. Ez ígéret: <strong>amit itt írsz, elfér egy igazi
+      48K-s gépen</strong>. A szám a névben kompatibilitási garancia &mdash; és ezért a
+      korlát maga a termék, nem hiány.</p>
+      <p class="halk">A boot-képernyőn álló szám <em>mért</em>, nem nyomtatott: a gép változó
+      mintát ír a munkaterület minden bájtjára, visszaolvassa, és megszámolja a jókat.
+      Ha egy bájt rossz volna, kisebb szám állna ott.</p>
+    </div>
+    <p>A bőség a <em>darabszámba</em> megy, soha nem abba, hogy egy program mekkora.
+    Nem a memória tanított azokon a gépeken &mdash; hanem hogy egy gyerek
+    <strong>kilistázhatott</strong> egy játékot és átírhatta. Egy négymegabájtos játékot
+    senki nem listáz ki.</p>
+  </div>
+
+  <h2 data-t="c_vas">Igazi vason</h2>
+  <figure data-t="kep1">
+    <img src="kep/b48-borostyan.jpg" width="1200" height="650" loading="lazy"
+         alt="Hét colos LCD-panel a mérőpadon, rajta a BAROQUE 48 indulási képernyője borostyánsárga betűkkel: a név, a copyright-sor, 49152 BYTES FREE, READY, és egy kurzor-kocka.">
+    <figcaption>Az első indulás, 2026. szeptember 21. Borostyán &mdash; P3 fénypor.</figcaption>
   </figure>
   <div class="harom">
-    <figure>
-      <img src="kep/b48-zold.jpg" width="1200" height="691" alt="The same boot screen in green phosphor." loading="lazy">
-      <figcaption>GREEN &mdash; P1, the Hercules green.</figcaption>
+    <figure data-t="kep2">
+      <img src="kep/b48-zold.jpg" width="1200" height="691" loading="lazy"
+           alt="Ugyanaz az indulási képernyő zöld fényporral.">
+      <figcaption>ZÖLD &mdash; P1, a Hercules zöldje.</figcaption>
     </figure>
-    <figure>
-      <img src="kep/b48-papir.jpg" width="1200" height="659" alt="The same boot screen in white phosphor." loading="lazy">
-      <figcaption>PAPER &mdash; P4, paper white.</figcaption>
+    <figure data-t="kep3">
+      <img src="kep/b48-papir.jpg" width="1200" height="659" loading="lazy"
+           alt="Ugyanaz az indulási képernyő fehér fényporral.">
+      <figcaption>PAPÍR &mdash; P4, papírfehér.</figcaption>
     </figure>
   </div>
 
-  <h2>Where we are</h2>
-  <p><strong>Working, measured, on the bench:</strong></p>
-  <ul>
-    <li>the boot screen, on a real 7&Prime; panel</li>
-    <li>three phosphor modes, switchable</li>
-    <li>the 48&nbsp;K workspace, verified byte by byte at power-on</li>
-    <li>an I&sup2;S amplifier on the board, ready for the tape sound</li>
-  </ul>
-  <p><strong>Not there yet &mdash; and that is most of it:</strong></p>
-  <ul class="nem">
-    <li>the DOS-like shell and the file manager</li>
-    <li>BASIC</li>
-    <li>the tape-loading sound &mdash; the experiment that decides the project</li>
-    <li>the floppies, the case, the keyboard</li>
-  </ul>
-  <p class="halk">This page exists because a hundred people said they wanted one before a single
-  line of it was written. It seemed only fair to show them exactly how far along it really is.</p>
+  <h2 data-t="c_hol">Hol tartunk</h2>
+  <div data-t="hol">
+    <p><strong>Működik, megmérve, a mérőpadon:</strong></p>
+    <ul>
+      <li><span>az indulási képernyő, igazi 7 colos panelon</span></li>
+      <li><span>három fénypor-mód, kapcsolhatóan</span></li>
+      <li><span>a 48&nbsp;K-s munkaterület, bájtonként ellenőrizve bekapcsoláskor</span></li>
+      <li><span>I&sup2;S erősítő a panelon, készen a magnó-hangra</span></li>
+    </ul>
+    <p><strong>Még nincs meg &mdash; és ez a java:</strong></p>
+    <ul class="nem">
+      <li><span>a DOS-szerű héj és a fájlkezelő</span></li>
+      <li><span>a BASIC</span></li>
+      <li><span>a magnó-betöltés hangja &mdash; az a kísérlet, ami eldönti a projektet</span></li>
+      <li><span>a floppyk, a doboz, a billentyűzet</span></li>
+    </ul>
+    <p class="halk">Ez a lap azért van, mert száz ember mondta, hogy akar egyet, mielőtt
+    egyetlen sora megíródott volna. Tisztességesnek tűnt megmutatni nekik, pontosan hol tartunk.</p>
+  </div>
 
-  <h2>Tell me when</h2>
-  <p>No list, no newsletter, no tracking &mdash; this page sends nothing anywhere.
-  If you want to know when the BAROQUE 48 can be ordered, write one line:</p>
-  <p><a class="gomb" href="mailto:peter.kurtosi@gmail.com?subject=BAROQUE%2048%20%E2%80%94%20tell%20me%20when&amp;body=I'd%20like%20to%20know%20when%20the%20BAROQUE%2048%20can%20be%20ordered.">Write to us</a></p>
+  <h2 data-t="c_szolj">Szólj, ha</h2>
+  <div data-t="szolj">
+    <p>Nincs lista, nincs hírlevél, nincs nyomkövetés &mdash; ez a lap semmit nem küld
+    sehova. Ha tudni akarod, mikor rendelhető a BAROQUE 48, írj egy sort:</p>
+    <p><a class="gomb" href="mailto:peter.kurtosi@gmail.com?subject=BAROQUE%2048&amp;body=Szeretn%C3%A9m%20tudni%2C%20mikor%20rendelhet%C5%91%20a%20BAROQUE%2048.">Írj nekünk</a></p>
+  </div>
 
-  <footer>
-    <p><strong>BAROQUE 48</strong> &mdash; a baroque pearl is the irregular one, prized for it.<br>
-    Creative Pearls &middot; Peter Kurtosi &middot; 2026</p>
-    <p>This page loads no fonts, no scripts and no images from anywhere but its own server.
-    It sets no cookies and counts no visitors.</p>
+  <footer data-t="lab">
+    <p><strong>BAROQUE 48</strong> &mdash; a barokk gyöngy a szabálytalan, amit éppen azért becsülnek.<br>
+    Creative Pearls &middot; Kürtösi Péter &middot; 2026</p>
+    <p>Ez a lap nem tölt be betűtípust, szkriptet vagy képet sehonnan a saját
+    kiszolgálóján kívül. Nem tesz le sütit és nem számol látogatót.</p>
   </footer>
 
 </main>
 
 <script>
-/* The MODE switch — the machine's own command, on its own page.
-   ⚠ The choice is kept only in this browser, and only as a convenience.
-     If storage is blocked, the page simply forgets; nothing breaks. */
+/* ── NYELV ÉS FÉNYPOR ─────────────────────────────────────────────
+   A magyar a HTML-ben áll: JavaScript nélkül is az olvasható, és
+   ⭐ INDULÓ NYELV MINDIG A MAGYAR — a böngésző nyelvétől függetlenül.
+   Sorrend: a címben kapott ?nyelv=…, aztán amit a látogató választott, aztán magyar. */
+var SZOVEG = {
+  hu: null,   /* a HTML-ből olvassuk ki induláskor */
+
+  de: {
+    modesor: 'Auf dem Gerät ist das ein Befehl: <strong>MODE GREEN</strong>. '
+      + 'Die Leuchtstoffe sind die echten &mdash; P3 Bernstein, P1 Grün, P4 Weiß.',
+    c_mi: 'Was es ist',
+    mi: '<p>Ein kleiner Computer, der in <strong>BASIC</strong> startet, seine Programme auf '
+      + '<strong>Disketten zum Anfassen</strong> hält und beim Laden kreischt wie ein '
+      + 'Kassettendeck. Er hat eine eigene DOS-artige Kommandozeile und einen eigenen '
+      + 'Dateimanager &mdash; unsere, für dieses Gerät geschrieben, nicht die Nachahmung '
+      + 'von jemandes anderem.</p>'
+      + '<p>Er läuft auf einem <strong>ESP32-S3</strong> mit einem 7-Zoll-Panel (800&times;480), '
+      + '16&nbsp;MB Flash und 8&nbsp;MB PSRAM.</p>',
+    c_miert: 'Warum 48',
+    miert: '<div class="doboz">'
+      + '<p>Das Gerät hat 8&nbsp;MB Speicher. BASIC bekommt davon <strong>49&nbsp;152 Byte</strong>.</p>'
+      + '<p>Das ist weder Nostalgie noch ein Scherz. Es ist ein Versprechen: <strong>was Sie '
+      + 'hier schreiben, passt auf eine echte 48K-Maschine</strong>. Die Zahl im Namen ist eine '
+      + 'Kompatibilitätsgarantie &mdash; und deshalb ist die Grenze das Produkt und kein Mangel.</p>'
+      + '<p class="halk">Die Zahl im Startbildschirm ist <em>gemessen</em>, nicht gedruckt: Das Gerät '
+      + 'schreibt ein wechselndes Muster in jedes Byte dieses Arbeitsbereichs, liest es zurück und '
+      + 'zählt die guten. Wäre ein Byte fehlerhaft, stünde dort eine kleinere Zahl.</p></div>'
+      + '<p>Der Überfluss geht in die <em>Anzahl</em> der Programme, nie in die Größe eines '
+      + 'einzelnen. Nicht der Speicher hat auf jenen Maschinen etwas beigebracht &mdash; sondern '
+      + 'dass ein Kind ein Spiel <strong>LIST</strong>en und ändern konnte. Ein Vier-Megabyte-Spiel '
+      + 'listet niemand.</p>',
+    c_vas: 'Auf echter Hardware',
+    kep1: '<img src="kep/b48-borostyan.jpg" width="1200" height="650" loading="lazy" '
+      + 'alt="Ein 7-Zoll-LCD auf der Werkbank mit dem Startbildschirm des BAROQUE 48 in '
+      + 'bernsteinfarbener Schrift: der Name, die Copyright-Zeile, 49152 BYTES FREE, READY '
+      + 'und ein Cursor-Block.">'
+      + '<figcaption>Der erste Start, 21. September 2026. Bernstein &mdash; P3-Leuchtstoff.</figcaption>',
+    kep2: '<img src="kep/b48-zold.jpg" width="1200" height="691" loading="lazy" '
+      + 'alt="Derselbe Startbildschirm in grünem Leuchtstoff.">'
+      + '<figcaption>GRÜN &mdash; P1, das Hercules-Grün.</figcaption>',
+    kep3: '<img src="kep/b48-papir.jpg" width="1200" height="659" loading="lazy" '
+      + 'alt="Derselbe Startbildschirm in weißem Leuchtstoff.">'
+      + '<figcaption>PAPIER &mdash; P4, papierweiß.</figcaption>',
+    c_hol: 'Wo wir stehen',
+    hol: '<p><strong>Läuft, gemessen, auf der Werkbank:</strong></p><ul>'
+      + '<li><span>der Startbildschirm auf einem echten 7-Zoll-Panel</span></li>'
+      + '<li><span>drei Leuchtstoff-Modi, umschaltbar</span></li>'
+      + '<li><span>der 48-K-Arbeitsbereich, beim Einschalten Byte für Byte geprüft</span></li>'
+      + '<li><span>ein I&sup2;S-Verstärker auf der Platine, bereit für den Kassettenton</span></li>'
+      + '</ul><p><strong>Noch nicht da &mdash; und das ist das meiste davon:</strong></p>'
+      + '<ul class="nem">'
+      + '<li><span>die DOS-artige Kommandozeile und der Dateimanager</span></li>'
+      + '<li><span>BASIC</span></li>'
+      + '<li><span>der Kassetten-Ladeton &mdash; das Experiment, das über das Projekt entscheidet</span></li>'
+      + '<li><span>die Disketten, das Gehäuse, die Tastatur</span></li></ul>'
+      + '<p class="halk">Diese Seite gibt es, weil hundert Menschen sagten, sie wollten eines, '
+      + 'bevor eine einzige Zeile davon geschrieben war. Da schien es nur fair zu zeigen, wie weit '
+      + 'es wirklich ist.</p>',
+    c_szolj: 'Sagen Sie Bescheid',
+    szolj: '<p>Keine Liste, kein Newsletter, kein Tracking &mdash; diese Seite sendet nichts '
+      + 'irgendwohin. Wenn Sie wissen möchten, wann der BAROQUE 48 bestellbar ist, schreiben Sie '
+      + 'eine Zeile:</p>'
+      + '<p><a class="gomb" href="mailto:peter.kurtosi@gmail.com?subject=BAROQUE%2048&amp;'
+      + 'body=Ich%20m%C3%B6chte%20wissen%2C%20wann%20der%20BAROQUE%2048%20bestellbar%20ist.">'
+      + 'Schreiben Sie uns</a></p>',
+    lab: '<p><strong>BAROQUE 48</strong> &mdash; eine barocke Perle ist die unregelmäßige, '
+      + 'und genau dafür wird sie geschätzt.<br>Creative Pearls &middot; Péter Kürtösi &middot; 2026</p>'
+      + '<p>Diese Seite lädt weder Schriften noch Skripte noch Bilder von irgendwo außer dem '
+      + 'eigenen Server. Sie setzt keine Cookies und zählt keine Besucher.</p>'
+  },
+
+  en: {
+    modesor: 'On the machine this is a command: <strong>MODE GREEN</strong>. '
+      + 'The phosphors are the real ones &mdash; P3 amber, P1 green, P4 white.',
+    c_mi: 'What it is',
+    mi: '<p>A small computer that boots into <strong>BASIC</strong>, keeps its programs on '
+      + '<strong>floppies you can hold</strong>, and screeches like a tape deck when it loads '
+      + 'them. It has its own DOS-like shell and file manager &mdash; ours, written for this '
+      + 'machine, not an emulation of anyone else\'s.</p>'
+      + '<p>It runs on an <strong>ESP32-S3</strong> with a 7&Prime; 800&times;480 panel, '
+      + '16&nbsp;MB of flash and 8&nbsp;MB of PSRAM.</p>',
+    c_miert: 'Why 48',
+    miert: '<div class="doboz">'
+      + '<p>The machine has 8&nbsp;MB of memory. BASIC gets <strong>49&nbsp;152 bytes</strong> of it.</p>'
+      + '<p>That is not nostalgia and it is not a joke. It is a promise: <strong>whatever you '
+      + 'write here will fit on a real 48K machine</strong>. The number in the name is a '
+      + 'compatibility guarantee, and it is why the limit is the product rather than a shortage.</p>'
+      + '<p class="halk">The figure on the boot screen is <em>measured</em>, not printed: the machine '
+      + 'writes a changing pattern to every byte of that workspace, reads it back, and counts the '
+      + 'good ones. If one byte failed, the number would be smaller.</p></div>'
+      + '<p>The abundance goes into <em>how many</em> programs, never into how big any one of them '
+      + 'is. What those machines taught was not the memory &mdash; it was that a child could '
+      + '<strong>LIST</strong> a game and change it. Nobody lists a four-megabyte game.</p>',
+    c_vas: 'On real hardware',
+    kep1: '<img src="kep/b48-borostyan.jpg" width="1200" height="650" loading="lazy" '
+      + 'alt="A 7-inch LCD panel on a workbench showing the BAROQUE 48 boot screen in amber '
+      + 'text: the name, the copyright line, 49152 BYTES FREE, READY, and a cursor block.">'
+      + '<figcaption>The first boot, 21 September 2026. Amber &mdash; P3 phosphor.</figcaption>',
+    kep2: '<img src="kep/b48-zold.jpg" width="1200" height="691" loading="lazy" '
+      + 'alt="The same boot screen in green phosphor.">'
+      + '<figcaption>GREEN &mdash; P1, the Hercules green.</figcaption>',
+    kep3: '<img src="kep/b48-papir.jpg" width="1200" height="659" loading="lazy" '
+      + 'alt="The same boot screen in white phosphor.">'
+      + '<figcaption>PAPER &mdash; P4, paper white.</figcaption>',
+    c_hol: 'Where we are',
+    hol: '<p><strong>Working, measured, on the bench:</strong></p><ul>'
+      + '<li><span>the boot screen, on a real 7&Prime; panel</span></li>'
+      + '<li><span>three phosphor modes, switchable</span></li>'
+      + '<li><span>the 48&nbsp;K workspace, verified byte by byte at power-on</span></li>'
+      + '<li><span>an I&sup2;S amplifier on the board, ready for the tape sound</span></li>'
+      + '</ul><p><strong>Not there yet &mdash; and that is most of it:</strong></p>'
+      + '<ul class="nem">'
+      + '<li><span>the DOS-like shell and the file manager</span></li>'
+      + '<li><span>BASIC</span></li>'
+      + '<li><span>the tape-loading sound &mdash; the experiment that decides the project</span></li>'
+      + '<li><span>the floppies, the case, the keyboard</span></li></ul>'
+      + '<p class="halk">This page exists because a hundred people said they wanted one before a '
+      + 'single line of it was written. It seemed only fair to show them exactly how far along it '
+      + 'really is.</p>',
+    c_szolj: 'Tell me when',
+    szolj: '<p>No list, no newsletter, no tracking &mdash; this page sends nothing anywhere. '
+      + 'If you want to know when the BAROQUE 48 can be ordered, write one line:</p>'
+      + '<p><a class="gomb" href="mailto:peter.kurtosi@gmail.com?subject=BAROQUE%2048&amp;'
+      + 'body=I%27d%20like%20to%20know%20when%20the%20BAROQUE%2048%20can%20be%20ordered.">'
+      + 'Write to us</a></p>',
+    lab: '<p><strong>BAROQUE 48</strong> &mdash; a baroque pearl is the irregular one, prized '
+      + 'for it.<br>Creative Pearls &middot; Peter Kurtosi &middot; 2026</p>'
+      + '<p>This page loads no fonts, no scripts and no images from anywhere but its own server. '
+      + 'It sets no cookies and counts no visitors.</p>'
+  }
+};
+
 (function () {
   var MODOK = ['amber', 'green', 'paper'];
+  var NYELVEK = ['hu', 'de', 'en'];
+
   function biztos(fn, alap) { try { return fn(); } catch (e) { return alap; } }
 
-  function allit(m) {
+  /* A magyart egyszer, induláskor olvassuk ki a HTML-ből. */
+  SZOVEG.hu = {};
+  document.querySelectorAll('[data-t]').forEach(function (el) {
+    SZOVEG.hu[el.dataset.t] = el.innerHTML;
+  });
+
+  function nyelvetAllit(kod) {
+    var sz = SZOVEG[kod];
+    if (!sz) return;
+    document.documentElement.lang = kod;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var ertek = sz[el.dataset.t];
+      if (typeof ertek === 'string') el.innerHTML = ertek;
+    });
+    document.querySelectorAll('.nyelvsor button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.nyelv === kod));
+    });
+    biztos(function () { return localStorage.setItem('baroque48-nyelv', kod); });
+  }
+
+  function modotAllit(m) {
     if (MODOK.indexOf(m) < 0) return;
     document.documentElement.setAttribute('data-mode', m);
-    document.querySelectorAll('.mode button').forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.dataset.mode === m));
+    document.querySelectorAll('[data-mode]').forEach(function (b) {
+      if (b.tagName === 'BUTTON') b.setAttribute('aria-pressed', String(b.dataset.mode === m));
     });
     biztos(function () { return localStorage.setItem('baroque48-mode', m); });
   }
 
-  document.querySelectorAll('.mode button').forEach(function (b) {
-    b.addEventListener('click', function () { allit(b.dataset.mode); });
+  document.querySelectorAll('.nyelvsor button').forEach(function (b) {
+    b.addEventListener('click', function () { nyelvetAllit(b.dataset.nyelv); });
+  });
+  document.querySelectorAll('.sor:not(.nyelvsor) button').forEach(function (b) {
+    b.addEventListener('click', function () { modotAllit(b.dataset.mode); });
   });
 
-  var mentett = biztos(function () { return localStorage.getItem('baroque48-mode'); }, null);
-  allit(MODOK.indexOf(mentett) >= 0 ? mentett : 'amber');
+  var urlNyelv = new URLSearchParams(location.search).get('nyelv');
+  var mentettNy = biztos(function () { return localStorage.getItem('baroque48-nyelv'); }, null);
+  nyelvetAllit(NYELVEK.indexOf(urlNyelv) >= 0 ? urlNyelv
+             : (NYELVEK.indexOf(mentettNy) >= 0 ? mentettNy : 'hu'));
+
+  var mentettMod = biztos(function () { return localStorage.getItem('baroque48-mode'); }, null);
+  modotAllit(MODOK.indexOf(mentettMod) >= 0 ? mentettMod : 'amber');
 })();
 </script>
 </body>
