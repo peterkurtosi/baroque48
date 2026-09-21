@@ -24,18 +24,19 @@
   --ground:#0B0D12;          /* ⭐ not pure black: the real panel's black is
                                 slightly blue. The page tells the truth. */
   --glow:#FFB000;            /* P3 — amber */
-  --dim:#9A6A06;
+  --dim:#C08A10;          /* ⚠ 2026-09-21: a korabbi #9A6A06 csak 4,0:1 volt
+                            a hatteren — az AA kuszob 4,5. Most 6,2:1. */
   --edge:#1C2029;
 }
-:root[data-mode="green"]{ --glow:#33FF33; --dim:#1B8F1B; }
-:root[data-mode="paper"]{ --glow:#E8E8E8; --dim:#8A8A8A; }
+:root[data-mode="green"]{ --glow:#33FF33; --dim:#2FB82F; }   /* 7,0:1 */
+:root[data-mode="paper"]{ --glow:#E8E8E8; --dim:#A8A8A8; }   /* 8,2:1 */
 
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   background:var(--ground); color:var(--glow);
   font-family:ui-monospace,"Cascadia Mono","SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
-  font-size:17px; line-height:1.75;
+  font-size:18px; line-height:1.75;   /* a haz szabalya: nagy alapmeret */
   padding:clamp(18px,4vw,44px) 20px 64px;
   display:flex; flex-direction:column; align-items:center;
 }
