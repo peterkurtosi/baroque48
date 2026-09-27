@@ -522,7 +522,7 @@ html{scroll-behavior:smooth}
   <div class="tabla-belso">
     <span class="plakett">Creative Pearls &middot; 2026</span>
     <h1>BBASIC</h1>
-    <p class="alcim">Kézikönyv &middot; 0.1 verzió &middot; BAROQUE&nbsp;48</p>
+    <p class="alcim">Kézikönyv &middot; 0.2 verzió &middot; BAROQUE&nbsp;48</p>
     <p class="mondat">A gép saját BASIC-jének teljes leírása. <strong>A kézikönyvben látható minden képernyősor a gép valódi válasza</strong> — egyetlen példa sincs begépelve. A parancssort a <em>BAROQUE-DOS Kézikönyv</em> írja le.</p>
 
     <div class="vezerlok">
@@ -874,12 +874,47 @@ N= 42
 Ok</pre>
 <p>A <code>CHR$(n)</code> kódból karaktert csinál, a <code>STR$(n)</code>
 számból szöveget.</p>
-<div class="doboz nincs">
-  <span class="fej">Ami még nincs</span>
-  <div class="test"><p><code>LEN</code>, <code>VAL</code> és</div>
+
+<h3>Vissza a számok felé</h3>
+<p>Ez a három függvény <strong>szöveget kér, és számot ad</strong>:</p>
+<pre class="crt"><b>PRINT LEN("BAROQUE")</b>
+ 7
+Ok
+<b>PRINT ASC("A")</b>
+ 65
+Ok</pre>
+<pre class="crt"><b>PRINT VAL("42")</b>
+ 42
+Ok
+<b>PRINT VAL("12ALMA")</b>
+ 12
+Ok
+<b>PRINT VAL("ALMA")</b>
+ 0
+Ok</pre>
+<div class="doboz elter">
+  <span class="fej">A <code>VAL</code> nem válogatós</span>
+  <div class="test"><p>A <code>VAL</code> a szöveg</div>
 </div>
-<code>ASC</code> <strong>még nincs</strong> — ezek a következő körben jönnek.
-Addig a <code>STR$</code> és a <code>CHR$</code> az átjáró a két világ között.</p>
+<strong>elejéről</strong> olvas számot, és ami utána jön, azt elhagyja. Ezért
+a <code>VAL("12ALMA")</code> értéke <code>12</code>, a <code>VAL("ALMA")</code>
+pedig <code>0</code>. A korabeli BASIC is így viselkedett.</p>
+
+<h3>És együtt</h3>
+<pre class="crt"><b>A$ = "BAROQUE 48"</b>
+<b>PRINT LEFT$(A$, LEN(A$) - 3)</b>
+BAROQUE
+Ok
+<b>PRINT CHR$(ASC("A") + 1)</b>
+B
+Ok</pre>
+<div class="doboz jo">
+  <span class="fej">Ez többet mond, mint amennyinek látszik</span>
+  <div class="test"><p>A</div>
+</div>
+<code>LEFT$(A$, LEN(A$) - 3)</code> sorban a <strong>szöveges</strong>
+kiértékelő hívja a <strong>számosat</strong>, az pedig vissza a szövegeset.
+Ez a gépben a legkényesebb pont, és <strong>megmérve működik</strong>.</p>
 
 </section>
 <!-- =================== 6 =================== -->
@@ -1171,7 +1206,7 @@ C:\&gt;</pre>
 <pre class="crt"><b>DIR *.BAS</b>
  VOLUME IN DRIVE C IS LUCY DISK
  DIRECTORY OF C:\
-OLVASD   BAS         70  02-01-80  01:17
+OLVASD   BAS         70  02-01-80  02:23
         1 FILE(S)           70 BYTES
         0 DIR(S)      10199040 BYTES FREE
 C:\&gt;</pre>
@@ -1260,7 +1295,6 @@ kézikönyv akkor használható, ha azt is megmondja, mit ne keress benne.</p>
 </tr></thead><tbody>
 <tr><td><code>DIM</code>, tömbök</td><td>A 26 változó és a lemez.</td></tr>
 <tr><td>Hosszú változónév (<code>SZAM</code>, <code>A1</code>)</td><td>Egy betű: <code>A</code>–<code>Z</code>, <code>A$</code>–<code>Z$</code>.</td></tr>
-<tr><td><code>LEN</code>, <code>VAL</code>, <code>ASC</code></td><td>⏳ A következő körben jönnek.</td></tr>
 <tr><td><code>DATA</code> / <code>READ</code> / <code>RESTORE</code></td><td><code>INPUT</code> vagy értékadás.</td></tr>
 <tr><td><code>WHILE</code> / <code>WEND</code></td><td><code>IF … THEN</code> + <code>GOTO</code>.</td></tr>
 <tr><td><code>DEF FN</code>, saját függvény</td><td><code>GOSUB</code>.</td></tr>
@@ -1296,6 +1330,7 @@ hanem a tervezés része.</p>
 <tr><td><code>FOR v = a TO b [STEP c]</code> … <code>NEXT [v]</code></td><td>Ismétlés. 8 mélységig.</td></tr>
 <tr><td><code>GOSUB n</code> … <code>RETURN</code></td><td>Alprogram. 12 mélységig.</td></tr>
 <tr><td><code>INPUT ["kérdés";] v [, v…]</code></td><td>Kérdez és vár. Csak programból.</td></tr>
+<tr><td><code>LEN</code> · <code>VAL</code> · <code>ASC</code></td><td>Szöveg hossza · szöveg &rarr; szám · az első karakter kódja.</td></tr>
 <tr><td><code>REM</code> · <code>'</code></td><td>Megjegyzés.</td></tr>
 <tr><td><code>END</code> · <code>STOP</code></td><td>Megállás.</td></tr>
 <tr><td><code>RUN</code></td><td>Futtatás. Törli a változókat.</td></tr>
@@ -1314,7 +1349,7 @@ hanem a tervezés része.</p>
 
 <footer>
   <div class="belso">
-    <p><strong>BBASIC Kézikönyv</strong> &middot; a 0.1 verzióhoz &middot;
+    <p><strong>BBASIC Kézikönyv</strong> &middot; a 0.2 verzióhoz &middot;
     Creative Pearls, 2026.</p>
     <p>Minden képernyőpélda ebben a könyvben a gép valódi válasza, a
     <code>2026-09-27</code> napi állapotból. A könyv <strong>generált</strong>: egy szkript
