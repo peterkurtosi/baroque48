@@ -176,6 +176,21 @@ th{color:var(--glow); font-weight:700; letter-spacing:.06em}
 td{color:var(--dim)}
 td code{color:var(--glow)}
 
+/* ── AZ ASZTALI PANEL ───────────────────────────────────────────
+   ⚠ A bongeszoben SOHA nem latszik: a `hidden` csak akkor kerul le, ha
+     a lap a `.exe`-ben fut (`window.pywebview`). */
+#asztali{margin-top:14px; border-top:1px dashed rgba(0,0,0,.35); padding-top:14px}
+#asztali .cs{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center;
+             padding:4px 6px; color:#241703}
+#asztali select{
+  font:inherit; font-size:.8rem; background:#241703; color:var(--rez4);
+  border:1px solid rgba(0,0,0,.5); border-radius:5px; padding:7px 10px;
+}
+#asztali .allapot{font-size:.74rem; letter-spacing:.06em; font-weight:700}
+#asztali .allapot.el::before{content:"\25CF  "}
+#asztali .allapot.nincs::before{content:"\25CB  "}
+.asztalisugo{font-size:.76rem; color:var(--dim); margin:10px 0 0; line-height:1.6}
+
 footer{margin-top:48px; padding-top:18px; border-top:1px solid var(--edge);
        font-size:.8rem; color:var(--dim); line-height:1.7}
 </style>
@@ -215,6 +230,28 @@ footer{margin-top:48px; padding-top:18px; border-top:1px solid var(--edge);
   <input id="fogo" autocomplete="off" autocorrect="off" autocapitalize="characters"
          spellcheck="false" aria-describedby="segit">
 
+  <!-- ⭐ CSAK A `.exe`-BEN: a valódi gép és a PC lemeze. -->
+  <div id="asztali" hidden>
+    <div class="cs">
+      <span class="pultcim" data-t="gepcim">GÉP</span>
+      <div class="sor" role="group" aria-label="Gép">
+        <button type="button" data-gep="masolat" aria-pressed="true">MÁSOLAT</button>
+        <button type="button" data-gep="vas" aria-pressed="false">VALÓDI GÉP</button>
+      </div>
+      <select id="portok" aria-label="Soros port"></select>
+      <span class="allapot nincs" id="vasAllapot">NINCS CSATLAKOZVA</span>
+    </div>
+    <div class="cs">
+      <span class="pultcim" data-t="lemezcim">A PC LEMEZE</span>
+      <div class="sor" role="group" aria-label="A PC lemeze">
+        <button type="button" id="pcMent">MENTÉS</button>
+        <button type="button" id="pcTolt">BETÖLTÉS</button>
+        <button type="button" id="pcLista">MI VAN OTT</button>
+      </div>
+      <span class="allapot" id="pcMappa"></span>
+    </div>
+  </div>
+
   <div class="pult">
     <span class="pultcim" data-t="fenyporcim">FÉNYPOR</span>
     <div class="sor" role="group" aria-label="Fénypor">
@@ -231,6 +268,15 @@ footer{margin-top:48px; padding-top:18px; border-top:1px solid var(--edge);
   <kbd>Ctrl</kbd>+<kbd>Z</kbd> zárja a <code>COPY&nbsp;CON</code> fájlt.
   Írd be: <strong>HELP</strong>. A fénypor-gomb a gép saját <strong>MODE</strong>
   parancsát adja ki &mdash; és fordítva is működik.
+</p>
+
+<p class="asztalisugo" id="asztalisugo" hidden data-t="asztalisugo">
+  <strong>Ez az asztali változat.</strong> A <strong>VALÓDI GÉP</strong> gombbal
+  ugyanez az előlap a munkapadon álló BAROQUE&nbsp;48-at hajtja, soros vonalon
+  &mdash; ugyanaz a keret, két gép mögötte.
+  ⚠ Egyszerre csak egy program foghatja a portot: ha fut a
+  <code>baroque48_pult.py</code>, előbb állítsd le.
+  A <strong>MENTÉS</strong> a PC igazi lemezére ír, nem a memóriába.
 </p>
 
 <!-- ══ BEMUTATÓK ══════════════════════════════════════════════ -->
@@ -389,6 +435,8 @@ Ez a lap semmilyen külső kérést nem küld.</p>
   }
 
   function rajzol() {
+    /* ⭐ VAS-MÓD: a képernyő nem a másolaté, hanem a huzalon érkező folyamé. */
+    if (mod === 'vas') { rajzolVas(); return; }
     var s = gep.kep.sorok.slice();
     s[s.length - 1] = s[s.length - 1] + puffer;
     var t = tordel(s);
@@ -423,6 +471,9 @@ Ez a lap semmilyen külső kérést nem küld.</p>
   });
 
   function sortKuld(s) {
+    /* ⭐ VAS-MÓD: a sor a huzalra megy, a választ a gép küldi vissza.
+     * ⚠ A visszhangot sem mi írjuk: azt is a gép adja, ahogy a pultnál. */
+    if (mod === 'vas') { vasKuld(s + '\r'); puffer = ''; rajzol(); return; }
     gep.be(s);
     puffer = '';
     rajzol();
@@ -432,8 +483,16 @@ Ez a lap semmilyen külső kérést nem küld.</p>
     if (fut) { if (e.key === 'Escape') alljunk(); return; }
     if (e.ctrlKey || e.metaKey) {
       var k = (e.key || '').toLowerCase();
-      if (k === 'c') { e.preventDefault(); gep.vezerloKar(3); puffer = ''; rajzol(); return; }
-      if (k === 'z') { e.preventDefault(); gep.vezerloKar(26); puffer = ''; rajzol(); return; }
+      if (k === 'c') {
+        e.preventDefault();
+        if (mod === 'vas') vasKuld('\x03'); else gep.vezerloKar(3);
+        puffer = ''; rajzol(); return;
+      }
+      if (k === 'z') {
+        e.preventDefault();
+        if (mod === 'vas') vasKuld('\x1a'); else gep.vezerloKar(26);
+        puffer = ''; rajzol(); return;
+      }
       return;                                   /* a másolás maradjon a böngészőé */
     }
     if (e.key === 'Enter') { e.preventDefault(); sortKuld(puffer); return; }
@@ -744,6 +803,202 @@ Ez a lap semmilyen külső kérést nem küld.</p>
   document.querySelectorAll('[data-nyelv]').forEach(function (b) {
     b.addEventListener('click', function () { nyelvetAllit(b.dataset.nyelv); });
   });
+
+  /* =====================================================================
+   *  AZ ASZTALI VÁLTOZAT  —  csak a `.exe`-ben
+   *  ⚠ A böngészőben a `window.pywebview` nem létezik, tehát ebből a
+   *    blokkból semmi nem fut le, és a panel `hidden` marad.
+   * ===================================================================== */
+  var mod = 'masolat';        /* 'masolat' vagy 'vas' */
+  var api = null;
+  var vasSzoveg = '';         /* amit a valódi gép eddig mondott */
+  var vasOra = null;
+
+  /* ⭐ A soros folyam értelmezése — UGYANAZ, mint a `baroque48_pult.py`
+   *   lapján, mert az már bizonyított:
+   *       0x0C  lapdobás (CLS)   ·   0x08  visszatörlés
+   *   ⚠ A `\r` a CRLF első fele; a sort a `\n` viszi. */
+  function vasFolyam(sz) {
+    for (var i = 0; i < sz.length; i++) {
+      var c = sz[i];
+      if (c === '\f') vasSzoveg = '';
+      else if (c === '\b') vasSzoveg = vasSzoveg.slice(0, -1);
+      else if (c === '\r') { /* a \n viszi a sort */ }
+      else vasSzoveg += c;
+    }
+    if (vasSzoveg.length > 60000) vasSzoveg = vasSzoveg.slice(-30000);
+    /* ⭐ A gép `[MODE]` üzenetéből az előlap is átáll — ahogy a pultnál. */
+    var m = /\[MODE\]\s+(\S+)/.exec(sz);
+    if (m) {
+      var k = { AMBER: 'amber', GREEN: 'green', PAPER: 'paper' }[m[1]];
+      if (k) modotAllit(k, true);
+    }
+  }
+
+  function rajzolVas() {
+    var s = vasSzoveg.split('\n');
+    s[s.length - 1] = s[s.length - 1] + puffer;
+    var t2 = tordel(s);
+    if (t2.length > SOROK) t2 = t2.slice(t2.length - SOROK);
+    while (t2.length < SOROK) t2.push('');
+    var h = '';
+    for (var i = 0; i < t2.length; i++) {
+      h += vedd(t2[i]);
+      if (i === t2.length - 1) h += '<span class="kur"></span>';
+      else h += '\n';
+    }
+    kepEl.innerHTML = h;
+  }
+
+  function vasKuld(sz) {
+    if (!api) return;
+    api.kuld(sz);
+  }
+
+  function vasAllapot(el, szoveg) {
+    var e = document.getElementById('vasAllapot');
+    e.className = 'allapot ' + (el ? 'el' : 'nincs');
+    e.textContent = szoveg;
+  }
+
+  function modotValt(uj) {
+    if (uj === mod) return;
+    if (uj === 'vas') {
+      var p = document.getElementById('portok').value;
+      if (!p) { vasAllapot(false, 'NINCS PORT'); return; }
+      api.csatlakoz(p).then(function (r) {
+        if (!r.jo) { vasAllapot(false, (r.mier || 'NEM SIKERÜLT').split('\n')[0]); return; }
+        mod = 'vas';
+        vasSzoveg = '';
+        puffer = '';
+        vasAllapot(true, p + ' · ' + r.sebesseg + ' BAUD');
+        gombokat();
+        /* ⚠ Egy ENTER, hogy a gép kiírja a promptot — különben üres a kép,
+         *   és azt hinnéd, nem él. */
+        vasKuld('\r');
+        if (!vasOra) vasOra = setInterval(vasFigyel, 110);
+        rajzol();
+      });
+      return;
+    }
+    api.bont();
+    if (vasOra) { clearInterval(vasOra); vasOra = null; }
+    mod = 'masolat';
+    puffer = '';
+    vasAllapot(false, 'NINCS CSATLAKOZVA');
+    gombokat();
+    rajzol();
+  }
+
+  function vasFigyel() {
+    if (!api || mod !== 'vas') return;
+    api.olvas().then(function (r) {
+      if (!r || !r.jo) return;
+      if (!r.el) { modotValt('masolat'); return; }
+      if (r.szoveg) { vasFolyam(r.szoveg); rajzol(); }
+    });
+  }
+
+  function gombokat() {
+    document.querySelectorAll('[data-gep]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.gep === mod));
+    });
+  }
+
+  /* ---- a PC lemeze ---------------------------------------------- */
+  function pcUzenet(sz) {
+    /* ⭐ A visszajelzés a GÉP KÉPERNYŐJÉN jelenik meg, nem egy felugró
+     *   ablakban: ott keresi az ember, és ott is a helye. */
+    if (mod === 'vas') return;
+    gep.kiirSor(sz);
+    gep.keszenlet();
+    rajzol();
+  }
+
+  function asztaliIndul() {
+    api = window.pywebview.api;
+    document.getElementById('asztali').hidden = false;
+    document.getElementById('asztalisugo').hidden = false;
+
+    api.mappa().then(function (r) {
+      document.getElementById('pcMappa').textContent = r.ut || '';
+    });
+
+    api.portok().then(function (r) {
+      var v = document.getElementById('portok');
+      v.innerHTML = '';
+      (r.portok || []).forEach(function (p) {
+        var o = document.createElement('option');
+        o.value = p.nev;
+        o.textContent = p.nev + (p.leiras ? ' — ' + p.leiras.slice(0, 28) : '');
+        v.appendChild(o);
+      });
+      if (!(r.portok || []).length) {
+        var o2 = document.createElement('option');
+        o2.value = '';
+        o2.textContent = r.jo ? 'nincs soros port' : (r.mier || 'nincs port');
+        v.appendChild(o2);
+      }
+    });
+
+    document.querySelectorAll('[data-gep]').forEach(function (b) {
+      b.addEventListener('click', function () { modotValt(b.dataset.gep); });
+    });
+
+    document.getElementById('pcMent').addEventListener('click', function () {
+      if (mod === 'vas') return;
+      if (!gep.prog.length) { pcUzenet('NO PROGRAM TO SAVE'); return; }
+      var nev = window.prompt('Milyen néven mentsem a PC lemezére?', 'PROGRAM.BAS');
+      if (!nev) return;
+      var sz = gep.prog.map(function (l) { return l.sz + ' ' + l.t; }).join('\r\n') + '\r\n';
+      api.ment(nev, sz).then(function (r) {
+        pcUzenet(r.jo ? ('SAVED TO PC  ' + r.nev + '  ' + r.meret + ' BYTES')
+                      : ('CANNOT SAVE - ' + (r.mier || '')));
+      });
+    });
+
+    document.getElementById('pcTolt').addEventListener('click', function () {
+      if (mod === 'vas') return;
+      var nev = window.prompt('Melyik fájlt töltsem be a PC lemezéről?', 'PROGRAM.BAS');
+      if (!nev) return;
+      api.tolt(nev).then(function (r) {
+        if (!r.jo) { pcUzenet('FILE NOT FOUND ON PC'); return; }
+        /* ⭐ Ugyanaz a szabály, mint a gép `LOAD`-jánál: a régi program
+         *   és a változók is mennek. */
+        gep.prog = [];
+        gep.valtozokTorol();
+        var db = 0, rossz = 0;
+        r.szoveg.split(/\r?\n/).forEach(function (s) {
+          s = s.replace(/^[ \t]+/, '').replace(/\s+$/, '');
+          if (!s) return;
+          var m = /^(\d+)\s*(.*)$/.exec(s);
+          if (!m) { rossz++; return; }
+          var n = parseInt(m[1], 10);
+          if (n === 0 || n > 65529) { rossz++; return; }
+          if (gep.bbSorBeszur(n, m[2])) db++;
+        });
+        pcUzenet('LOADED FROM PC  ' + r.nev + '  ' + db + ' LINES'
+                 + (rossz ? ('  ' + rossz + ' SKIPPED') : ''));
+      });
+    });
+
+    document.getElementById('pcLista').addEventListener('click', function () {
+      if (mod === 'vas') return;
+      api.lista().then(function (r) {
+        if (!r.jo || !r.nevek.length) { pcUzenet('NO FILES ON PC'); return; }
+        gep.lapozoKezd(true);
+        r.nevek.forEach(function (n) { gep.kiirSor(n); });
+        gep.lapozoVege();
+        gep.kiirSor(r.nevek.length + ' FILE(S) ON THE PC');
+        gep.keszenlet();
+        rajzol();
+      });
+    });
+  }
+
+  window.addEventListener('pywebviewready', asztaliIndul);
+  /* ⚠ Ha az esemény már lement, mire ide érünk. */
+  if (window.pywebview && window.pywebview.api) asztaliIndul();
 
   /* ── indulás ──────────────────────────────────────────────── */
   ujGep();
