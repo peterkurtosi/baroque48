@@ -1,0 +1,1449 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<html lang="hu">
+<title>BBASIC Kézikönyv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;0,6..96,700;1,6..96,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+/* ===========================================================
+   BAROQUE-DOS KEZIKONYV
+   A harom fenypor (AMBER / GREEN / PAPER) EGYBEN a vilagos-sotet
+   kapcsolo is. A jelolt sorrend szandekos:
+     1. csupasz :root      -> AMBER (a gep alapertelmezese, sotet)
+     2. @media light       -> PAPER, csak ha a nezo NEM valasztott
+     3. [data-theme=...]   -> a gazda-alkalmazas valasztasa
+     4. [data-fenypor=...] -> a NEZO valasztasa, ez ver mindent
+   =========================================================== */
+
+:root{
+  color-scheme: dark;
+  --alap: 19px;
+
+  --hatter:#0A0C10;
+  --panel:#12151C;
+  --panel-be:#0C0F15;
+  --kepernyo:#07090C;
+  --fenypor:#FFB000;
+  --fenypor-halk:#8A6000;
+  --fenypor-feny:#FFD98A;
+  --szoveg:#E6DFD2;
+  --szoveg-halk:#9E9483;
+  --cim:#FFD98A;
+  --rez:#B87333;
+  --rez-fenyes:#E0A063;
+  --rez-arny:#6B421C;
+  --turkiz:#2EC4B6;
+  --vonal:#272C36;
+  --vonal-halk:#1B1F27;
+  --jo:#5FD08A;
+  --vigyaz:#FFB000;
+  --baj:#FF7B6B;
+  --fokusz:#2EC4B6;
+  --sug: 0 0 7px rgba(255,176,0,.40);
+  --plakett: linear-gradient(168deg,#E0A063 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+
+/* 2. A nezo gepe vilagos modban all, es o maga meg nem valasztott */
+@media (prefers-color-scheme: light){
+  :root:not([data-fenypor]):not([data-theme="dark"]){
+    color-scheme: light;
+    --hatter:#E9E3D5;
+    --panel:#F5F0E4;
+    --panel-be:#EDE6D6;
+    --kepernyo:#FBF7EB;
+    --fenypor:#2E2618;
+    --fenypor-halk:#7A6E58;
+    --fenypor-feny:#000000;
+    --szoveg:#241E14;
+    --szoveg-halk:#6A6152;
+    --cim:#7A4A16;
+    --rez:#8A5426;
+    --rez-fenyes:#B87333;
+    --rez-arny:#5C3312;
+    --turkiz:#0E7C72;
+    --vonal:#CFC5AE;
+    --vonal-halk:#DED5C0;
+    --jo:#1F7A45;
+    --vigyaz:#8A5A00;
+    --baj:#A32E1C;
+    --fokusz:#0E7C72;
+    --sug: none;
+    --plakett: linear-gradient(168deg,#D9A167 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+  }
+}
+
+/* 3. A gazda-alkalmazas kifejezett valasztasa (ha a nezo meg nem valasztott) */
+:root[data-theme="light"]:not([data-fenypor]){
+  color-scheme: light;
+  --hatter:#E9E3D5; --panel:#F5F0E4; --panel-be:#EDE6D6; --kepernyo:#FBF7EB;
+  --fenypor:#2E2618; --fenypor-halk:#7A6E58; --fenypor-feny:#000000;
+  --szoveg:#241E14; --szoveg-halk:#6A6152; --cim:#7A4A16;
+  --rez:#8A5426; --rez-fenyes:#B87333; --rez-arny:#5C3312; --turkiz:#0E7C72;
+  --vonal:#CFC5AE; --vonal-halk:#DED5C0;
+  --jo:#1F7A45; --vigyaz:#8A5A00; --baj:#A32E1C; --fokusz:#0E7C72;
+  --sug:none;
+  --plakett: linear-gradient(168deg,#D9A167 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+
+/* 4. A NEZO valasztasa - ez ver mindent */
+:root[data-fenypor="amber"]{
+  color-scheme: dark;
+  --hatter:#0A0C10; --panel:#12151C; --panel-be:#0C0F15; --kepernyo:#07090C;
+  --fenypor:#FFB000; --fenypor-halk:#8A6000; --fenypor-feny:#FFD98A;
+  --szoveg:#E6DFD2; --szoveg-halk:#9E9483; --cim:#FFD98A;
+  --rez:#B87333; --rez-fenyes:#E0A063; --rez-arny:#6B421C; --turkiz:#2EC4B6;
+  --vonal:#272C36; --vonal-halk:#1B1F27;
+  --jo:#5FD08A; --vigyaz:#FFB000; --baj:#FF7B6B; --fokusz:#2EC4B6;
+  --sug: 0 0 7px rgba(255,176,0,.40);
+  --plakett: linear-gradient(168deg,#E0A063 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+:root[data-fenypor="green"]{
+  color-scheme: dark;
+  --hatter:#060B08; --panel:#0D1410; --panel-be:#080E0A; --kepernyo:#040A06;
+  --fenypor:#3BFF7A; --fenypor-halk:#1C7A3C; --fenypor-feny:#B6FFCE;
+  --szoveg:#D8E8DC; --szoveg-halk:#8AA893; --cim:#B6FFCE;
+  --rez:#B87333; --rez-fenyes:#E0A063; --rez-arny:#6B421C; --turkiz:#2EC4B6;
+  --vonal:#1C2A21; --vonal-halk:#121C16;
+  --jo:#3BFF7A; --vigyaz:#E0C060; --baj:#FF7B6B; --fokusz:#3BFF7A;
+  --sug: 0 0 7px rgba(59,255,122,.38);
+  --plakett: linear-gradient(168deg,#E0A063 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+:root[data-fenypor="paper"]{
+  color-scheme: light;
+  --hatter:#E9E3D5; --panel:#F5F0E4; --panel-be:#EDE6D6; --kepernyo:#FBF7EB;
+  --fenypor:#2E2618; --fenypor-halk:#7A6E58; --fenypor-feny:#000000;
+  --szoveg:#241E14; --szoveg-halk:#6A6152; --cim:#7A4A16;
+  --rez:#8A5426; --rez-fenyes:#B87333; --rez-arny:#5C3312; --turkiz:#0E7C72;
+  --vonal:#CFC5AE; --vonal-halk:#DED5C0;
+  --jo:#1F7A45; --vigyaz:#8A5A00; --baj:#A32E1C; --fokusz:#0E7C72;
+  --sug:none;
+  --plakett: linear-gradient(168deg,#D9A167 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+
+/* ---------- alapok ---------- */
+*{box-sizing:border-box}
+html{font-size:var(--alap)}
+body{
+  margin:0;
+  background:var(--hatter);
+  color:var(--szoveg);
+  font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  font-size:1rem;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  transition:background-color .25s ease, color .25s ease;
+}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+a{color:var(--turkiz);text-underline-offset:.2em;text-decoration-thickness:1px}
+a:hover{color:var(--rez-fenyes)}
+:focus-visible{outline:3px solid var(--fokusz);outline-offset:3px;border-radius:2px}
+
+.ugras{
+  position:absolute;left:-9999px;top:0;z-index:99;
+  background:var(--rez);color:#120A03;padding:.7rem 1.1rem;font-weight:600;
+}
+.ugras:focus{left:.6rem;top:.6rem}
+
+/* ---------- a fejlec: vesett reztabla ---------- */
+.tabla{
+  position:relative;
+  padding:calc(env(safe-area-inset-top,0px) + 2.6rem) 1.5rem 2.2rem;
+  background:
+    radial-gradient(120% 140% at 50% -20%, rgba(184,115,51,.16), transparent 62%),
+    var(--panel-be);
+  border-bottom:1px solid var(--vonal);
+}
+.tabla-belso{max-width:76rem;margin:0 auto}
+
+.plakett{
+  display:inline-block;
+  padding:.28rem .95rem;
+  background:var(--plakett);
+  color:#170D03;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  border-radius:2px;
+  box-shadow:inset 0 1px 0 rgba(255,236,206,.55), inset 0 -1px 0 rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.4);
+}
+
+.tabla h1{
+  font-family:"Bodoni Moda",Didot,"Times New Roman",serif;
+  font-optical-sizing:auto;
+  font-weight:700;
+  font-size:clamp(2.7rem,9vw,5.2rem);
+  line-height:.94;
+  letter-spacing:.005em;
+  margin:1.1rem 0 .1rem;
+  color:var(--cim);
+  text-wrap:balance;
+  text-shadow:0 1px 0 var(--rez-arny), 0 0 26px rgba(255,176,0,.10);
+}
+:root[data-fenypor="paper"] .tabla h1,
+:root[data-theme="light"]:not([data-fenypor]) .tabla h1{text-shadow:0 1px 0 rgba(255,255,255,.7)}
+
+.tabla .alcim{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--rez-fenyes);margin:.35rem 0 0;
+}
+.tabla .mondat{
+  max-width:44rem;margin:1.5rem 0 0;font-size:1.12rem;color:var(--szoveg);
+}
+.tabla .mondat strong{color:var(--fenypor-feny)}
+
+/* szegecsek - a tabla negy sarkan */
+.szegecsek{position:absolute;inset:1.1rem;pointer-events:none}
+.szegecsek i{
+  position:absolute;width:11px;height:11px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--rez-fenyes), var(--rez) 55%, var(--rez-arny) 100%);
+  box-shadow:0 1px 2px rgba(0,0,0,.5);
+}
+.szegecsek i:nth-child(1){left:0;top:0}
+.szegecsek i:nth-child(2){right:0;top:0}
+.szegecsek i:nth-child(3){left:0;bottom:0}
+.szegecsek i:nth-child(4){right:0;bottom:0}
+
+/* ---------- vezerlok ---------- */
+.vezerlok{
+  display:flex;flex-wrap:wrap;gap:1.6rem 2.4rem;
+  margin:2rem 0 0;padding:1.05rem 1.2rem;
+  background:var(--panel);
+  border:1px solid var(--vonal);
+  border-radius:3px;
+}
+.csoport{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.csoport > .cimke{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--szoveg-halk);
+}
+.gombok{display:flex;gap:.35rem;flex-wrap:wrap}
+button{
+  font:inherit;cursor:pointer;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.8rem;letter-spacing:.09em;
+  padding:.42rem .8rem;
+  color:var(--szoveg);
+  background:var(--panel-be);
+  border:1px solid var(--vonal);
+  border-radius:2px;
+  transition:background-color .18s ease,border-color .18s ease,color .18s ease;
+}
+button:hover{border-color:var(--rez);color:var(--rez-fenyes)}
+button[aria-pressed="true"]{
+  background:var(--plakett);color:#170D03;border-color:var(--rez-arny);font-weight:600;
+  box-shadow:inset 0 1px 0 rgba(255,236,206,.5);
+}
+button[aria-pressed="true"] .pipa{display:inline}
+.pipa{display:none;margin-right:.35em;font-weight:700}
+.meret-kijelzo{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.8rem;color:var(--fenypor);min-width:4.6em;text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------- keret: mutatotabla + torzs ---------- */
+.keret{
+  max-width:76rem;margin:0 auto;padding:0 1.5rem;
+  display:grid;
+  /* ⚠ A tabla szelessege rem-ben egyutt hizna a betumerettel, es 30 px-es
+     alapnal 510 px-re nőve felfalna a szoveget. Ezert PIXELBEN hataroljuk. */
+  grid-template-columns:clamp(200px,17rem,300px) minmax(0,1fr);
+  gap:3rem;align-items:start;
+}
+@media (max-width:62rem){
+  .keret{grid-template-columns:minmax(0,1fr);gap:1.6rem}
+}
+/* ⭐ Nagy betumeretnel a ket hasab nem fer el - a lap MAGATOL egy hasabra
+   vált. Nem az olvasonak kell kitalalnia. */
+.keret.egyhasab{grid-template-columns:minmax(0,1fr);gap:1.6rem}
+.keret.egyhasab .mutato{position:static;max-height:none;margin-top:1.4rem}
+
+/* ---------- a mutatotabla ---------- */
+.mutato{
+  position:sticky;top:1rem;max-height:calc(100vh - 2rem);
+  overflow-y:auto;overscroll-behavior:contain;
+  margin-top:2.6rem;padding:1.1rem 1rem 1.4rem;
+  background:var(--panel);
+  border:1px solid var(--vonal);
+  border-top:3px solid var(--rez);
+  border-radius:3px;
+}
+@media (max-width:62rem){
+  .mutato{position:static;max-height:none;margin-top:1.4rem}
+}
+.mutato h2{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--rez-fenyes);margin:0 0 .8rem;font-weight:600;
+}
+.szuro{
+  width:100%;font:inherit;font-size:.9rem;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  padding:.5rem .6rem;margin:0 0 .5rem;
+  color:var(--szoveg);background:var(--panel-be);
+  border:1px solid var(--vonal);border-radius:2px;
+}
+.szuro::placeholder{color:var(--szoveg-halk)}
+.talalat{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;color:var(--szoveg-halk);margin:0 0 .9rem;
+  font-variant-numeric:tabular-nums;
+}
+.mutato ol{list-style:none;margin:0;padding:0}
+.mutato li{margin:0}
+.mutato .fejezet{
+  display:block;padding:.42rem 0 .3rem;
+  font-family:"Bodoni Moda",Didot,serif;font-size:1.02rem;font-weight:600;
+  color:var(--cim);text-decoration:none;
+  border-top:1px solid var(--vonal-halk);margin-top:.45rem;
+}
+.mutato li:first-child .fejezet{border-top:0;margin-top:0}
+.mutato .fejezet .sz{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.7rem;color:var(--rez);margin-right:.5em;
+}
+.mutato .fejezet:hover{color:var(--rez-fenyes)}
+.mutato ul{list-style:none;margin:0 0 .3rem;padding:0 0 0 .1rem;
+  display:flex;flex-wrap:wrap;gap:.22rem}
+.mutato ul a{
+  display:block;padding:.13rem .42rem;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.76rem;color:var(--szoveg-halk);text-decoration:none;
+  border:1px solid transparent;border-radius:2px;
+}
+.mutato ul a:hover{color:var(--fenypor);border-color:var(--vonal)}
+.mutato a[aria-current="true"]{
+  color:var(--fenypor);border-color:var(--rez);background:var(--panel-be);
+}
+.mutato a[aria-current="true"]::before{content:"\25B8\00a0"}
+
+/* ---------- torzs ---------- */
+main{padding:2.4rem 0 5rem;min-width:0}
+
+section{margin:0 0 4.2rem;scroll-margin-top:1.2rem}
+section > h2{
+  font-family:"Bodoni Moda",Didot,"Times New Roman",serif;
+  font-weight:700;font-size:clamp(1.9rem,4.4vw,2.9rem);line-height:1.1;
+  margin:0 0 .2rem;color:var(--cim);text-wrap:balance;
+}
+.fejezetszam{
+  display:flex;align-items:center;gap:.85rem;margin:0 0 .55rem;
+}
+.fejezetszam .lemez{
+  flex:none;display:grid;place-items:center;
+  width:2.3rem;height:2.3rem;border-radius:50%;
+  background:var(--plakett);color:#170D03;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.86rem;font-weight:600;
+  box-shadow:inset 0 1px 0 rgba(255,236,206,.55), 0 1px 3px rgba(0,0,0,.45);
+}
+.fejezetszam .vonalka{
+  flex:1;height:2px;
+  background:linear-gradient(90deg,var(--rez),transparent);
+}
+section > .bevezeto{
+  max-width:42rem;font-size:1.06rem;color:var(--szoveg);margin:.6rem 0 2rem;
+}
+
+h3{
+  font-family:"Bodoni Moda",Didot,serif;
+  font-weight:600;font-size:1.5rem;margin:2.4rem 0 .6rem;color:var(--cim);
+}
+p{max-width:42rem;margin:0 0 1rem}
+.halk{color:var(--szoveg-halk)}
+strong{color:var(--fenypor-feny);font-weight:600}
+:root[data-fenypor="paper"] strong,
+:root[data-theme="light"]:not([data-fenypor]) strong{color:#000}
+code{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.88em;color:var(--fenypor);
+  background:var(--panel-be);padding:.1em .38em;border-radius:2px;
+  border:1px solid var(--vonal-halk);
+}
+
+/* ---------- a parancs-kartya ---------- */
+.parancs{
+  margin:1.8rem 0 2.6rem;
+  background:var(--panel);
+  border:1px solid var(--vonal);
+  border-radius:3px;
+  padding:1.3rem 1.4rem 1.5rem;
+  scroll-margin-top:1.2rem;
+}
+.parancs > h3{
+  margin:0;
+  font-family:"Bodoni Moda",Didot,serif;
+  font-size:1.62rem;font-weight:700;letter-spacing:.01em;
+  color:var(--fenypor-feny);
+}
+.parancs > h3 .par-nev{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:1.12rem;font-weight:600;letter-spacing:.06em;
+}
+.parancs > h3 .mit{
+  display:block;font-family:"IBM Plex Sans",sans-serif;
+  font-size:.92rem;font-weight:400;letter-spacing:0;
+  color:var(--szoveg-halk);margin-top:.15rem;
+}
+.veset{
+  height:2px;margin:.75rem 0 1rem;
+  background:linear-gradient(90deg,var(--rez) 0%,var(--rez-arny) 22%,transparent 60%);
+}
+.szintaxis{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.95rem;color:var(--fenypor);
+  background:var(--panel-be);
+  border:1px solid var(--vonal);
+  border-left:3px solid var(--rez);
+  padding:.6rem .85rem;margin:0 0 1rem;
+  overflow-x:auto;white-space:pre;
+}
+.szintaxis .valt{color:var(--turkiz);font-style:italic}
+.parancs p{margin:0 0 .85rem}
+.parancs p:last-child{margin-bottom:0}
+
+/* ---------- a CRT-kepernyo ---------- */
+figure.kep{margin:1.2rem 0 .2rem}
+figure.kep figcaption{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.7rem;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--szoveg-halk);margin:0 0 .4rem;
+}
+figure.kep figcaption::before{content:"\25AA\00a0"; color:var(--rez)}
+.crt{
+  position:relative;overflow-x:auto;
+  margin:0;padding:1rem 1.15rem;
+  background:var(--kepernyo);
+  border:1px solid var(--vonal);
+  border-radius:6px;
+  box-shadow:inset 0 0 0 1px rgba(184,115,51,.12), inset 0 0 40px rgba(0,0,0,.55);
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.86rem;line-height:1.5;
+  color:var(--fenypor);
+  text-shadow:var(--sug);
+  white-space:pre;
+  tab-size:8;
+}
+.crt::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:6px;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.20) 0 1px,transparent 1px 3px);
+  opacity:.5;
+}
+:root[data-fenypor="paper"] .crt::after,
+:root[data-theme="light"]:not([data-fenypor]) .crt::after{opacity:.10}
+.crt b{color:var(--fenypor-feny);font-weight:400;
+  text-shadow:0 0 9px rgba(255,217,138,.5)}
+:root[data-fenypor="paper"] .crt b,
+:root[data-theme="light"]:not([data-fenypor]) .crt b{
+  color:#000;font-weight:600;text-shadow:none}
+.crt .halvany{color:var(--fenypor-halk)}
+
+/* ---------- tablazatok ---------- */
+.tabkeret{overflow-x:auto;margin:1.2rem 0 1.6rem;
+  border:1px solid var(--vonal);border-radius:3px}
+table{border-collapse:collapse;width:100%;font-size:.92rem;background:var(--panel)}
+th,td{padding:.55rem .8rem;text-align:left;vertical-align:top;
+  border-bottom:1px solid var(--vonal-halk)}
+thead th{
+  background:var(--panel-be);
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--rez-fenyes);font-weight:600;
+  border-bottom:2px solid var(--rez-arny);
+}
+tbody tr:last-child td{border-bottom:0}
+td code, th code{background:transparent;border:0;padding:0}
+td:first-child{font-family:"IBM Plex Mono",ui-monospace,monospace;
+  color:var(--fenypor);white-space:nowrap}
+
+/* ---------- figyelmeztetes-dobozok (SOHA nem csak szin) ---------- */
+.doboz{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.2rem .85rem;
+  margin:1.4rem 0;padding:.95rem 1.1rem;
+  background:var(--panel);border:1px solid var(--vonal);
+  border-left:3px solid var(--rez);border-radius:3px;
+}
+.doboz .fej{
+  grid-column:1;grid-row:1;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:600;white-space:nowrap;padding-top:.18rem;
+}
+.doboz .test{grid-column:2;grid-row:1}
+.doboz .test > :last-child{margin-bottom:0}
+.doboz p{max-width:none}
+.doboz.vigyazz{border-left-color:var(--vigyaz)}
+.doboz.vigyazz .fej{color:var(--vigyaz)}
+.doboz.elter{border-left-color:var(--turkiz)}
+.doboz.elter .fej{color:var(--turkiz)}
+.doboz.nincs{border-left-color:var(--baj)}
+.doboz.nincs .fej{color:var(--baj)}
+.doboz.jo{border-left-color:var(--jo)}
+.doboz.jo .fej{color:var(--jo)}
+@media (max-width:34rem){
+  .doboz{grid-template-columns:minmax(0,1fr)}
+  .doboz .fej{grid-column:1;grid-row:1}
+  .doboz .test{grid-column:1;grid-row:2}
+}
+
+ul.lista{max-width:42rem;padding-left:1.15rem}
+ul.lista li{margin:0 0 .45rem}
+
+/* ---------- lablec ---------- */
+footer{
+  border-top:1px solid var(--vonal);
+  background:var(--panel-be);
+  padding:2.2rem 1.5rem calc(env(safe-area-inset-bottom,0px) + 2.4rem);
+}
+footer .belso{max-width:76rem;margin:0 auto;
+  font-size:.92rem;color:var(--szoveg-halk)}
+footer p{max-width:46rem}
+
+@media print{
+  .mutato,.vezerlok,.ugras{display:none}
+  .keret{grid-template-columns:1fr}
+  .crt::after{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important}
+  html{scroll-behavior:auto}
+}
+html{scroll-behavior:smooth}
+</style>
+<a class="ugras" href="#tartalom">Ugrás a tartalomra</a>
+
+<header class="tabla">
+  <div class="szegecsek"><i></i><i></i><i></i><i></i></div>
+  <div class="tabla-belso">
+    <span class="plakett">Creative Pearls &middot; 2026</span>
+    <h1>BBASIC</h1>
+    <p class="alcim">Kézikönyv &middot; 0.1 verzió &middot; BAROQUE&nbsp;48</p>
+    <p class="mondat">A gép saját BASIC-jének teljes leírása. <strong>A kézikönyvben látható minden képernyősor a gép valódi válasza</strong> — egyetlen példa sincs begépelve. A parancssort a <em>BAROQUE-DOS Kézikönyv</em> írja le.</p>
+
+    <div class="vezerlok">
+      <div class="csoport">
+        <span class="cimke" id="c-fenypor">Fénypor</span>
+        <div class="gombok" role="group" aria-labelledby="c-fenypor">
+          <button type="button" data-fenypor="amber" aria-pressed="true"><span class="pipa" aria-hidden="true">&#10003;</span>AMBER</button>
+          <button type="button" data-fenypor="green" aria-pressed="false"><span class="pipa" aria-hidden="true">&#10003;</span>GREEN</button>
+          <button type="button" data-fenypor="paper" aria-pressed="false"><span class="pipa" aria-hidden="true">&#10003;</span>PAPER</button>
+        </div>
+      </div>
+      <div class="csoport">
+        <span class="cimke" id="c-meret">Betűméret</span>
+        <div class="gombok" role="group" aria-labelledby="c-meret">
+          <button type="button" id="kisebb" aria-label="Kisebb betű">&minus;&nbsp;Kisebb</button>
+          <span class="meret-kijelzo" id="meret-kijelzo" role="status">19 px</span>
+          <button type="button" id="nagyobb" aria-label="Nagyobb betű">+&nbsp;Nagyobb</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="mutato" aria-label="Tartalomjegyzék">
+  <h2>Mutatótábla</h2>
+  <ol>
+    <li><a class="fejezet" href="#f0"><span class="sz">0</span>Mielőtt belekezdesz</a></li>
+    <li><a class="fejezet" href="#f1"><span class="sz">1</span>Az első öt perc</a></li>
+    <li><a class="fejezet" href="#f2"><span class="sz">2</span>A PRINT</a></li>
+    <li><a class="fejezet" href="#f3"><span class="sz">3</span>Számok</a></li>
+    <li><a class="fejezet" href="#f4"><span class="sz">4</span>Változók</a></li>
+    <li><a class="fejezet" href="#f5"><span class="sz">5</span>Szövegek</a></li>
+    <li><a class="fejezet" href="#f6"><span class="sz">6</span>Döntés</a></li>
+    <li><a class="fejezet" href="#f7"><span class="sz">7</span>Ismétlés</a></li>
+    <li><a class="fejezet" href="#f8"><span class="sz">8</span>Alprogramok</a></li>
+    <li><a class="fejezet" href="#f9"><span class="sz">9</span>Kérdezés</a></li>
+    <li><a class="fejezet" href="#f10"><span class="sz">10</span>A lemez</a></li>
+    <li><a class="fejezet" href="#f11"><span class="sz">11</span>A lemez a DOS felől</a></li>
+    <li><a class="fejezet" href="#f12"><span class="sz">12</span>Hibaüzenetek</a></li>
+    <li><a class="fejezet" href="#f13"><span class="sz">13</span>Ami nincs benne</a></li>
+    <li><a class="fejezet" href="#f14"><span class="sz">14</span>Gyorskártya</a></li>
+  </ol>
+</nav>
+
+<main id="tartalom">
+<!-- =================== 0 =================== -->
+<section id="f0" aria-labelledby="h0">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h0">Mielőtt belekezdesz</h2>
+
+<p class="bevezeto">A <strong>BBASIC</strong> a BAROQUE&nbsp;48 saját BASIC-je.
+Ugyanabban a szellemben készült, mint a gép többi része: kevés dolgot tud, de
+azokat úgy, ahogy 1983-ban is illett volna. Ez a könyv a nyelvről szól — a
+parancssort a <em>BAROQUE-DOS Kézikönyv</em> írja le.</p>
+
+<p>A parancsok <strong>angolul</strong> vannak, mert a gép angolul beszél; a
+magyarázat magyarul. Amit <code>ilyen betűvel</code> látsz, azt szó szerint
+így kell begépelni.</p>
+
+<h3>Belépés és kilépés</h3>
+<p>A DOS-promptból a <code>BBASIC</code> paranccsal lépsz be:</p>
+<pre class="crt"><b>BBASIC</b>
+BAROQUE BASIC 1.1
+49152 BYTES FREE
+Ok</pre>
+<p>A gép kiírja, mennyi hely maradt a programnak, és megjelenik a
+<code>Ok</code> — ez a BASIC promptja. Kilépni a <code>SYSTEM</code> paranccsal
+lehet (a <code>BYE</code> is jó):</p>
+<pre class="crt"><b>SYSTEM</b>
+C:\&gt;</pre>
+<div class="doboz jo">
+  <span class="fej">Jó hír</span>
+  <div class="test"><p>A gép <strong>nem érzékeny a kis- és nagybetűre</strong>.</div>
+</div>
+A <code>print</code> és a <code>PRINT</code> ugyanaz. A könyvben a korhűség
+kedvéért mindenhol nagybetűs alak szerepel.</p>
+<div class="doboz vigyazz">
+  <span class="fej">Az <code>Ok</code> jelentése</span>
+  <div class="test"><p>Az <code>Ok</code></div>
+</div>
+<strong>kisbetűs</strong>, és ez nem elírás: a korabeli gépek pontosan így
+írták. Azt jelenti, hogy a gép végzett, és vár.</p>
+
+</section>
+<!-- =================== 1 =================== -->
+<section id="f1" aria-labelledby="h1">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h1">Az első öt perc</h2>
+
+<p class="bevezeto">A BASIC-nek két üzemmódja van, és ez a legfontosabb dolog,
+amit meg kell érteni. <strong>Sorszám nélkül</strong> a gép azonnal végrehajtja,
+amit beírsz. <strong>Sorszámmal</strong> eltárolja későbbre.</p>
+
+<h3>Azonnal</h3>
+<p>Írj be egy számolást, és nyomj Entert:</p>
+<pre class="crt"><b>PRINT 2+2</b>
+ 4
+Ok</pre>
+<p>A <code>PRINT</code> helyett <code>?</code> is írható — a korabeli gépeken
+ezt mindenki használta:</p>
+<pre class="crt"><b>? 7*6</b>
+ 42
+Ok</pre>
+
+<h3>Eltárolva</h3>
+<p>Ha a sort <strong>számmal</strong> kezded, a gép nem hajtja végre, hanem
+megjegyzi. Így születik a program:</p>
+<pre class="crt"><b>NEW</b>
+<b>10 PRINT "SZIA!"</b>
+<b>20 PRINT "EN VAGYOK A BAROQUE 48."</b>
+<b>RUN</b>
+SZIA!
+EN VAGYOK A BAROQUE 48.
+Ok</pre>
+<p>A <code>LIST</code> megmutatja, mi van a tárban:</p>
+<pre class="crt"><b>LIST</b>
+10 PRINT "SZIA!"
+20 PRINT "EN VAGYOK A BAROQUE 48."
+Ok</pre>
+<div class="doboz jo">
+  <span class="fej">A sorszámok közé hagyj helyet</span>
+  <div class="test"><p>A könyvben minden program</div>
+</div>
+<strong>tízesével</strong> számoz. Nem véletlen: így később be tudsz szúrni
+egy <code>15</code>-ös sort anélkül, hogy az egészet újraírnád. A gép a
+sorokat mindig <strong>sorszám szerint rendezve</strong> tartja.</p>
+
+<h3>Sor törlése</h3>
+<p>Írd be a sorszámot <strong>egyedül</strong>, és a sor eltűnik:</p>
+<pre class="crt"><b>10</b>
+<b>LIST</b>
+20 PRINT "EN VAGYOK A BAROQUE 48."
+Ok</pre>
+<p>A teljes program törlése: <code>NEW</code>. A változóké: <code>CLEAR</code>.</p>
+
+</section>
+<!-- =================== 2 =================== -->
+<section id="f2" aria-labelledby="h2">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h2">A PRINT</h2>
+
+<p class="bevezeto">A <code>PRINT</code> írja ki, amit látni akarsz. Két
+elválasztója van, és <strong>nem mindegy, melyiket használod</strong>.</p>
+
+<h3>A pontosvessző: közvetlenül egymás után</h3>
+<pre class="crt"><b>PRINT 1;2;3</b>
+ 1  2  3
+Ok</pre>
+<div class="doboz elter">
+  <span class="fej">Miért két szóköz?</span>
+  <div class="test"><p>A korabeli BASIC minden szám elé tett egy</div>
+</div>
+helyet az előjelnek, és minden szám <em>után</em> egy záró szóközt. Ezért ad
+a <code>PRINT 1;2;3</code> két szóközt a számok közé. <strong>Szöveg után
+nincs</strong> záró szóköz — csak szám után.</p>
+
+<h3>A vessző: oszlopba</h3>
+<pre class="crt"><b>PRINT "EGY","KETTO"</b>
+EGY           KETTO
+Ok</pre>
+<p>A vessző a következő oszlophatárig ugrik. Táblázathoz ez kell.</p>
+
+<h3>Szöveg</h3>
+<pre class="crt"><b>PRINT "HELLO, VILAG!"</b>
+HELLO, VILAG!
+Ok</pre>
+<div class="doboz vigyazz">
+  <span class="fej">Sorvégi pontosvessző</span>
+  <div class="test"><p>Ha a <code>PRINT</code> végére</div>
+</div>
+<strong>pontosvesszőt</strong> teszel, a gép <em>nem tör sort</em>. A következő
+<code>PRINT</code> ugyanabban a sorban folytatja. Ezt használja a
+<a href="#f7">ciklusok</a> fejezet is.</p>
+
+</section>
+<!-- =================== 3 =================== -->
+<section id="f3" aria-labelledby="h3">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h3">Számok</h2>
+
+<p class="bevezeto">A gép a számokat úgy írja ki, ahogy a korabeli gépek: a
+pozitív szám elé szóköz kerül, az egészek után nincs tizedespont, és a vezető
+nullát elhagyja.</p>
+<pre class="crt"><b>PRINT 1/4</b>
+ .25
+Ok
+<b>PRINT 10/2</b>
+ 5
+Ok
+<b>PRINT -3.5</b>
+-3.5
+Ok</pre>
+<div class="doboz elter">
+  <span class="fej">A <code>.25</code> nem elírás</span>
+  <div class="test"><p>A korabeli BASIC a</div>
+</div>
+<code>0.25</code>-öt <code>.25</code>-ként írta ki. Megtartottuk, mert ez a
+részlet teszi felismerhetővé.</p>
+
+<h3>Műveletek</h3>
+<pre class="crt"><b>PRINT 7 \ 2</b>
+ 3
+Ok
+<b>PRINT 7 MOD 2</b>
+ 1
+Ok
+<b>PRINT 2^10</b>
+ 1024
+Ok</pre>
+<p>A <code>\</code> egész-osztás, a <code>MOD</code> a maradék, a
+<code>^</code> a hatvány.</p>
+
+<h3>A sorrend, ami meglepetést okoz</h3>
+<pre class="crt"><b>PRINT -2^2</b>
+-4
+Ok</pre>
+<div class="doboz vigyazz">
+  <span class="fej">Ez nem hiba</span>
+  <div class="test"><p>A hatvány <strong>erősebb az előjelnél</strong>,</div>
+</div>
+ezért a <code>-2^2</code> értéke <code>-4</code> és nem <code>4</code>. A
+korabeli BASIC is így számolt. Ha a másikat akarod, írj zárójelet:
+<code>(-2)^2</code>.</p>
+
+<h3>Más számrendszerek</h3>
+<pre class="crt"><b>PRINT &amp;HFF</b>
+ 255
+Ok
+<b>PRINT &amp;B1010</b>
+ 10
+Ok
+<b>PRINT &amp;O17</b>
+ 15
+Ok</pre>
+<div class="doboz elter">
+  <span class="fej">Bővítés</span>
+  <div class="test"><p>A <code>&amp;H</code> (tizenhatos) és az</div>
+</div>
+<code>&amp;O</code> (nyolcas) korhű. A <code>&amp;B</code> (kettes)
+<strong>bővítés</strong> — a korabeli BASIC nem ismerte.</p>
+
+<h3>Függvények</h3>
+<pre class="crt"><b>PRINT SQR(144)</b>
+ 12
+Ok
+<b>PRINT ABS(-7)</b>
+ 7
+Ok
+<b>PRINT INT(3.9)</b>
+ 3
+Ok</pre>
+<pre class="crt"><b>PRINT SIN(0)</b>
+ 0
+Ok
+<b>PRINT PI</b>
+ 3.141593
+Ok</pre>
+<p>Van még: <code>SGN</code> <code>FIX</code> <code>COS</code> <code>TAN</code>
+<code>ATN</code> <code>EXP</code> <code>LOG</code>. A <code>LOG</code>
+<strong>természetes alapú</strong> (ln), ahogy a korabeli BASIC-ben. A
+szögek <strong>radiánban</strong> mennek.</p>
+
+</section>
+<!-- =================== 4 =================== -->
+<section id="f4" aria-labelledby="h4">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h4">Változók</h2>
+
+<p class="bevezeto">A gépnek <strong>26 számos rekesze</strong> van:
+<code>A</code>-tól <code>Z</code>-ig. Egy betű, egy szám.</p>
+<pre class="crt"><b>A = 12</b>
+<b>B = 30</b>
+<b>PRINT A + B</b>
+ 42
+Ok</pre>
+<p>A <code>LET</code> is írható elé, de nem kötelező:</p>
+<pre class="crt"><b>LET X = 5</b>
+<b>PRINT X * X</b>
+ 25
+Ok</pre>
+<div class="doboz nincs">
+  <span class="fej">Ami nincs</span>
+  <div class="test"><p>Hosszabb változónév (<code>SZAM</code>,</div>
+</div>
+<code>A1</code>) <strong>nincs</strong>, és a gép ezt ki is mondja:
+<code>SYNTAX ERROR</code>. Tömb (<code>DIM</code>) sincs.</p>
+
+</section>
+<!-- =================== 5 =================== -->
+<section id="f5" aria-labelledby="h5">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h5">Szövegek</h2>
+
+<p class="bevezeto">A szöveges változó neve <code>$</code>-ra végződik:
+<code>A$</code>-tól <code>Z$</code>-ig. Egy szöveg legfeljebb
+<strong>40 karakter</strong>.</p>
+<pre class="crt"><b>A$ = "BAROQUE"</b>
+<b>PRINT A$</b>
+BAROQUE
+Ok</pre>
+
+<h3>Az <code>A</code> és az <code>A$</code> két külön rekesz</h3>
+<pre class="crt"><b>A = 7</b>
+<b>A$ = "HET"</b>
+<b>PRINT A</b>
+ 7
+Ok
+<b>PRINT A$</b>
+HET
+Ok</pre>
+<div class="doboz jo">
+  <span class="fej">Ez nem hiba, hanem a nyelv lényege</span>
+  <div class="test"><p>A <code>$</code> nem dísz:</div>
+</div>
+<strong>másik</strong> változót jelöl. Az <code>A</code> és az <code>A$</code>
+egymástól teljesen függetlenek.</p>
+
+<h3>Összefűzés</h3>
+<pre class="crt"><b>N$ = "PETER"</b>
+<b>PRINT "SZIA, " + N$ + "!"</b>
+SZIA, PETER!
+Ok</pre>
+
+<h3>Darabolás</h3>
+<pre class="crt"><b>PRINT LEFT$("BAROQUE",3)</b>
+BAR
+Ok
+<b>PRINT RIGHT$("BAROQUE",3)</b>
+QUE
+Ok
+<b>PRINT MID$("BAROQUE",2,4)</b>
+AROQ
+Ok</pre>
+<div class="doboz vigyazz">
+  <span class="fej">A <code>MID$</code> egytől indexel</span>
+  <div class="test"><p>A</div>
+</div>
+<code>MID$("BAROQUE",2,4)</code> a <strong>2.</strong> karaktertől ad
+4 darabot. A korabeli BASIC egytől számolt, nem nullától.</p>
+
+<h3>Szám és szöveg között</h3>
+<pre class="crt"><b>PRINT CHR$(65)</b>
+A
+Ok
+<b>PRINT "N=" + STR$(42)</b>
+N= 42
+Ok</pre>
+<p>A <code>CHR$(n)</code> kódból karaktert csinál, a <code>STR$(n)</code>
+számból szöveget.</p>
+<div class="doboz nincs">
+  <span class="fej">Ami még nincs</span>
+  <div class="test"><p><code>LEN</code>, <code>VAL</code> és</div>
+</div>
+<code>ASC</code> <strong>még nincs</strong> — ezek a következő körben jönnek.
+Addig a <code>STR$</code> és a <code>CHR$</code> az átjáró a két világ között.</p>
+
+</section>
+<!-- =================== 6 =================== -->
+<section id="f6" aria-labelledby="h6">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h6">Döntés</h2>
+
+<p class="bevezeto">Az <code>IF … THEN</code> a nyelv legfontosabb szerkezete.
+Ha a feltétel igaz, a <code>THEN</code> utáni rész lefut; ha hamis, a sor
+<strong>maradéka kimarad</strong>.</p>
+<pre class="crt"><b>NEW</b>
+<b>10 A = 5</b>
+<b>20 IF A &gt; 3 THEN PRINT "NAGYOBB"</b>
+<b>30 IF A &gt; 100 THEN PRINT "EZ NEM LATSZIK"</b>
+<b>RUN</b>
+NAGYOBB
+Ok</pre>
+
+<h3>Szöveggel is</h3>
+<pre class="crt"><b>NEW</b>
+<b>10 V$ = "IGEN"</b>
+<b>20 IF V$ = "IGEN" THEN PRINT "RENDBEN"</b>
+<b>30 IF V$ &lt;&gt; "NEM" THEN PRINT "TENYLEG"</b>
+<b>RUN</b>
+RENDBEN
+TENYLEG
+Ok</pre>
+<p>Összehasonlítani lehet <code>=</code> <code>&lt;&gt;</code> <code>&lt;</code>
+<code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code> jelekkel. Szövegnél a
+sorrend <strong>ábécé szerinti</strong>.</p>
+
+<h3>Ugrás</h3>
+<p>Ha a <code>THEN</code> után puszta <strong>szám</strong> áll, az ugrást
+jelent — ez korhű rövidítés a <code>GOTO</code>-ra:</p>
+<pre class="crt"><b>NEW</b>
+<b>10 A = 1</b>
+<b>20 PRINT A</b>
+<b>30 A = A + 1</b>
+<b>40 IF A &lt; 4 THEN 20</b>
+<b>50 PRINT "VEGE"</b>
+<b>RUN</b>
+ 1
+ 2
+ 3
+VEGE
+Ok</pre>
+<div class="doboz vigyazz">
+  <span class="fej">Végtelen ciklus</span>
+  <div class="test"><p>Egy <code>10 GOTO 10</code> sosem állna meg.</div>
+</div>
+A gép <strong>200&nbsp;000 utasítás</strong> után magától megáll, és kiírja:
+<code>TOO MANY STATEMENTS - STOPPED</code>. A <code>^C</code> bármikor
+megszakítja a futást.</p>
+
+</section>
+<!-- =================== 7 =================== -->
+<section id="f7" aria-labelledby="h7">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h7">Ismétlés</h2>
+
+<p class="bevezeto">A <code>FOR … NEXT</code> megszámolja, hányszor fusson le
+valami.</p>
+<pre class="crt"><b>NEW</b>
+<b>10 FOR I = 1 TO 5</b>
+<b>20 PRINT I;</b>
+<b>30 NEXT I</b>
+<b>RUN</b>
+ 1  2  3  4  5 Ok</pre>
+<p>A <code>20 PRINT I;</code> sorvégi pontosvesszője miatt marad minden egy
+sorban.</p>
+
+<h3>Lépésköz</h3>
+<pre class="crt"><b>NEW</b>
+<b>10 FOR I = 10 TO 1 STEP -3</b>
+<b>20 PRINT I;</b>
+<b>30 NEXT I</b>
+<b>RUN</b>
+ 10  7  4  1 Ok</pre>
+<p>A <code>STEP</code> lehet negatív is — akkor visszafelé számol.</p>
+
+<h3>Egymásba ágyazva</h3>
+<pre class="crt"><b>NEW</b>
+<b>10 FOR S = 1 TO 3</b>
+<b>20 FOR O = 1 TO 3</b>
+<b>30 PRINT S*O;</b>
+<b>40 NEXT O</b>
+<b>50 PRINT</b>
+<b>60 NEXT S</b>
+<b>RUN</b>
+ 1  2  3
+ 2  4  6
+ 3  6  9
+Ok</pre>
+<div class="doboz jo">
+  <span class="fej">A <code>NEXT</code> megnevezheti a változót</span>
+  <div class="test"><p>A <code>NEXT O</code></div>
+</div>
+alak kimondja, melyik ciklust zárja. Nem kötelező, de hosszú programban ez
+menti meg az embert. Egyszerre <strong>8 ciklus</strong> lehet nyitva.</p>
+<div class="doboz elter">
+  <span class="fej">A ciklus belépéskor is vizsgál</span>
+  <div class="test"><p>Egy <code>FOR I=1 TO 0</code></div>
+</div>
+<strong>egyszer sem</strong> fut le. A gép átugrik a <code>NEXT</code> utánra.</p>
+
+</section>
+<!-- =================== 8 =================== -->
+<section id="f8" aria-labelledby="h8">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h8">Alprogramok</h2>
+
+<p class="bevezeto">A <code>GOSUB</code> elugrik egy sorra, és a
+<code>RETURN</code> visszahozza oda, ahonnan jött. Ettől lesz egy program
+olvasható.</p>
+<pre class="crt"><b>NEW</b>
+<b>10 PRINT "ELOTTE"</b>
+<b>20 GOSUB 100</b>
+<b>30 PRINT "UTANA"</b>
+<b>40 END</b>
+<b>100 PRINT "  AZ ALPROGRAMBAN"</b>
+<b>110 RETURN</b>
+<b>RUN</b>
+ELOTTE
+  AZ ALPROGRAMBAN
+UTANA
+Ok</pre>
+<div class="doboz vigyazz">
+  <span class="fej">Az <code>END</code> nem dísz</span>
+  <div class="test"><p>A <code>40 END</code> nélkül a</div>
+</div>
+program „belesétálna" az alprogramba, és a <code>RETURN</code> panaszkodna:
+<code>RETURN WITHOUT GOSUB</code>. Az alprogramokat mindig a program
+<strong>vége után</strong> tedd.</p>
+<p>Egyszerre <strong>12 GOSUB</strong> lehet nyitva.</p>
+
+</section>
+<!-- =================== 9 =================== -->
+<section id="f9" aria-labelledby="h9">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h9">Kérdezés</h2>
+
+<p class="bevezeto">Az <code>INPUT</code> megállítja a programot, és megvárja,
+amíg beírsz valamit. Ettől lesz a programból <em>beszélgetés</em>.</p>
+<pre class="crt"><b>NEW</b>
+<b>10 INPUT "HANY EVES VAGY"; K</b>
+<b>20 PRINT "TIZ EV MULVA "; K + 10</b>
+<b>RUN</b>
+HANY EVES VAGY?
+<b>34</b>
+TIZ EV MULVA  44
+Ok</pre>
+<p>A kérdés után a gép kiteszi a <code>?</code> jelet. Ha nem kérsz kérdést,
+csak a kérdőjel jelenik meg:</p>
+<pre class="crt"><b>NEW</b>
+<b>10 INPUT A, B</b>
+<b>20 PRINT A + B</b>
+<b>RUN</b>
+?
+<b>12,30</b>
+ 42
+Ok</pre>
+<p>Több változót vesszővel elválasztva lehet kérni — a válaszban is vessző
+választ el.</p>
+
+<h3>Szöveget is</h3>
+<pre class="crt"><b>NEW</b>
+<b>10 INPUT "HOGY HIVNAK"; N$</b>
+<b>20 PRINT "SZIA, " + N$ + "!"</b>
+<b>RUN</b>
+HOGY HIVNAK?
+<b>PETER</b>
+SZIA, PETER!
+Ok</pre>
+
+<h3>Ha rosszat írsz be</h3>
+<pre class="crt"><b>NEW</b>
+<b>10 INPUT A</b>
+<b>20 PRINT A * 100</b>
+<b>RUN</b>
+?
+<b>ALMA</b>
+?REDO FROM START
+?
+<b>3</b>
+ 300
+Ok</pre>
+<div class="doboz jo">
+  <span class="fej">A program nem áll le</span>
+  <div class="test"><p>Ha számot kér és betűt kap, a gép kiírja:</div>
+</div>
+<code>?REDO FROM START</code> — és <strong>újra kérdez</strong>. A korabeli
+gépek pontosan így viselkedtek.</p>
+<div class="doboz elter">
+  <span class="fej">A vessző idézőjelek között</span>
+  <div class="test"><p>Ha a válaszodban <em>kell</em> a</div>
+</div>
+vessző, tedd idézőjelbe: <code>"KOVACS, JANOS"</code>. Az üres válasz
+(csak Enter) számnál <code>0</code>, szövegnél üres szöveg.</p>
+<div class="doboz vigyazz">
+  <span class="fej">Csak programból</span>
+  <div class="test"><p>Az <code>INPUT</code> sorszám nélkül nem</div>
+</div>
+használható — <code>ILLEGAL DIRECT</code>. Ez korhű: nincs értelme
+megkérdezni valamit, ha nincs program, ami felhasználná.</p>
+
+</section>
+<!-- =================== 10 =================== -->
+<section id="f10" aria-labelledby="h10">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h10">A lemez</h2>
+
+<p class="bevezeto">Amit írsz, azt el is lehet tenni. A kiterjesztés alapból
+<strong><code>.BAS</code></strong>.</p>
+<pre class="crt"><b>NEW</b>
+<b>10 A$ = "BAROQUE"</b>
+<b>20 FOR I = 1 TO 3</b>
+<b>30 PRINT I; A$</b>
+<b>40 NEXT I</b>
+<b>SAVE "PELDA"</b>
+SAVED PELDA.BAS  4 LINES  65 BYTES
+Ok</pre>
+<p>Az idézőjel <strong>elhagyható</strong>: a <code>SAVE PELDA</code> is jó.</p>
+
+<h3>Visszatöltés</h3>
+<pre class="crt"><b>NEW</b>
+<b>LIST</b>
+<b>LOAD "PELDA"</b>
+LOADED PELDA.BAS  4 LINES
+Ok
+<b>RUN</b>
+ 1 BAROQUE
+ 2 BAROQUE
+ 3 BAROQUE
+Ok</pre>
+<div class="doboz vigyazz">
+  <span class="fej">A <code>LOAD</code> töröl</span>
+  <div class="test"><p>A betöltés előtt a gép</div>
+</div>
+<strong>kidobja</strong> a tárban lévő programot és a változókat — ahogy a
+korabeli gépeken. Ha a régi kell még, mentsd el előbb.</p>
+
+<h3>Mi van a lemezen</h3>
+<pre class="crt"><b>FILES</b>
+\
+PELDA.BAS
+1 FILE(S)   10199040 BYTES FREE ON DISK
+Ok</pre>
+<p>A <code>FILES</code> alapból a <code>*.BAS</code> fájlokat mutatja. Adhatsz
+neki mintát is: <code>FILES "*.*"</code>.</p>
+
+<h3>Törlés</h3>
+<pre class="crt"><b>KILL "PELDA"</b>
+DELETED PELDA.BAS
+Ok
+<b>FILES</b>
+\
+NO FILES
+Ok</pre>
+
+</section>
+<!-- =================== 11 =================== -->
+<section id="f11" aria-labelledby="h11">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h11">A lemez a DOS felől</h2>
+
+<p class="bevezeto">Itt derül ki, miért érdemes egy BASIC-nek olyan gépen
+laknia, amelyiknek van DOS-a.</p>
+
+<p>A BBASIC a programot <strong>sima szövegként</strong> menti — nem tömörítve.
+Vagyis a DOS minden fájlkezelő parancsa <em>érti</em> a BASIC-programodat.
+Mentsünk el egyet, lépjünk ki, és nézzük meg a parancssorból:</p>
+<pre class="crt"><b>BBASIC</b>
+BAROQUE BASIC 1.1
+49152 BYTES FREE
+Ok
+<b>NEW</b>
+<b>10 PRINT "A LEMEZEN SZOVEG VAGYOK"</b>
+<b>20 PRINT "A DOS TYPE-ja elolvas"</b>
+<b>SAVE "OLVASD"</b>
+SAVED OLVASD.BAS  2 LINES  70 BYTES
+Ok
+<b>SYSTEM</b>
+C:\&gt;</pre>
+<pre class="crt"><b>TYPE OLVASD.BAS</b>
+10 PRINT "A LEMEZEN SZOVEG VAGYOK"
+20 PRINT "A DOS TYPE-ja elolvas"
+C:\&gt;</pre>
+<p>A <code>DIR</code> is látja, méretestül:</p>
+<pre class="crt"><b>DIR *.BAS</b>
+ VOLUME IN DRIVE C IS LUCY DISK
+ DIRECTORY OF C:\
+OLVASD   BAS         70  02-01-80  01:17
+        1 FILE(S)           70 BYTES
+        0 DIR(S)      10199040 BYTES FREE
+C:\&gt;</pre>
+<div class="doboz jo">
+  <span class="fej">Amit ez megnyit</span>
+  <div class="test"><p>A <code>COPY CON JATEK.BAS</code> paranccsal</div>
+</div>
+<strong>szövegszerkesztő nélkül</strong> írhatsz BASIC-programot. A
+<code>COPY</code> másolja, a <code>REN</code> átnevezi, a <code>CHKDSK</code>
+számolja. Egy program ugyanolyan fájl, mint bármi más.</p>
+<div class="doboz elter">
+  <span class="fej">Eltérés a korabelitől</span>
+  <div class="test"><p>A GW-BASIC alapból <strong>tömörítve</strong></div>
+</div>
+mentett, és csak a <code>SAVE "X",A</code> adott szöveget. Nálunk mindig szöveg
+van. Ez <strong>szándékos</strong>: egy pár bájt megtakarításnál többet ér, hogy
+a DOS is olvassa.</p>
+
+</section>
+<!-- =================== 12 =================== -->
+<section id="f12" aria-labelledby="h12">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h12">Hibaüzenetek</h2>
+
+<p class="bevezeto">A gép <strong>kimondja</strong>, ha baj van — nem nyeli el.
+Az üzenetek angolul jönnek, ahogy a korabeli gépeken.</p>
+<pre class="crt"><b>PRINT 2 +</b>
+SYNTAX ERROR
+Ok</pre>
+<pre class="crt"><b>A$ = 5</b>
+TYPE MISMATCH
+Ok</pre>
+<pre class="crt"><b>RETURN</b>
+RETURN WITHOUT GOSUB
+Ok</pre>
+<pre class="crt"><b>NEW</b>
+<b>10 GOTO 999</b>
+<b>RUN</b>
+UNDEFINED LINE NUMBER IN 10
+Ok</pre>
+<pre class="crt"><b>LOAD "NINCSILY"</b>
+FILE NOT FOUND
+Ok</pre>
+<p>Programból futva a gép az üzenet mögé odaírja, <strong>melyik sorban</strong>
+történt: <code>SYNTAX ERROR IN 40</code>.</p>
+
+<h3>Mennyi hely maradt</h3>
+<pre class="crt"><b>NEW</b>
+<b>FRE</b>
+ 49152
+Ok</pre>
+<p>A <code>FRE</code> a program számára maradt bájtokat mondja meg. A teljes
+tár <strong>49&nbsp;152 bájt</strong> — ennyi fért egy korabeli 48K-s gépbe.</p>
+<div class="keret"><table>
+<thead><tr>
+<th>Üzenet</th>
+<th>Mit jelent</th>
+</tr></thead><tbody>
+<tr><td><code>SYNTAX ERROR</code></td><td>A gép nem érti a sort. Elgépelés, hiányzó zárójel vagy idézőjel.</td></tr>
+<tr><td><code>TYPE MISMATCH</code></td><td>Számot adtál szövegnek vagy fordítva. <code>A$ = 5</code></td></tr>
+<tr><td><code>UNDEFINED LINE NUMBER</code></td><td>A <code>GOTO</code> vagy <code>GOSUB</code> olyan sorra ugrana, ami nincs.</td></tr>
+<tr><td><code>RETURN WITHOUT GOSUB</code></td><td>Egy <code>RETURN</code> futott le anélkül, hogy <code>GOSUB</code> hívta volna.</td></tr>
+<tr><td><code>NEXT WITHOUT FOR</code></td><td>Egy <code>NEXT</code>-hez nem tartozik nyitott <code>FOR</code>.</td></tr>
+<tr><td><code>FOR WITHOUT NEXT</code></td><td>Egy <code>FOR</code>-hoz nincs <code>NEXT</code>.</td></tr>
+<tr><td><code>ILLEGAL DIRECT</code></td><td>Ez a parancs csak programból használható (<code>FOR</code>, <code>GOSUB</code>, <code>INPUT</code>).</td></tr>
+<tr><td><code>OUT OF MEMORY</code></td><td>Elfogyott a 49&nbsp;152 bájt, vagy túl mély a ciklus-/alprogram-verem.</td></tr>
+<tr><td><code>STRING TOO LONG</code></td><td>A szöveg hosszabb 40 karakternél.</td></tr>
+<tr><td><code>ILLEGAL FUNCTION CALL</code></td><td>Rossz argumentum — pl. <code>SQR(-1)</code> vagy <code>MID$(A$,0)</code>.</td></tr>
+<tr><td><code>FILE NOT FOUND</code></td><td>A <code>LOAD</code> vagy a <code>KILL</code> nem találja a fájlt.</td></tr>
+<tr><td><code>?REDO FROM START</code></td><td>Az <code>INPUT</code> számot kért, és nem számot kapott. Újra kérdez.</td></tr>
+<tr><td><code>TOO MANY STATEMENTS - STOPPED</code></td><td>A program 200&nbsp;000 utasítás után sem állt meg. Valószínűleg végtelen ciklus.</td></tr>
+</tbody></table></div>
+
+</section>
+<!-- =================== 13 =================== -->
+<section id="f13" aria-labelledby="h13">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h13">Ami nincs benne</h2>
+
+<p class="bevezeto">Ez a lista <strong>szándékosan</strong> van itt. Egy
+kézikönyv akkor használható, ha azt is megmondja, mit ne keress benne.</p>
+<div class="keret"><table>
+<thead><tr>
+<th>Ami nincs</th>
+<th>Helyette</th>
+</tr></thead><tbody>
+<tr><td><code>DIM</code>, tömbök</td><td>A 26 változó és a lemez.</td></tr>
+<tr><td>Hosszú változónév (<code>SZAM</code>, <code>A1</code>)</td><td>Egy betű: <code>A</code>–<code>Z</code>, <code>A$</code>–<code>Z$</code>.</td></tr>
+<tr><td><code>LEN</code>, <code>VAL</code>, <code>ASC</code></td><td>⏳ A következő körben jönnek.</td></tr>
+<tr><td><code>DATA</code> / <code>READ</code> / <code>RESTORE</code></td><td><code>INPUT</code> vagy értékadás.</td></tr>
+<tr><td><code>WHILE</code> / <code>WEND</code></td><td><code>IF … THEN</code> + <code>GOTO</code>.</td></tr>
+<tr><td><code>DEF FN</code>, saját függvény</td><td><code>GOSUB</code>.</td></tr>
+<tr><td><code>ON … GOTO</code></td><td>Több <code>IF</code>.</td></tr>
+<tr><td>Grafika, hang, <code>POKE</code>/<code>PEEK</code></td><td>—</td></tr>
+<tr><td>Több utasítás egy sorban (<code>:</code>)</td><td>Külön sorok.</td></tr>
+<tr><td>Tömörített mentés</td><td>Mindig szöveg — és ezt a DOS is olvassa.</td></tr>
+</tbody></table></div>
+<div class="doboz jo">
+  <span class="fej">A 48 egy ígéret</span>
+  <div class="test"><p>A gép neve nem véletlen. Amit ide írsz,</div>
+</div>
+<strong>elfér egy valódi 48K-s gépen</strong> is. A korlát nem hiányosság,
+hanem a tervezés része.</p>
+
+</section>
+<!-- =================== 14 =================== -->
+<section id="f14" aria-labelledby="h14">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h14">Gyorskártya</h2>
+
+<p class="bevezeto">Minden, amit a BBASIC tud — egy lapon.</p>
+<div class="keret"><table>
+<thead><tr>
+<th>Parancs</th>
+<th>Mit csinál</th>
+</tr></thead><tbody>
+<tr><td><code>PRINT</code> · <code>?</code></td><td>Kiír. <code>;</code> egymás után, <code>,</code> oszlopba.</td></tr>
+<tr><td><code>LET A = …</code></td><td>Értékadás. A <code>LET</code> elhagyható.</td></tr>
+<tr><td><code>A$ = "…"</code></td><td>Szöveges értékadás.</td></tr>
+<tr><td><code>IF … THEN …</code></td><td>Feltétel. Szám után ugrás.</td></tr>
+<tr><td><code>GOTO n</code></td><td>Ugrás a sorra.</td></tr>
+<tr><td><code>FOR v = a TO b [STEP c]</code> … <code>NEXT [v]</code></td><td>Ismétlés. 8 mélységig.</td></tr>
+<tr><td><code>GOSUB n</code> … <code>RETURN</code></td><td>Alprogram. 12 mélységig.</td></tr>
+<tr><td><code>INPUT ["kérdés";] v [, v…]</code></td><td>Kérdez és vár. Csak programból.</td></tr>
+<tr><td><code>REM</code> · <code>'</code></td><td>Megjegyzés.</td></tr>
+<tr><td><code>END</code> · <code>STOP</code></td><td>Megállás.</td></tr>
+<tr><td><code>RUN</code></td><td>Futtatás. Törli a változókat.</td></tr>
+<tr><td><code>LIST</code></td><td>A program kiírása.</td></tr>
+<tr><td><code>NEW</code> · <code>CLEAR</code></td><td>Program törlése · változók törlése.</td></tr>
+<tr><td><code>FRE</code></td><td>Mennyi hely maradt.</td></tr>
+<tr><td><code>SAVE "név"</code> · <code>LOAD "név"</code></td><td>Mentés · betöltés (<code>.BAS</code>).</td></tr>
+<tr><td><code>FILES ["minta"]</code> · <code>KILL "név"</code></td><td>Lista · törlés.</td></tr>
+<tr><td><code>SYSTEM</code> · <code>BYE</code></td><td>Vissza a DOS-ba.</td></tr>
+<tr><td><code>^C</code></td><td>Futás megszakítása.</td></tr>
+</tbody></table></div>
+
+</section>
+</main>
+<footer>
+  <div class="belso">
+    <p><strong>BAROQUE-DOS Kézikönyv</strong> &middot; a 0.2 verzióhoz &middot;
+    Creative Pearls, 2026.</p>
+    <p>Minden képernyőpélda ebben a könyvben a gép valódi válasza, a
+    <code>2026-09-26</code> napi állapotból. A hálózat neve és a gép címe
+    szándékosan helyőrzővel szerepel.</p>
+    <p>A BAROQUE&nbsp;BASIC külön kézikönyvet kap. Ez a lap
+    <strong>ugyanezen a címen frissül</strong>, ahogy a gép okosodik.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var gyoker = document.documentElement;
+
+  /* ---------- fenypor ---------- */
+  var fGombok = Array.prototype.slice.call(
+    document.querySelectorAll('button[data-fenypor]'));
+
+  function fenyporAllit(nev, ments) {
+    gyoker.setAttribute('data-fenypor', nev);
+    fGombok.forEach(function (g) {
+      g.setAttribute('aria-pressed', g.getAttribute('data-fenypor') === nev ? 'true' : 'false');
+    });
+    if (ments) { try { localStorage.setItem('b48-fenypor', nev); } catch (e) {} }
+  }
+
+  fGombok.forEach(function (g) {
+    g.addEventListener('click', function () {
+      fenyporAllit(g.getAttribute('data-fenypor'), true);
+    });
+  });
+
+  var mentettF = null;
+  try { mentettF = localStorage.getItem('b48-fenypor'); } catch (e) {}
+  if (mentettF === 'amber' || mentettF === 'green' || mentettF === 'paper') {
+    fenyporAllit(mentettF, false);
+  } else {
+    /* Nincs mentett valasztas: a gazda temaja / a rendszer donti el.
+       A gombok jelzese kovesse, amit a lap tenylegesen mutat. */
+    gyoker.removeAttribute('data-fenypor');
+    var vilagos = gyoker.getAttribute('data-theme') === 'light' ||
+      (gyoker.getAttribute('data-theme') !== 'dark' &&
+       window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+    var kezdo = vilagos ? 'paper' : 'amber';
+    fGombok.forEach(function (g) {
+      g.setAttribute('aria-pressed', g.getAttribute('data-fenypor') === kezdo ? 'true' : 'false');
+    });
+  }
+
+  /* ---------- betumeret ---------- */
+  var MERETEK = [17, 19, 22, 26, 30];
+  var mIdx = 1;
+  var kijelzo = document.getElementById('meret-kijelzo');
+
+  var keret = document.querySelector('.keret');
+
+  function meretAllit(i, ments) {
+    mIdx = Math.max(0, Math.min(MERETEK.length - 1, i));
+    gyoker.style.setProperty('--alap', MERETEK[mIdx] + 'px');
+    kijelzo.textContent = MERETEK[mIdx] + ' px';
+    document.getElementById('kisebb').disabled = (mIdx === 0);
+    document.getElementById('nagyobb').disabled = (mIdx === MERETEK.length - 1);
+    /* ⭐ A ket legnagyobb meretnel a ket hasab mar nem fer el egymas mellett:
+       a lap magatol egy hasabra vált, es a tabla a szoveg fole kerul. */
+    keret.classList.toggle('egyhasab', MERETEK[mIdx] >= 26);
+    if (ments) { try { localStorage.setItem('b48-meret', String(mIdx)); } catch (e) {} }
+  }
+
+  document.getElementById('kisebb').addEventListener('click', function () { meretAllit(mIdx - 1, true); });
+  document.getElementById('nagyobb').addEventListener('click', function () { meretAllit(mIdx + 1, true); });
+
+  var mentettM = null;
+  try { mentettM = localStorage.getItem('b48-meret'); } catch (e) {}
+  meretAllit(mentettM === null ? 1 : parseInt(mentettM, 10) || 1, false);
+
+  /* ---------- a mutatotabla szuroje ---------- */
+  var szuro = document.getElementById('szuro');
+  var talalat = document.getElementById('talalat');
+  var tetelek = Array.prototype.slice.call(document.querySelectorAll('.mutato ul li'));
+  var fejezetek = Array.prototype.slice.call(document.querySelectorAll('.mutato > ol > li'));
+
+  function ekezetlen(s) {
+    return s.toLowerCase()
+      .replace(/[áàâä]/g, 'a').replace(/[éèêë]/g, 'e').replace(/[íìîï]/g, 'i')
+      .replace(/[óòôöőõ]/g, 'o').replace(/[úùûüű]/g, 'u');
+  }
+
+  szuro.addEventListener('input', function () {
+    var q = ekezetlen(szuro.value.trim());
+    if (!q) {
+      tetelek.forEach(function (li) { li.hidden = false; });
+      fejezetek.forEach(function (li) { li.hidden = false; });
+      talalat.innerHTML = '&nbsp;';
+      return;
+    }
+    var db = 0;
+    tetelek.forEach(function (li) {
+      var egyezik = ekezetlen(li.textContent).indexOf(q) !== -1;
+      li.hidden = !egyezik;
+      if (egyezik) db++;
+    });
+    fejezetek.forEach(function (li) {
+      var cim = li.querySelector('.fejezet');
+      var cimEgyezik = cim && ekezetlen(cim.textContent).indexOf(q) !== -1;
+      var vanGyerek = li.querySelector('ul li:not([hidden])');
+      li.hidden = !(cimEgyezik || vanGyerek);
+    });
+    talalat.textContent = db + (db === 1 ? ' parancs' : ' parancs');
+  });
+
+  /* ---------- hol jarunk (gorgetes-jelzo) ---------- */
+  var linkek = {};
+  Array.prototype.slice.call(document.querySelectorAll('.mutato a[href^="#"]'))
+    .forEach(function (a) { linkek[a.getAttribute('href').slice(1)] = a; });
+
+  var celok = Array.prototype.slice.call(
+    document.querySelectorAll('section[id], article.parancs[id]'))
+    .filter(function (el) { return linkek[el.id]; });
+
+  if ('IntersectionObserver' in window && celok.length) {
+    var lathato = {};
+    var figyelo = new IntersectionObserver(function (bejegyzesek) {
+      bejegyzesek.forEach(function (b) { lathato[b.target.id] = b.isIntersecting; });
+      var also = null;
+      for (var i = 0; i < celok.length; i++) {
+        if (lathato[celok[i].id]) { also = celok[i].id; break; }
+      }
+      for (var k in linkek) {
+        if (Object.prototype.hasOwnProperty.call(linkek, k)) {
+          if (k === also) { linkek[k].setAttribute('aria-current', 'true'); }
+          else { linkek[k].removeAttribute('aria-current'); }
+        }
+      }
+    }, { rootMargin: '-8% 0px -70% 0px', threshold: 0 });
+    celok.forEach(function (el) { figyelo.observe(el); });
+  }
+})();
+</script>

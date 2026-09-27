@@ -128,6 +128,11 @@ figcaption{font-size:.8rem; color:var(--dim); margin-top:9px; line-height:1.55}
 
 footer{margin-top:clamp(48px,9vw,76px); padding-top:22px; border-top:1px solid var(--edge);
        font-size:.8rem; color:var(--dim); line-height:1.7}
+
+/* ⭐ 2026-09-27: a ket kezikonyv linkje. Nagy, kattinthato, es a szin
+   SOHA nem az egyetlen jelzes — alahuzas is van rajta. */
+.konyvek{margin:1.1rem 0 1.5rem;font-size:1.08em;line-height:2}
+.konyvek a{font-weight:700;text-decoration:underline;text-underline-offset:.22em}
 </style>
 </head>
 <body>
@@ -209,15 +214,27 @@ READY
   <div data-t="hol">
     <p><strong>Működik, megmérve, a mérőpadon:</strong></p>
     <ul>
+      <li><span>a saját <strong>DOS-szerű parancssor</strong> &mdash; <code>DIR</code>,
+        <code>COPY</code>, <code>TYPE</code>, <code>CHKDSK</code>, <code>FORMAT</code>,
+        és egy valódi 9,9&nbsp;MB-os <code>C:</code> meghajtó</span></li>
+      <li><span>a <strong>BAROQUE BASIC</strong> &mdash; <code>PRINT</code>,
+        <code>IF</code>, <code>FOR/NEXT</code>, <code>GOSUB</code>, <code>INPUT</code>,
+        szöveges változók, szövegfüggvények</span></li>
+      <li><span>programok <strong>mentése lemezre</strong> &mdash; és sima szövegként,
+        úgyhogy a parancssor <code>TYPE</code>-ja is elolvassa őket</span></li>
       <li><span>az indulási képernyő, igazi 7 colos panelon</span></li>
       <li><span>három fénypor-mód, kapcsolhatóan</span></li>
       <li><span>a 48&nbsp;K-s munkaterület, bájtonként ellenőrizve bekapcsoláskor</span></li>
       <li><span>I&sup2;S erősítő a panelon, készen a magnó-hangra</span></li>
     </ul>
+    <p><strong>És két kézikönyv</strong> &mdash; bennük <em>minden</em> képernyősor
+    a gép valódi válasza, egyetlen példa sincs begépelve:</p>
+    <p class="konyvek">
+      <a href="kezikonyv/baroque-dos.html">BAROQUE&#8209;DOS Kézikönyv</a> &nbsp;&middot;&nbsp;
+      <a href="kezikonyv/baroque-basic.html">BBASIC Kézikönyv</a>
+    </p>
     <p><strong>Még nincs meg &mdash; és ez a java:</strong></p>
     <ul class="nem">
-      <li><span>a DOS-szerű héj és a fájlkezelő</span></li>
-      <li><span>a BASIC</span></li>
       <li><span>a magnó-betöltés hangja &mdash; az a kísérlet, ami eldönti a projektet</span></li>
       <li><span>a floppyk, a doboz, a billentyűzet</span></li>
     </ul>
@@ -287,14 +304,25 @@ var SZOVEG = {
       + '<figcaption>PAPIER &mdash; P4, papierweiß.</figcaption>',
     c_hol: 'Wo wir stehen',
     hol: '<p><strong>Läuft, gemessen, auf der Werkbank:</strong></p><ul>'
+      + '<li><span>die eigene <strong>DOS-artige Kommandozeile</strong> &mdash; <code>DIR</code>, '
+      + '<code>COPY</code>, <code>TYPE</code>, <code>CHKDSK</code>, <code>FORMAT</code>, '
+      + 'und ein echtes 9,9&nbsp;MB grosses <code>C:</code>-Laufwerk</span></li>'
+      + '<li><span><strong>BAROQUE BASIC</strong> &mdash; <code>PRINT</code>, <code>IF</code>, '
+      + '<code>FOR/NEXT</code>, <code>GOSUB</code>, <code>INPUT</code>, Zeichenketten-Variablen</span></li>'
+      + '<li><span>Programme <strong>auf Diskette speichern</strong> &mdash; als reiner Text, '
+      + 'den auch das <code>TYPE</code> der Kommandozeile liest</span></li>'
       + '<li><span>der Startbildschirm auf einem echten 7-Zoll-Panel</span></li>'
       + '<li><span>drei Leuchtstoff-Modi, umschaltbar</span></li>'
       + '<li><span>der 48-K-Arbeitsbereich, beim Einschalten Byte für Byte geprüft</span></li>'
       + '<li><span>ein I&sup2;S-Verstärker auf der Platine, bereit für den Kassettenton</span></li>'
-      + '</ul><p><strong>Noch nicht da &mdash; und das ist das meiste davon:</strong></p>'
+      + '</ul>'
+      + '<p><strong>Und zwei Handbücher</strong> &mdash; darin ist <em>jede</em> Bildschirmzeile '
+      + 'die echte Antwort des Geräts, kein einziges Beispiel ist abgetippt:</p>'
+      + '<p class="konyvek">'
+      + '<a href="kezikonyv/baroque-dos.html">BAROQUE&#8209;DOS Handbuch</a> &nbsp;&middot;&nbsp;'
+      + '<a href="kezikonyv/baroque-basic.html">BBASIC Handbuch</a></p>'
+      + '<p><strong>Noch nicht da &mdash; und das ist das meiste davon:</strong></p>'
       + '<ul class="nem">'
-      + '<li><span>die DOS-artige Kommandozeile und der Dateimanager</span></li>'
-      + '<li><span>BASIC</span></li>'
       + '<li><span>der Kassetten-Ladeton &mdash; das Experiment, das über das Projekt entscheidet</span></li>'
       + '<li><span>die Disketten, das Gehäuse, die Tastatur</span></li></ul>'
       + '<p class="halk">Diese Seite gibt es, weil hundert Menschen sagten, sie wollten eines, '
@@ -348,14 +376,25 @@ var SZOVEG = {
       + '<figcaption>PAPER &mdash; P4, paper white.</figcaption>',
     c_hol: 'Where we are',
     hol: '<p><strong>Working, measured, on the bench:</strong></p><ul>'
+      + '<li><span>its own <strong>DOS-like command line</strong> &mdash; <code>DIR</code>, '
+      + '<code>COPY</code>, <code>TYPE</code>, <code>CHKDSK</code>, <code>FORMAT</code>, '
+      + 'and a real 9.9&nbsp;MB <code>C:</code> drive</span></li>'
+      + '<li><span><strong>BAROQUE BASIC</strong> &mdash; <code>PRINT</code>, <code>IF</code>, '
+      + '<code>FOR/NEXT</code>, <code>GOSUB</code>, <code>INPUT</code>, string variables</span></li>'
+      + '<li><span><strong>saving programs to disk</strong> &mdash; as plain text, so the '
+      + 'command line&rsquo;s <code>TYPE</code> reads them too</span></li>'
       + '<li><span>the boot screen, on a real 7&Prime; panel</span></li>'
       + '<li><span>three phosphor modes, switchable</span></li>'
       + '<li><span>the 48&nbsp;K workspace, verified byte by byte at power-on</span></li>'
       + '<li><span>an I&sup2;S amplifier on the board, ready for the tape sound</span></li>'
-      + '</ul><p><strong>Not there yet &mdash; and that is most of it:</strong></p>'
+      + '</ul>'
+      + '<p><strong>And two manuals</strong> &mdash; in them <em>every</em> screen line is the '
+      + 'machine&rsquo;s real answer; not a single example was typed in by hand:</p>'
+      + '<p class="konyvek">'
+      + '<a href="kezikonyv/baroque-dos.html">BAROQUE&#8209;DOS Manual</a> &nbsp;&middot;&nbsp;'
+      + '<a href="kezikonyv/baroque-basic.html">BBASIC Manual</a></p>'
+      + '<p><strong>Not there yet &mdash; and that is most of it:</strong></p>'
       + '<ul class="nem">'
-      + '<li><span>the DOS-like shell and the file manager</span></li>'
-      + '<li><span>BASIC</span></li>'
       + '<li><span>the tape-loading sound &mdash; the experiment that decides the project</span></li>'
       + '<li><span>the floppies, the case, the keyboard</span></li></ul>'
       + '<p class="halk">This page exists because a hundred people said they wanted one before a '

@@ -1,0 +1,1868 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<html lang="hu">
+<title>BAROQUE-DOS Kézikönyv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;0,6..96,700;1,6..96,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+/* ===========================================================
+   BAROQUE-DOS KEZIKONYV
+   A harom fenypor (AMBER / GREEN / PAPER) EGYBEN a vilagos-sotet
+   kapcsolo is. A jelolt sorrend szandekos:
+     1. csupasz :root      -> AMBER (a gep alapertelmezese, sotet)
+     2. @media light       -> PAPER, csak ha a nezo NEM valasztott
+     3. [data-theme=...]   -> a gazda-alkalmazas valasztasa
+     4. [data-fenypor=...] -> a NEZO valasztasa, ez ver mindent
+   =========================================================== */
+
+:root{
+  color-scheme: dark;
+  --alap: 19px;
+
+  --hatter:#0A0C10;
+  --panel:#12151C;
+  --panel-be:#0C0F15;
+  --kepernyo:#07090C;
+  --fenypor:#FFB000;
+  --fenypor-halk:#8A6000;
+  --fenypor-feny:#FFD98A;
+  --szoveg:#E6DFD2;
+  --szoveg-halk:#9E9483;
+  --cim:#FFD98A;
+  --rez:#B87333;
+  --rez-fenyes:#E0A063;
+  --rez-arny:#6B421C;
+  --turkiz:#2EC4B6;
+  --vonal:#272C36;
+  --vonal-halk:#1B1F27;
+  --jo:#5FD08A;
+  --vigyaz:#FFB000;
+  --baj:#FF7B6B;
+  --fokusz:#2EC4B6;
+  --sug: 0 0 7px rgba(255,176,0,.40);
+  --plakett: linear-gradient(168deg,#E0A063 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+
+/* 2. A nezo gepe vilagos modban all, es o maga meg nem valasztott */
+@media (prefers-color-scheme: light){
+  :root:not([data-fenypor]):not([data-theme="dark"]){
+    color-scheme: light;
+    --hatter:#E9E3D5;
+    --panel:#F5F0E4;
+    --panel-be:#EDE6D6;
+    --kepernyo:#FBF7EB;
+    --fenypor:#2E2618;
+    --fenypor-halk:#7A6E58;
+    --fenypor-feny:#000000;
+    --szoveg:#241E14;
+    --szoveg-halk:#6A6152;
+    --cim:#7A4A16;
+    --rez:#8A5426;
+    --rez-fenyes:#B87333;
+    --rez-arny:#5C3312;
+    --turkiz:#0E7C72;
+    --vonal:#CFC5AE;
+    --vonal-halk:#DED5C0;
+    --jo:#1F7A45;
+    --vigyaz:#8A5A00;
+    --baj:#A32E1C;
+    --fokusz:#0E7C72;
+    --sug: none;
+    --plakett: linear-gradient(168deg,#D9A167 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+  }
+}
+
+/* 3. A gazda-alkalmazas kifejezett valasztasa (ha a nezo meg nem valasztott) */
+:root[data-theme="light"]:not([data-fenypor]){
+  color-scheme: light;
+  --hatter:#E9E3D5; --panel:#F5F0E4; --panel-be:#EDE6D6; --kepernyo:#FBF7EB;
+  --fenypor:#2E2618; --fenypor-halk:#7A6E58; --fenypor-feny:#000000;
+  --szoveg:#241E14; --szoveg-halk:#6A6152; --cim:#7A4A16;
+  --rez:#8A5426; --rez-fenyes:#B87333; --rez-arny:#5C3312; --turkiz:#0E7C72;
+  --vonal:#CFC5AE; --vonal-halk:#DED5C0;
+  --jo:#1F7A45; --vigyaz:#8A5A00; --baj:#A32E1C; --fokusz:#0E7C72;
+  --sug:none;
+  --plakett: linear-gradient(168deg,#D9A167 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+
+/* 4. A NEZO valasztasa - ez ver mindent */
+:root[data-fenypor="amber"]{
+  color-scheme: dark;
+  --hatter:#0A0C10; --panel:#12151C; --panel-be:#0C0F15; --kepernyo:#07090C;
+  --fenypor:#FFB000; --fenypor-halk:#8A6000; --fenypor-feny:#FFD98A;
+  --szoveg:#E6DFD2; --szoveg-halk:#9E9483; --cim:#FFD98A;
+  --rez:#B87333; --rez-fenyes:#E0A063; --rez-arny:#6B421C; --turkiz:#2EC4B6;
+  --vonal:#272C36; --vonal-halk:#1B1F27;
+  --jo:#5FD08A; --vigyaz:#FFB000; --baj:#FF7B6B; --fokusz:#2EC4B6;
+  --sug: 0 0 7px rgba(255,176,0,.40);
+  --plakett: linear-gradient(168deg,#E0A063 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+:root[data-fenypor="green"]{
+  color-scheme: dark;
+  --hatter:#060B08; --panel:#0D1410; --panel-be:#080E0A; --kepernyo:#040A06;
+  --fenypor:#3BFF7A; --fenypor-halk:#1C7A3C; --fenypor-feny:#B6FFCE;
+  --szoveg:#D8E8DC; --szoveg-halk:#8AA893; --cim:#B6FFCE;
+  --rez:#B87333; --rez-fenyes:#E0A063; --rez-arny:#6B421C; --turkiz:#2EC4B6;
+  --vonal:#1C2A21; --vonal-halk:#121C16;
+  --jo:#3BFF7A; --vigyaz:#E0C060; --baj:#FF7B6B; --fokusz:#3BFF7A;
+  --sug: 0 0 7px rgba(59,255,122,.38);
+  --plakett: linear-gradient(168deg,#E0A063 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+:root[data-fenypor="paper"]{
+  color-scheme: light;
+  --hatter:#E9E3D5; --panel:#F5F0E4; --panel-be:#EDE6D6; --kepernyo:#FBF7EB;
+  --fenypor:#2E2618; --fenypor-halk:#7A6E58; --fenypor-feny:#000000;
+  --szoveg:#241E14; --szoveg-halk:#6A6152; --cim:#7A4A16;
+  --rez:#8A5426; --rez-fenyes:#B87333; --rez-arny:#5C3312; --turkiz:#0E7C72;
+  --vonal:#CFC5AE; --vonal-halk:#DED5C0;
+  --jo:#1F7A45; --vigyaz:#8A5A00; --baj:#A32E1C; --fokusz:#0E7C72;
+  --sug:none;
+  --plakett: linear-gradient(168deg,#D9A167 0%,#B87333 34%,#8A5426 66%,#C98A4E 100%);
+}
+
+/* ---------- alapok ---------- */
+*{box-sizing:border-box}
+html{font-size:var(--alap)}
+body{
+  margin:0;
+  background:var(--hatter);
+  color:var(--szoveg);
+  font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  font-size:1rem;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  transition:background-color .25s ease, color .25s ease;
+}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+a{color:var(--turkiz);text-underline-offset:.2em;text-decoration-thickness:1px}
+a:hover{color:var(--rez-fenyes)}
+:focus-visible{outline:3px solid var(--fokusz);outline-offset:3px;border-radius:2px}
+
+.ugras{
+  position:absolute;left:-9999px;top:0;z-index:99;
+  background:var(--rez);color:#120A03;padding:.7rem 1.1rem;font-weight:600;
+}
+.ugras:focus{left:.6rem;top:.6rem}
+
+/* ---------- a fejlec: vesett reztabla ---------- */
+.tabla{
+  position:relative;
+  padding:calc(env(safe-area-inset-top,0px) + 2.6rem) 1.5rem 2.2rem;
+  background:
+    radial-gradient(120% 140% at 50% -20%, rgba(184,115,51,.16), transparent 62%),
+    var(--panel-be);
+  border-bottom:1px solid var(--vonal);
+}
+.tabla-belso{max-width:76rem;margin:0 auto}
+
+.plakett{
+  display:inline-block;
+  padding:.28rem .95rem;
+  background:var(--plakett);
+  color:#170D03;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  border-radius:2px;
+  box-shadow:inset 0 1px 0 rgba(255,236,206,.55), inset 0 -1px 0 rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.4);
+}
+
+.tabla h1{
+  font-family:"Bodoni Moda",Didot,"Times New Roman",serif;
+  font-optical-sizing:auto;
+  font-weight:700;
+  font-size:clamp(2.7rem,9vw,5.2rem);
+  line-height:.94;
+  letter-spacing:.005em;
+  margin:1.1rem 0 .1rem;
+  color:var(--cim);
+  text-wrap:balance;
+  text-shadow:0 1px 0 var(--rez-arny), 0 0 26px rgba(255,176,0,.10);
+}
+:root[data-fenypor="paper"] .tabla h1,
+:root[data-theme="light"]:not([data-fenypor]) .tabla h1{text-shadow:0 1px 0 rgba(255,255,255,.7)}
+
+.tabla .alcim{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--rez-fenyes);margin:.35rem 0 0;
+}
+.tabla .mondat{
+  max-width:44rem;margin:1.5rem 0 0;font-size:1.12rem;color:var(--szoveg);
+}
+.tabla .mondat strong{color:var(--fenypor-feny)}
+
+/* szegecsek - a tabla negy sarkan */
+.szegecsek{position:absolute;inset:1.1rem;pointer-events:none}
+.szegecsek i{
+  position:absolute;width:11px;height:11px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--rez-fenyes), var(--rez) 55%, var(--rez-arny) 100%);
+  box-shadow:0 1px 2px rgba(0,0,0,.5);
+}
+.szegecsek i:nth-child(1){left:0;top:0}
+.szegecsek i:nth-child(2){right:0;top:0}
+.szegecsek i:nth-child(3){left:0;bottom:0}
+.szegecsek i:nth-child(4){right:0;bottom:0}
+
+/* ---------- vezerlok ---------- */
+.vezerlok{
+  display:flex;flex-wrap:wrap;gap:1.6rem 2.4rem;
+  margin:2rem 0 0;padding:1.05rem 1.2rem;
+  background:var(--panel);
+  border:1px solid var(--vonal);
+  border-radius:3px;
+}
+.csoport{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.csoport > .cimke{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--szoveg-halk);
+}
+.gombok{display:flex;gap:.35rem;flex-wrap:wrap}
+button{
+  font:inherit;cursor:pointer;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.8rem;letter-spacing:.09em;
+  padding:.42rem .8rem;
+  color:var(--szoveg);
+  background:var(--panel-be);
+  border:1px solid var(--vonal);
+  border-radius:2px;
+  transition:background-color .18s ease,border-color .18s ease,color .18s ease;
+}
+button:hover{border-color:var(--rez);color:var(--rez-fenyes)}
+button[aria-pressed="true"]{
+  background:var(--plakett);color:#170D03;border-color:var(--rez-arny);font-weight:600;
+  box-shadow:inset 0 1px 0 rgba(255,236,206,.5);
+}
+button[aria-pressed="true"] .pipa{display:inline}
+.pipa{display:none;margin-right:.35em;font-weight:700}
+.meret-kijelzo{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.8rem;color:var(--fenypor);min-width:4.6em;text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------- keret: mutatotabla + torzs ---------- */
+.keret{
+  max-width:76rem;margin:0 auto;padding:0 1.5rem;
+  display:grid;
+  /* ⚠ A tabla szelessege rem-ben egyutt hizna a betumerettel, es 30 px-es
+     alapnal 510 px-re nőve felfalna a szoveget. Ezert PIXELBEN hataroljuk. */
+  grid-template-columns:clamp(200px,17rem,300px) minmax(0,1fr);
+  gap:3rem;align-items:start;
+}
+@media (max-width:62rem){
+  .keret{grid-template-columns:minmax(0,1fr);gap:1.6rem}
+}
+/* ⭐ Nagy betumeretnel a ket hasab nem fer el - a lap MAGATOL egy hasabra
+   vált. Nem az olvasonak kell kitalalnia. */
+.keret.egyhasab{grid-template-columns:minmax(0,1fr);gap:1.6rem}
+.keret.egyhasab .mutato{position:static;max-height:none;margin-top:1.4rem}
+
+/* ---------- a mutatotabla ---------- */
+.mutato{
+  position:sticky;top:1rem;max-height:calc(100vh - 2rem);
+  overflow-y:auto;overscroll-behavior:contain;
+  margin-top:2.6rem;padding:1.1rem 1rem 1.4rem;
+  background:var(--panel);
+  border:1px solid var(--vonal);
+  border-top:3px solid var(--rez);
+  border-radius:3px;
+}
+@media (max-width:62rem){
+  .mutato{position:static;max-height:none;margin-top:1.4rem}
+}
+.mutato h2{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--rez-fenyes);margin:0 0 .8rem;font-weight:600;
+}
+.szuro{
+  width:100%;font:inherit;font-size:.9rem;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  padding:.5rem .6rem;margin:0 0 .5rem;
+  color:var(--szoveg);background:var(--panel-be);
+  border:1px solid var(--vonal);border-radius:2px;
+}
+.szuro::placeholder{color:var(--szoveg-halk)}
+.talalat{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;color:var(--szoveg-halk);margin:0 0 .9rem;
+  font-variant-numeric:tabular-nums;
+}
+.mutato ol{list-style:none;margin:0;padding:0}
+.mutato li{margin:0}
+.mutato .fejezet{
+  display:block;padding:.42rem 0 .3rem;
+  font-family:"Bodoni Moda",Didot,serif;font-size:1.02rem;font-weight:600;
+  color:var(--cim);text-decoration:none;
+  border-top:1px solid var(--vonal-halk);margin-top:.45rem;
+}
+.mutato li:first-child .fejezet{border-top:0;margin-top:0}
+.mutato .fejezet .sz{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.7rem;color:var(--rez);margin-right:.5em;
+}
+.mutato .fejezet:hover{color:var(--rez-fenyes)}
+.mutato ul{list-style:none;margin:0 0 .3rem;padding:0 0 0 .1rem;
+  display:flex;flex-wrap:wrap;gap:.22rem}
+.mutato ul a{
+  display:block;padding:.13rem .42rem;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.76rem;color:var(--szoveg-halk);text-decoration:none;
+  border:1px solid transparent;border-radius:2px;
+}
+.mutato ul a:hover{color:var(--fenypor);border-color:var(--vonal)}
+.mutato a[aria-current="true"]{
+  color:var(--fenypor);border-color:var(--rez);background:var(--panel-be);
+}
+.mutato a[aria-current="true"]::before{content:"\25B8\00a0"}
+
+/* ---------- torzs ---------- */
+main{padding:2.4rem 0 5rem;min-width:0}
+
+section{margin:0 0 4.2rem;scroll-margin-top:1.2rem}
+section > h2{
+  font-family:"Bodoni Moda",Didot,"Times New Roman",serif;
+  font-weight:700;font-size:clamp(1.9rem,4.4vw,2.9rem);line-height:1.1;
+  margin:0 0 .2rem;color:var(--cim);text-wrap:balance;
+}
+.fejezetszam{
+  display:flex;align-items:center;gap:.85rem;margin:0 0 .55rem;
+}
+.fejezetszam .lemez{
+  flex:none;display:grid;place-items:center;
+  width:2.3rem;height:2.3rem;border-radius:50%;
+  background:var(--plakett);color:#170D03;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.86rem;font-weight:600;
+  box-shadow:inset 0 1px 0 rgba(255,236,206,.55), 0 1px 3px rgba(0,0,0,.45);
+}
+.fejezetszam .vonalka{
+  flex:1;height:2px;
+  background:linear-gradient(90deg,var(--rez),transparent);
+}
+section > .bevezeto{
+  max-width:42rem;font-size:1.06rem;color:var(--szoveg);margin:.6rem 0 2rem;
+}
+
+h3{
+  font-family:"Bodoni Moda",Didot,serif;
+  font-weight:600;font-size:1.5rem;margin:2.4rem 0 .6rem;color:var(--cim);
+}
+p{max-width:42rem;margin:0 0 1rem}
+.halk{color:var(--szoveg-halk)}
+strong{color:var(--fenypor-feny);font-weight:600}
+:root[data-fenypor="paper"] strong,
+:root[data-theme="light"]:not([data-fenypor]) strong{color:#000}
+code{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.88em;color:var(--fenypor);
+  background:var(--panel-be);padding:.1em .38em;border-radius:2px;
+  border:1px solid var(--vonal-halk);
+}
+
+/* ---------- a parancs-kartya ---------- */
+.parancs{
+  margin:1.8rem 0 2.6rem;
+  background:var(--panel);
+  border:1px solid var(--vonal);
+  border-radius:3px;
+  padding:1.3rem 1.4rem 1.5rem;
+  scroll-margin-top:1.2rem;
+}
+.parancs > h3{
+  margin:0;
+  font-family:"Bodoni Moda",Didot,serif;
+  font-size:1.62rem;font-weight:700;letter-spacing:.01em;
+  color:var(--fenypor-feny);
+}
+.parancs > h3 .par-nev{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:1.12rem;font-weight:600;letter-spacing:.06em;
+}
+.parancs > h3 .mit{
+  display:block;font-family:"IBM Plex Sans",sans-serif;
+  font-size:.92rem;font-weight:400;letter-spacing:0;
+  color:var(--szoveg-halk);margin-top:.15rem;
+}
+.veset{
+  height:2px;margin:.75rem 0 1rem;
+  background:linear-gradient(90deg,var(--rez) 0%,var(--rez-arny) 22%,transparent 60%);
+}
+.szintaxis{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.95rem;color:var(--fenypor);
+  background:var(--panel-be);
+  border:1px solid var(--vonal);
+  border-left:3px solid var(--rez);
+  padding:.6rem .85rem;margin:0 0 1rem;
+  overflow-x:auto;white-space:pre;
+}
+.szintaxis .valt{color:var(--turkiz);font-style:italic}
+.parancs p{margin:0 0 .85rem}
+.parancs p:last-child{margin-bottom:0}
+
+/* ---------- a CRT-kepernyo ---------- */
+figure.kep{margin:1.2rem 0 .2rem}
+figure.kep figcaption{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.7rem;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--szoveg-halk);margin:0 0 .4rem;
+}
+figure.kep figcaption::before{content:"\25AA\00a0"; color:var(--rez)}
+.crt{
+  position:relative;overflow-x:auto;
+  margin:0;padding:1rem 1.15rem;
+  background:var(--kepernyo);
+  border:1px solid var(--vonal);
+  border-radius:6px;
+  box-shadow:inset 0 0 0 1px rgba(184,115,51,.12), inset 0 0 40px rgba(0,0,0,.55);
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.86rem;line-height:1.5;
+  color:var(--fenypor);
+  text-shadow:var(--sug);
+  white-space:pre;
+  tab-size:8;
+}
+.crt::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:6px;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.20) 0 1px,transparent 1px 3px);
+  opacity:.5;
+}
+:root[data-fenypor="paper"] .crt::after,
+:root[data-theme="light"]:not([data-fenypor]) .crt::after{opacity:.10}
+.crt b{color:var(--fenypor-feny);font-weight:400;
+  text-shadow:0 0 9px rgba(255,217,138,.5)}
+:root[data-fenypor="paper"] .crt b,
+:root[data-theme="light"]:not([data-fenypor]) .crt b{
+  color:#000;font-weight:600;text-shadow:none}
+.crt .halvany{color:var(--fenypor-halk)}
+
+/* ---------- tablazatok ---------- */
+.tabkeret{overflow-x:auto;margin:1.2rem 0 1.6rem;
+  border:1px solid var(--vonal);border-radius:3px}
+table{border-collapse:collapse;width:100%;font-size:.92rem;background:var(--panel)}
+th,td{padding:.55rem .8rem;text-align:left;vertical-align:top;
+  border-bottom:1px solid var(--vonal-halk)}
+thead th{
+  background:var(--panel-be);
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--rez-fenyes);font-weight:600;
+  border-bottom:2px solid var(--rez-arny);
+}
+tbody tr:last-child td{border-bottom:0}
+td code, th code{background:transparent;border:0;padding:0}
+td:first-child{font-family:"IBM Plex Mono",ui-monospace,monospace;
+  color:var(--fenypor);white-space:nowrap}
+
+/* ---------- figyelmeztetes-dobozok (SOHA nem csak szin) ---------- */
+.doboz{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:.2rem .85rem;
+  margin:1.4rem 0;padding:.95rem 1.1rem;
+  background:var(--panel);border:1px solid var(--vonal);
+  border-left:3px solid var(--rez);border-radius:3px;
+}
+.doboz .fej{
+  grid-column:1;grid-row:1;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:600;white-space:nowrap;padding-top:.18rem;
+}
+.doboz .test{grid-column:2;grid-row:1}
+.doboz .test > :last-child{margin-bottom:0}
+.doboz p{max-width:none}
+.doboz.vigyazz{border-left-color:var(--vigyaz)}
+.doboz.vigyazz .fej{color:var(--vigyaz)}
+.doboz.elter{border-left-color:var(--turkiz)}
+.doboz.elter .fej{color:var(--turkiz)}
+.doboz.nincs{border-left-color:var(--baj)}
+.doboz.nincs .fej{color:var(--baj)}
+.doboz.jo{border-left-color:var(--jo)}
+.doboz.jo .fej{color:var(--jo)}
+@media (max-width:34rem){
+  .doboz{grid-template-columns:minmax(0,1fr)}
+  .doboz .fej{grid-column:1;grid-row:1}
+  .doboz .test{grid-column:1;grid-row:2}
+}
+
+ul.lista{max-width:42rem;padding-left:1.15rem}
+ul.lista li{margin:0 0 .45rem}
+
+/* ---------- lablec ---------- */
+footer{
+  border-top:1px solid var(--vonal);
+  background:var(--panel-be);
+  padding:2.2rem 1.5rem calc(env(safe-area-inset-bottom,0px) + 2.4rem);
+}
+footer .belso{max-width:76rem;margin:0 auto;
+  font-size:.92rem;color:var(--szoveg-halk)}
+footer p{max-width:46rem}
+
+@media print{
+  .mutato,.vezerlok,.ugras{display:none}
+  .keret{grid-template-columns:1fr}
+  .crt::after{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important}
+  html{scroll-behavior:auto}
+}
+html{scroll-behavior:smooth}
+</style>
+
+<a class="ugras" href="#tartalom">Ugrás a tartalomra</a>
+
+<header class="tabla">
+  <div class="szegecsek"><i></i><i></i><i></i><i></i></div>
+  <div class="tabla-belso">
+    <span class="plakett">Creative Pearls &middot; 2026</span>
+    <h1>BAROQUE&#8209;DOS</h1>
+    <p class="alcim">Kézikönyv &middot; 0.2 verzió &middot; BAROQUE&nbsp;48</p>
+    <p class="mondat">A gép parancssorának teljes leírása. <strong>A kézikönyvben látható
+      minden képernyő a gép valódi válasza</strong> — egyetlen példa sincs kitalálva.</p>
+
+    <div class="vezerlok">
+      <div class="csoport">
+        <span class="cimke" id="c-fenypor">Fénypor</span>
+        <div class="gombok" role="group" aria-labelledby="c-fenypor">
+          <button type="button" data-fenypor="amber" aria-pressed="true"><span class="pipa" aria-hidden="true">&#10003;</span>AMBER</button>
+          <button type="button" data-fenypor="green" aria-pressed="false"><span class="pipa" aria-hidden="true">&#10003;</span>GREEN</button>
+          <button type="button" data-fenypor="paper" aria-pressed="false"><span class="pipa" aria-hidden="true">&#10003;</span>PAPER</button>
+        </div>
+      </div>
+      <div class="csoport">
+        <span class="cimke" id="c-meret">Betűméret</span>
+        <div class="gombok" role="group" aria-labelledby="c-meret">
+          <button type="button" id="kisebb" aria-label="Kisebb betű">&minus;&nbsp;Kisebb</button>
+          <span class="meret-kijelzo" id="meret-kijelzo" role="status">19 px</span>
+          <button type="button" id="nagyobb" aria-label="Nagyobb betű">+&nbsp;Nagyobb</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="keret">
+
+<nav class="mutato" aria-label="Tartalomjegyzék">
+  <h2>Mutatótábla</h2>
+  <label class="ugras" for="szuro">Parancs keresése</label>
+  <input class="szuro" id="szuro" type="search" placeholder="parancs keresése…" autocomplete="off">
+  <p class="talalat" id="talalat" role="status">&nbsp;</p>
+  <ol>
+    <li>
+      <a class="fejezet" href="#f1"><span class="sz">01</span>Az első öt perc</a>
+      <ul>
+        <li><a href="#p-ver">VER</a></li>
+        <li><a href="#p-dir">DIR</a></li>
+        <li><a href="#p-type">TYPE</a></li>
+        <li><a href="#p-help">HELP</a></li>
+      </ul>
+    </li>
+    <li>
+      <a class="fejezet" href="#f2"><span class="sz">02</span>A parancssor</a>
+      <ul>
+        <li><a href="#p-cls">CLS</a></li>
+        <li><a href="#p-more">MORE</a></li>
+      </ul>
+    </li>
+    <li>
+      <a class="fejezet" href="#f3"><span class="sz">03</span>A lemez</a>
+      <ul>
+        <li><a href="#p-tree">TREE</a></li>
+        <li><a href="#p-cd">CD</a></li>
+        <li><a href="#p-md">MD</a></li>
+        <li><a href="#p-rd">RD</a></li>
+        <li><a href="#p-copy">COPY</a></li>
+        <li><a href="#p-ren">REN</a></li>
+        <li><a href="#p-del">DEL</a></li>
+        <li><a href="#p-vol">VOL</a></li>
+        <li><a href="#p-label">LABEL</a></li>
+        <li><a href="#p-chkdsk">CHKDSK</a></li>
+        <li><a href="#p-format">FORMAT</a></li>
+      </ul>
+    </li>
+    <li>
+      <a class="fejezet" href="#f4"><span class="sz">04</span>A gép maga</a>
+      <ul>
+        <li><a href="#p-fre">FRE</a></li>
+        <li><a href="#p-mem">MEM</a></li>
+        <li><a href="#p-stat">STAT</a></li>
+        <li><a href="#p-mode">MODE</a></li>
+        <li><a href="#p-logo">LOGO</a></li>
+        <li><a href="#p-date">DATE</a></li>
+        <li><a href="#p-time">TIME</a></li>
+        <li><a href="#p-prompt">PROMPT</a></li>
+      </ul>
+    </li>
+    <li>
+      <a class="fejezet" href="#f5"><span class="sz">05</span>A számoló</a>
+      <ul><li><a href="#p-calc">CALC</a></li></ul>
+    </li>
+    <li>
+      <a class="fejezet" href="#f6"><span class="sz">06</span>Kötegek (.BAT)</a>
+      <ul>
+        <li><a href="#p-echo">ECHO</a></li>
+        <li><a href="#p-rem">REM</a></li>
+        <li><a href="#p-pause">PAUSE</a></li>
+        <li><a href="#p-goto">GOTO</a></li>
+        <li><a href="#p-ifexist">IF EXIST</a></li>
+        <li><a href="#p-autoexec">AUTOEXEC.BAT</a></li>
+      </ul>
+    </li>
+    <li>
+      <a class="fejezet" href="#f7"><span class="sz">07</span>A hálózat</a>
+      <ul><li><a href="#p-net">NET</a></li></ul>
+    </li>
+    <li>
+      <a class="fejezet" href="#f8"><span class="sz">08</span>A hang</a>
+      <ul>
+        <li><a href="#p-beep">BEEP</a></li>
+        <li><a href="#p-audio">AUDIO</a></li>
+        <li><a href="#p-tape">TAPE</a></li>
+      </ul>
+    </li>
+    <li>
+      <a class="fejezet" href="#f9"><span class="sz">09</span>A BASIC</a>
+      <ul><li><a href="#p-bbasic">BBASIC</a></li></ul>
+    </li>
+    <li><a class="fejezet" href="#f10"><span class="sz">10</span>Hibaüzenetek</a></li>
+    <li><a class="fejezet" href="#f11"><span class="sz">11</span>Amiben eltér a DOS-tól</a></li>
+    <li><a class="fejezet" href="#f12"><span class="sz">12</span>Ami még nincs</a></li>
+    <li><a class="fejezet" href="#fa"><span class="sz">A</span>Függelék: PROMPT-kódok</a></li>
+    <li><a class="fejezet" href="#fb"><span class="sz">B</span>Függelék: minden parancs</a></li>
+  </ol>
+</nav>
+
+<main id="tartalom">
+
+<!-- =================== 0 =================== -->
+<section id="f0" aria-labelledby="h0">
+  <div class="fejezetszam"><span class="lemez" aria-hidden="true">&#9673;</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h0">Mielőtt belekezdesz</h2>
+  <p class="bevezeto">A BAROQUE&nbsp;48 egy saját építésű gép: van képernyője, billentyűzete,
+  lemeze és egy parancssora, ami 1983-ban is otthonosan mozgott volna. Ez a könyv a
+  <strong>parancssorról</strong> szól. A BASIC külön kötetet kapott.</p>
+
+  <p>A parancsok <strong>angolul</strong> szerepelnek, mert a gép angolul beszél — a magyarázat
+  magyarul van. Ahol <code>ilyen betűvel</code> látsz valamit, azt szó szerint így kell begépelni.</p>
+
+  <div class="doboz jo">
+    <span class="fej">Jó hír</span>
+    <div class="test"><p>A gép <strong>nem érzékeny a kis- és nagybetűre</strong>.
+    A <code>ver</code> és a <code>VER</code> ugyanaz. A könyvben a korhűség kedvéért
+    mindenhol nagybetűs alak szerepel.</p></div>
+  </div>
+
+  <h3>Három fénypor — a gépen és ebben a könyvben is</h3>
+  <p>A gép képernyője háromféle fényporral tud világítani: <code>AMBER</code> (borostyán),
+  <code>GREEN</code> (zöld) és <code>PAPER</code> (sötét betű világos alapon).
+  A könyv lapjának tetején <strong>ugyanaz a három kapcsoló</strong> van — állítsd arra,
+  amelyiken épp a géped áll, vagy amelyik a szemednek kényelmesebb.
+  Mellette a <strong>betűméret</strong> is állítható.</p>
+
+  <div class="doboz">
+    <span class="fej">Így olvasd</span>
+    <div class="test"><p>Minden parancsnál előbb a <strong>szintaxis</strong> áll
+    (a <span style="color:var(--turkiz);font-style:italic">dőlt türkiz</span> részt
+    te töltöd ki), utána a magyarázat, legvégül a <strong>gép valódi képernyője</strong>.</p></div>
+  </div>
+</section>
+
+<!-- =================== 1 =================== -->
+<section id="f1" aria-labelledby="h1x">
+  <div class="fejezetszam"><span class="lemez">01</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h1x">Az első öt perc</h2>
+  <p class="bevezeto">Négy parancs, és már otthon vagy. Kapcsold be a gépet, és várd meg,
+  amíg megjelenik a <code>C:\&gt;</code> jel. Ez a <em>prompt</em>: a gép ezzel mondja, hogy
+  vár rád.</p>
+
+  <article class="parancs" id="p-ver">
+    <h3><span class="par-nev">VER</span><span class="mit">Melyik gép ez, és melyik verzió fut rajta?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">VER</pre>
+    <p>A legelső parancs, amit érdemes kiadni. Megmondja a rendszer nevét és verziószámát.
+    Ha valaha hibát jelentesz, ezzel kezdd.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>VER</b>
+BAROQUE-DOS 0.2
+CREATIVE PEARLS 2026
+C:\&gt;</pre>
+    </figure>
+  </article>
+
+  <article class="parancs" id="p-dir">
+    <h3><span class="par-nev">DIR</span><span class="mit">Mi van a lemezen?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">DIR                    <span class="valt">az aktuális könyvtár</span>
+DIR <span class="valt">&lt;könyvtár&gt;</span>          <span class="valt">DIR \DOS</span>
+DIR <span class="valt">&lt;fájl&gt;</span>              <span class="valt">DIR README.TXT</span>
+DIR <span class="valt">&lt;minta&gt;</span>             <span class="valt">DIR *.TXT</span>
+DIR <span class="valt">…</span> /P                 <span class="valt">laponként megáll</span></pre>
+    <p>Kilistázza az aktuális könyvtár tartalmát. A <code>&lt;DIR&gt;</code> jelölés azt
+    jelenti, hogy az a bejegyzés maga is könyvtár. A lista végén a gép összeszámolja a
+    fájlokat, a könyvtárakat és a szabad helyet.</p>
+    <p>A <code>/P</code> kapcsoló <strong>laponként megállítja</strong> a listát —
+    hosszú könyvtárnál ez menti meg a szemedet.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>DIR</b>
+ VOLUME IN DRIVE C IS LUCY DISK
+ DIRECTORY OF C:\
+
+DOS               &lt;DIR&gt;  01-01-80  00:59
+BASIC             &lt;DIR&gt;  01-01-80  00:59
+TAPES             &lt;DIR&gt;  01-01-80  00:59
+README   TXT        170  01-01-80  00:59
+TEMP              &lt;DIR&gt;  01-01-80  00:09
+AUTOEXEC BAT        100  01-01-80  00:06
+        2 FILE(S)          270 BYTES
+        4 DIR(S)      10203136 BYTES FREE
+C:\&gt;</pre>
+    </figure>
+    <div class="doboz vigyazz">
+      <span class="fej">Vigyázz</span>
+      <div class="test"><p>A <code>01-01-80</code> dátum azt jelenti, hogy a gép órája
+      <strong>nem volt beállítva</strong>, amikor az a fájl készült. A <code>DATE</code> és a
+      <code>TIME</code> parancs igazítja meg; ha a hálózat él, a gép magától is beáll.</p></div>
+    </div>
+    <h3>Szűrés fájlnévre és mintára</h3>
+    <p>A <code>DIR</code> nemcsak könyvtárat fogad el. Adhatsz neki <strong>egy fájlnevet</strong>,
+    vagy egy <strong>mintát</strong>, amiben a <code>*</code> tetszőleges betűsort, a
+    <code>?</code> egyetlen betűt helyettesít. A minta külön illeszkedik a
+    <strong>névre</strong> és külön a <strong>kiterjesztésre</strong> — ezért jelenti a
+    <code>*.TXT</code> azt, amit vársz: bármilyen nevű, de <code>TXT</code> végű fájl.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>DIR README.TXT</b>
+ VOLUME IN DRIVE C IS LUCY DISK
+ DIRECTORY OF C:\
+
+README   TXT        170  01-01-80  00:59
+        1 FILE(S)          170 BYTES
+        0 DIR(S)      10203136 BYTES FREE
+C:\&gt;<b>DIR *.BAT</b>
+ VOLUME IN DRIVE C IS LUCY DISK
+ DIRECTORY OF C:\
+
+AUTOEXEC BAT        100  01-01-80  00:06
+        1 FILE(S)          100 BYTES
+        0 DIR(S)      10203136 BYTES FREE
+C:\&gt;<b>DIR NINCSILY.TXT</b>
+ VOLUME IN DRIVE C IS LUCY DISK
+ DIRECTORY OF C:\
+
+FILE NOT FOUND
+        0 FILE(S)            0 BYTES
+        0 DIR(S)      10203136 BYTES FREE
+C:\&gt;</pre>
+    </figure>
+    <p>A minta a <strong>könyvtárakra is</strong> vonatkozik, és megelőzheti útvonal is:
+    <code>DIR \DOS\*.BAT</code>.</p>
+    <div class="doboz elter">
+      <span class="fej">Bővítés</span>
+      <div class="test"><p>A korabeli DOS a <code>*</code> után a mező hátralévő részét
+      <strong>eldobta</strong> — nála az <code>A*B</code> valójában <code>A*</code> volt.
+      Ezen a gépen a <code>*</code> <strong>bárhol állhat</strong>, és úgy viselkedik,
+      ahogy ma várod.</p></div>
+    </div>
+  </article>
+
+  <article class="parancs" id="p-type">
+    <h3><span class="par-nev">TYPE</span><span class="mit">Mi van ebben a fájlban?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">TYPE <span class="valt">&lt;fájl&gt;</span> <span class="valt">[/P]</span></pre>
+    <p>Kiírja a fájl tartalmát a képernyőre, egyben. Hosszú fájlnál tedd hozzá a
+    <code>/P</code> kapcsolót, vagy használd inkább a <code>MORE</code> parancsot.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>TYPE README.TXT</b>
+BAROQUE 48
+(C) 2026 CREATIVE PEARLS
+
+DRIVE C IS 9.9 MB OF THE MACHINE'S OWN FLASH.
+IT KEEPS WHAT YOU PUT ON IT.
+
+TRY:  DIR   TREE   CD DOS   TYPE README.TXT   MEM
+C:\&gt;</pre>
+    </figure>
+  </article>
+
+  <article class="parancs" id="p-help">
+    <h3><span class="par-nev">HELP</span><span class="mit">Mit tud ez a gép?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">HELP</pre>
+    <p>Kiírja az összes parancsot egy-egy soros magyarázattal. A lista hosszabb, mint a
+    képernyő, ezért a <code>HELP</code> <strong>magától lapoz</strong> — nem kell hozzá
+    <code>/P</code>. A teljes lista a <a href="#fb">B&nbsp;függelékben</a> is megtalálható.</p>
+    <div class="doboz jo">
+      <span class="fej">Elv</span>
+      <div class="test"><p>Egy súgó, amit nem lehet elolvasni, nem súgó. Ezért lapoz a
+      <code>HELP</code> akkor is, ha nem kéred.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- =================== 2 =================== -->
+<section id="f2" aria-labelledby="h2x">
+  <div class="fejezetszam"><span class="lemez">02</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h2x">A parancssor</h2>
+  <p class="bevezeto">A <code>C:\&gt;</code> jel a gép kérdése: „mit csináljak?”. Begépelsz egy
+  sort, lenyomod az <strong>ENTER</strong>-t, és a gép végrehajtja.</p>
+
+  <h3>Amit a prompt elárul</h3>
+  <p>Az alapértelmezett prompt megmutatja, hogy <strong>melyik könyvtárban állsz</strong>.
+  Ha <code>C:\DOS&gt;</code> látsz, akkor a <code>\DOS</code> könyvtárban vagy, és a
+  <code>DIR</code> annak a tartalmát fogja listázni. A prompt szabadon átalakítható —
+  lásd a <a href="#p-prompt">PROMPT</a> parancsot és az <a href="#fa">A&nbsp;függeléket</a>.</p>
+
+  <h3>Lapozás és megszakítás</h3>
+  <div class="tabkeret">
+  <table>
+    <thead><tr><th>Billentyű</th><th>Mit csinál</th></tr></thead>
+    <tbody>
+      <tr><td>ENTER</td><td>Végrehajtja a begépelt sort. Üres sorra a gép nem csinál semmit.</td></tr>
+      <tr><td>^C</td><td>Megszakítja a futó parancsot vagy a hosszú listát. (Ctrl és C együtt.)</td></tr>
+      <tr><td>bármelyik&nbsp;billentyű</td><td>A <code>-- MORE --</code> felirat után továbblapoz.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <article class="parancs" id="p-cls">
+    <h3><span class="par-nev">CLS</span><span class="mit">Tiszta lapot kérek</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">CLS</pre>
+    <p>Letörli a képernyőt, és a promptot a bal felső sarokba viszi. Semmit nem töröl a
+    lemezről — csak a képernyőt takarítja.</p>
+  </article>
+
+  <article class="parancs" id="p-more">
+    <h3><span class="par-nev">MORE</span><span class="mit">Egy fájl, laponként</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">MORE <span class="valt">&lt;fájl&gt;</span></pre>
+    <p>Ugyanazt teszi, mint a <code>TYPE ... /P</code>: kiírja a fájlt, de minden képernyő
+    után megáll, és a <code>-- MORE --</code> felirattal vár egy billentyűre.</p>
+  </article>
+</section>
+
+<!-- =================== 3 =================== -->
+<section id="f3" aria-labelledby="h3x">
+  <div class="fejezetszam"><span class="lemez">03</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h3x">A lemez</h2>
+  <p class="bevezeto">A <code>C:</code> meghajtó a gép saját flash-memóriájának
+  <strong>9,9&nbsp;MB-os</strong> része. Valódi lemez: kikapcsolás után is megmarad rajta,
+  amit ráírtál.</p>
+
+  <article class="parancs" id="p-tree">
+    <h3><span class="par-nev">TREE</span><span class="mit">Rajzold le a könyvtárakat</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">TREE <span class="valt">[útvonal]</span></pre>
+    <p>Ábrát rajzol a könyvtárszerkezetről. Fájlokat nem mutat — csak a könyvtárak
+    egymásba ágyazását. Ha meg akarod tudni, hova került egy alkönyvtár, ez a leggyorsabb.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>TREE</b>
+C:\
++---DOS
+|   \---COMMANDS
++---BASIC
++---TAPES
+\---TEMP
+    \---SUB
+C:\&gt;</pre>
+    </figure>
+  </article>
+
+  <article class="parancs" id="p-cd">
+    <h3><span class="par-nev">CD</span><span class="mit">Lépj át egy másik könyvtárba</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">CD <span class="valt">&lt;könyvtár&gt;</span>
+CD ..          <span class="valt">egy szinttel feljebb</span>
+CD \           <span class="valt">vissza a gyökérbe</span></pre>
+    <p>Átvisz egy másik könyvtárba. A prompt azonnal mutatja, hogy sikerült.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>cd dos</b>
+C:\DOS&gt;<b>DIR</b>
+ VOLUME IN DRIVE C IS LUCY DISK
+ DIRECTORY OF C:\DOS
+
+COMMANDS          &lt;DIR&gt;  01-01-80  00:07
+        0 FILE(S)            0 BYTES
+        1 DIR(S)      10203136 BYTES FREE
+C:\DOS&gt;<b>CD ..</b>
+C:\&gt;</pre>
+    </figure>
+    <p class="halk">Ez a képernyő egyben azt is bizonyítja, hogy a <strong>kisbetűs</strong>
+    <code>cd dos</code> ugyanúgy működik.</p>
+  </article>
+
+  <article class="parancs" id="p-md">
+    <h3><span class="par-nev">MD</span><span class="mit">Új könyvtár</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">MD <span class="valt">&lt;név&gt;</span></pre>
+    <p>Létrehoz egy könyvtárat az aktuális helyen. Ha sikerült, a gép
+    <strong>nem szól semmit</strong> — csak visszaadja a promptot. Ez korhű: a DOS is így
+    tett. Ellenőrizni a <code>DIR</code> vagy a <code>TREE</code> paranccsal tudod.</p>
+  </article>
+
+  <article class="parancs" id="p-rd">
+    <h3><span class="par-nev">RD</span><span class="mit">Könyvtár törlése</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">RD <span class="valt">&lt;név&gt;</span></pre>
+    <p>Töröl egy könyvtárat. Csak akkor, ha <strong>üres</strong>. Siker esetén itt sincs
+    üzenet.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>MD PROBA</b>
+C:\&gt;<b>RD PROBA</b>
+C:\&gt;</pre>
+    </figure>
+  </article>
+
+  <article class="parancs" id="p-copy">
+    <h3><span class="par-nev">COPY</span><span class="mit">Másolat egy fájlról</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">COPY <span class="valt">&lt;honnan&gt;</span> <span class="valt">&lt;hova&gt;</span>
+COPY CON <span class="valt">&lt;fájl&gt;</span>   <span class="valt">fájl gépelése billentyűzetről</span></pre>
+    <p>Lemásol egy fájlt. A gép megmondja, hány fájlt másolt, és a lemezműveletet
+    naplózza is egy <code>[DISK]</code> kezdetű sorban — ebben ott a méret és az eltelt idő.</p>
+    <p>A <code>COPY CON</code> alak a régi trükk: amit begépelsz, az a fájlba kerül.
+    A <strong>^Z</strong> zárja le és menti, a <strong>^C</strong> eldobja.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>COPY README.TXT PROBA.TXT</b>
+        1 FILE(S) COPIED
+<span class="halvany">[DISK] COPY /README.TXT -&gt; /PROBA.TXT  170 bytes  235 ms</span>
+C:\&gt;</pre>
+    </figure>
+  </article>
+
+  <article class="parancs" id="p-ren">
+    <h3><span class="par-nev">REN</span><span class="mit">Átnevezés</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">REN <span class="valt">&lt;régi név&gt;</span> <span class="valt">&lt;új név&gt;</span></pre>
+    <p>Átnevez egy fájlt. <strong>Nem mozgat</strong>: a fájl ugyanabban a könyvtárban
+    marad. Ez is korhű — a DOS <code>REN</code> parancsa sem mozgatott.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>REN PROBA.TXT MASOLAT.TXT</b>
+<span class="halvany">[DISK] REN /PROBA.TXT -&gt; /MASOLAT.TXT  45 ms</span>
+C:\&gt;</pre>
+    </figure>
+  </article>
+
+  <article class="parancs" id="p-del">
+    <h3><span class="par-nev">DEL</span><span class="mit">Fájl törlése</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">DEL <span class="valt">&lt;fájl&gt;</span></pre>
+    <p>Töröl egy fájlt. Siker esetén nincs üzenet.</p>
+    <div class="doboz vigyazz">
+      <span class="fej">Vigyázz</span>
+      <div class="test"><p>Nincs kuka és nincs visszavonás. Amit a <code>DEL</code>
+      letörölt, az elment.</p></div>
+    </div>
+  </article>
+
+  <article class="parancs" id="p-vol">
+    <h3><span class="par-nev">VOL</span><span class="mit">Hogy hívják ezt a lemezt?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">VOL</pre>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>VOL</b>
+ VOLUME IN DRIVE C IS LUCY DISK
+C:\&gt;</pre>
+    </figure>
+    <p class="halk">A lemez neve ezen a gépen <code>LUCY DISK</code> — egy fekete, göndör
+    bundás magyar puli tiszteletére.</p>
+  </article>
+
+  <article class="parancs" id="p-label">
+    <h3><span class="par-nev">LABEL</span><span class="mit">Nevet adok a lemeznek</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">LABEL <span class="valt">&lt;név&gt;</span></pre>
+    <p>Átnevezi a lemezt. A név a <code>DIR</code>, a <code>VOL</code> és a
+    <code>CHKDSK</code> fejlécében jelenik meg.</p>
+    <div class="doboz elter">
+      <span class="fej">Eltér a DOS-tól</span>
+      <div class="test"><p>A lemez neve <strong>nem a lemezen</strong> lakik, hanem a gép
+      beállítás-tárában. Ezért <strong>túléli a formázást</strong>: a <code>FORMAT</code>
+      után is ugyanaz a név jön vissza.</p></div>
+    </div>
+  </article>
+
+  <article class="parancs" id="p-chkdsk">
+    <h3><span class="par-nev">CHKDSK</span><span class="mit">Rendben van a lemez?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">CHKDSK <span class="valt">[/V]</span> <span class="valt">[/F]</span></pre>
+    <p>Ez nem díszlet: a <code>CHKDSK</code> <strong>végigolvassa minden fájl minden
+    bájtját</strong>, 512 bájtos darabokban. Ha egy fájl olvashatatlan, itt derül ki.
+    A <code>/V</code> kapcsolóval közben kiírja a fájlneveket is.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>CHKDSK</b>
+VOLUME LUCY DISK
+CHECKING DRIVE C ...
+
+  10235904 BYTES TOTAL DISK SPACE
+       270 BYTES IN 2 USER FILES
+         6 DIRECTORIES
+     32498 BYTES IN SYSTEM AREA AND SLACK
+  10203136 BYTES AVAILABLE ON DISK
+
+     49152 TOTAL BYTES MEMORY
+     49152 BYTES FREE
+
+2 FILES READ, 270 BYTES - NO ERRORS FOUND
+C:\&gt;</pre>
+    </figure>
+    <div class="doboz jo">
+      <span class="fej">A számok</span>
+      <div class="test"><p>A négy felső szám <strong>összeadódik</strong>:
+      270&nbsp;+&nbsp;32&nbsp;498&nbsp;+&nbsp;10&nbsp;203&nbsp;136&nbsp;=&nbsp;10&nbsp;235&nbsp;904.
+      Ha nem jön ki, az hiba — nem kerekítés.</p></div>
+    </div>
+    <div class="doboz elter">
+      <span class="fej">Eltér a DOS-tól</span>
+      <div class="test"><p>A <code>/F</code> kapcsoló <strong>nem javít</strong>. A gép
+      fájlrendszere nem ad rá műveletet, ezért a <code>CHKDSK /F</code> becsületesen
+      kiírja, hogy mit <em>talált</em>, de nem nyúl hozzá. Egy parancs, ami azt állítja,
+      hogy javított, miközben nem tette, rosszabb a semminél.</p></div>
+    </div>
+  </article>
+
+  <article class="parancs" id="p-format">
+    <h3><span class="par-nev">FORMAT</span><span class="mit">Tiszta lemez</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">FORMAT C:</pre>
+    <p>Új, üres <code>C:</code> meghajtót készít, és visszarakja rá az alapkönyvtárakat.</p>
+    <div class="doboz nincs">
+      <span class="fej">Mindent töröl</span>
+      <div class="test"><p>Ez a könyv legveszélyesebb parancsa. <strong>Minden fájl
+      elvész</strong> a lemezről. A lemez <em>neve</em> viszont megmarad (lásd
+      <a href="#p-label">LABEL</a>).</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- =================== 4 =================== -->
+<section id="f4" aria-labelledby="h4x">
+  <div class="fejezetszam"><span class="lemez">04</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h4x">A gép maga</h2>
+  <p class="bevezeto">Ezek a parancsok nem a lemezről szólnak, hanem a gépről: mennyi a
+  memória, milyen gyors a képernyő, milyen színnel világít, hány óra van.</p>
+
+  <article class="parancs" id="p-fre">
+    <h3><span class="par-nev">FRE</span><span class="mit">Mennyi hely van a munkaterületen?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">FRE</pre>
+    <p>A <strong>48&nbsp;kB-os munkaterület</strong> szabad részét mondja meg bájtban.
+    Ide kerül a BASIC-program is — a <a href="#p-bbasic">BBASIC</a> ugyanezt a számot mutatja,
+    és a program minden sorával kevesebb lesz.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>FRE</b>
+49152 BYTES FREE
+C:\&gt;</pre>
+    </figure>
+  </article>
+
+  <article class="parancs" id="p-mem">
+    <h3><span class="par-nev">MEM</span><span class="mit">A teljes memóriakép</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">MEM</pre>
+    <p>Az összes memóriát felsorolja: a 48&nbsp;kB munkaterületet, a rendszer saját
+    területét, a nagy külső memóriát és a lemez szabad helyét.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>MEM</b>
+     49152 BYTES TOTAL CONVENTIONAL MEMORY
+     49152 BYTES FREE
+    134000 BYTES SYSTEM HEAP
+   6417144 BYTES EXTENDED MEMORY
+  10203136 BYTES FREE ON DRIVE C
+C:\&gt;</pre>
+    </figure>
+    <p class="halk">⚠ A <strong>rendszer-</strong> és a <strong>külső memória</strong> száma
+    menet közben változik néhány száz bájttal — a gép annyit foglal, amennyi épp kell.
+    A felső két szám és a lemez sora állandó.</p>
+  </article>
+
+  <article class="parancs" id="p-stat">
+    <h3><span class="par-nev">STAT</span><span class="mit">Mennyire gyors a gép éppen?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">STAT</pre>
+    <p>A gép saját műszerfala. Megmutatja, mennyi ideig tartott a legutóbbi teljes
+    képernyőrajzolás és a legutóbbi görgetés, mennyi memória szabad, és hogy
+    <strong>mióta megy a gép</strong>.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>STAT</b>
+FULL   LAST 35262 US  PEAK 48241 US  N=10
+SCROLL LAST 100164 US  PEAK 120204 US  N=285
+DISK   LAST 0 MS  PEAK 0 MS  N=0
+HEAP 134244   PSRAM 6417264
+BOUNCE 16000 PX   RESYNC 0   UPTIME 2611 S
+C:\&gt;</pre>
+    </figure>
+    <div class="tabkeret">
+    <table>
+      <thead><tr><th>Sor</th><th>Mit mond</th></tr></thead>
+      <tbody>
+        <tr><td>FULL</td><td>Teljes képernyő újrarajzolása. <code>LAST</code> a legutóbbi, <code>PEAK</code> a legrosszabb eddig, mikroszekundumban.</td></tr>
+        <tr><td>SCROLL</td><td>Egy sor görgetése. Ez fut a legtöbbször.</td></tr>
+        <tr><td>DISK</td><td>A legutóbbi lemezművelet, ezredmásodpercben.</td></tr>
+        <tr><td>HEAP / PSRAM</td><td>Szabad rendszer- és külső memória bájtban.</td></tr>
+        <tr><td>RESYNC</td><td><strong>A legfontosabb szám.</strong> Ahányszor a képernyő elveszítette a szinkront. Egészséges gépen <code>0</code>.</td></tr>
+        <tr><td>UPTIME</td><td>Hány másodperce megy a gép megszakítás nélkül.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </article>
+
+  <article class="parancs" id="p-mode">
+    <h3><span class="par-nev">MODE</span><span class="mit">Milyen színnel világítson?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">MODE                <span class="valt">a mostani fénypor</span>
+MODE AMBER          <span class="valt">borostyán</span>
+MODE GREEN          <span class="valt">zöld</span>
+MODE PAPER          <span class="valt">sötét betű világos alapon</span></pre>
+    <p>Átszínezi az <strong>egész képernyőt</strong> — nem csak az ezután írt szöveget.
+    A gép újrarajzolja a teljes képet, mert a fénypor mindent átszínez.
+    Argumentum nélkül megmondja, melyik van éppen beállítva.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>MODE</b>
+MODE AMBER
+C:\&gt;</pre>
+    </figure>
+    <p class="halk">Ennek a könyvnek a lapja ugyanezt a három fényport kínálja — a
+    kapcsoló a lap tetején van.</p>
+  </article>
+
+  <article class="parancs" id="p-logo">
+    <h3><span class="par-nev">LOGO</span><span class="mit">A gép jele</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">LOGO</pre>
+    <p>Kirajzolja a gép jelét a képernyőre. Semmi másra nem jó — és pontosan ezért van.</p>
+  </article>
+
+  <article class="parancs" id="p-date">
+    <h3><span class="par-nev">DATE</span><span class="mit">Milyen nap van?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">DATE</pre>
+    <p>Kiírja a mai dátumot, majd megkérdezi az újat <code>NN-HH-ÉÉ</code> alakban.
+    Utána <strong>rögtön az időt is kérdezi</strong>.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>DATE</b>
+CURRENT DATE IS SAT 26-09-2026
+ENTER NEW DATE (DD-MM-YY):</pre>
+    </figure>
+    <div class="doboz vigyazz">
+      <span class="fej">Fontos</span>
+      <div class="test"><p>Amíg a kérdés áll, a gép <strong>nem parancsot vár, hanem
+      dátumot</strong>. Ha nem akarsz változtatni, nyomj üres <strong>ENTER</strong>-t —
+      a mostani érték marad. Bármi mást gépelsz, <code>INVALID DATE</code> lesz belőle,
+      még akkor is, ha az egyébként érvényes parancs volna.</p></div>
+    </div>
+  </article>
+
+  <article class="parancs" id="p-time">
+    <h3><span class="par-nev">TIME</span><span class="mit">Hány óra van?</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">TIME</pre>
+    <p>Ugyanúgy működik, mint a <code>DATE</code>: kiírja a mostani időt, és kér egy újat
+    <code>ÓÓ:PP:MM</code> alakban. Üres ENTER = marad minden.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>TIME</b>
+CURRENT TIME IS 09:36:53
+ENTER NEW TIME:</pre>
+    </figure>
+  </article>
+
+  <article class="parancs" id="p-prompt">
+    <h3><span class="par-nev">PROMPT</span><span class="mit">Alakítsd át a promptot</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">PROMPT               <span class="valt">visszaállítja az alapot ($P$G)</span>
+PROMPT <span class="valt">&lt;minta&gt;</span>      <span class="valt">a $-kódok az A függelékben</span></pre>
+    <p>A prompt bármilyen szöveg lehet, <code>$</code> kezdetű kódokkal keverve.
+    A <code>$P</code> az utat, a <code>$G</code> a <code>&gt;</code> jelet,
+    a <code>$T</code> a pontos időt helyettesíti.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>PROMPT $T$G</b>
+PROMPT IS NOW:  09:35:19&gt;
+<span class="halvany">[DISK] PROMPT -&gt; $T$G</span>
+09:35:19&gt;<b>VER</b>
+BAROQUE-DOS 0.2
+CREATIVE PEARLS 2026
+09:35:21&gt;<b>PROMPT $P$G</b>
+PROMPT IS NOW:  C:\&gt;
+<span class="halvany">[DISK] PROMPT -&gt; $P$G</span>
+C:\&gt;</pre>
+    </figure>
+    <p class="halk">Figyeld meg a két időpontot: <code>09:35:19</code> és
+    <code>09:35:21</code>. A <code>$T</code> nem egyszer számolódik ki — a prompt
+    <strong>minden kiírásnál</strong> újra összeáll.</p>
+    <div class="doboz jo">
+      <span class="fej">Megmarad</span>
+      <div class="test"><p>A prompt a gép beállítás-tárába kerül, ezért
+      <strong>túléli a kikapcsolást</strong>. A puszta <code>PROMPT</code> állítja vissza.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- =================== 5 =================== -->
+<section id="f5" aria-labelledby="h5x">
+  <div class="fejezetszam"><span class="lemez">05</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h5x">A számoló</h2>
+  <p class="bevezeto">A gépben van egy teljes kifejezés-kiértékelő. Ugyanaz a mag szolgálja
+  ki a parancssori <code>CALC</code>-ot és a BASIC <code>PRINT</code> utasítását — tehát amit
+  itt megtanulsz, az a BASIC-ben is pontosan így működik.</p>
+
+  <article class="parancs" id="p-calc">
+    <h3><span class="par-nev">CALC</span> <span class="par-nev">?</span><span class="mit">Számolj ki nekem valamit</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">CALC <span class="valt">&lt;kifejezés&gt;</span>
+?    <span class="valt">&lt;kifejezés&gt;</span>      <span class="valt">a rövid alak</span>
+CALC                   <span class="valt">kiírja a műveletek listáját</span></pre>
+    <p>Kiszámolja a kifejezést. Ha az eredmény <strong>egész szám</strong>, a gép
+    <strong>hexadecimálisan és binárisan is</strong> megmutatja — ez programozáshoz
+    aranyat ér.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>CALC 2^10</b>
+ 1024   &amp;H400   &amp;B10000000000
+C:\&gt;<b>? (17 MOD 5) * 3</b>
+ 6   &amp;H6   &amp;B110
+C:\&gt;<b>? &amp;HFF + 1</b>
+ 256   &amp;H100   &amp;B100000000
+C:\&gt;<b>? SQR(2)</b>
+ 1.414214
+C:\&gt;<b>? 255 AND 15</b>
+ 15   &amp;HF   &amp;B1111
+C:\&gt;</pre>
+    </figure>
+
+    <h3>A műveletek</h3>
+    <figure class="kep">
+      <figcaption>A CALC saját listája</figcaption>
+      <pre class="crt"><b>CALC</b>
+CALC &lt;EXPRESSION&gt;      ? IS THE SHORT FORM
+  + - * /  \ MOD  ^   AND OR XOR NOT   = &lt;&gt; &lt; &gt; &lt;= &gt;=
+  ABS SGN INT FIX SQR SIN COS TAN ATN LOG EXP   PI
+  &amp;H1F HEX   &amp;O17 OCTAL   &amp;B1010 BINARY
+  A..Z HOLD VALUES:   CALC A=10    THEN   CALC A*2
+C:\&gt;</pre>
+    </figure>
+
+    <div class="tabkeret">
+    <table>
+      <thead><tr><th>Jel</th><th>Mit csinál</th></tr></thead>
+      <tbody>
+        <tr><td>+ &minus; * /</td><td>A négy alapművelet.</td></tr>
+        <tr><td>\</td><td>Egész osztás — a maradékot eldobja.</td></tr>
+        <tr><td>MOD</td><td>A maradék. <code>17 MOD 5</code> = 2.</td></tr>
+        <tr><td>^</td><td>Hatvány.</td></tr>
+        <tr><td>AND OR XOR NOT</td><td>Logikai és bitműveletek egyben.</td></tr>
+        <tr><td>= &lt;&gt; &lt; &gt; &lt;= &gt;=</td><td>Összehasonlítás. Az eredmény <strong>&minus;1</strong>, ha igaz, és <strong>0</strong>, ha hamis.</td></tr>
+        <tr><td>&amp;H &amp;O &amp;B</td><td>Hexadecimális, oktális, bináris szám írása.</td></tr>
+        <tr><td>A&hellip;Z</td><td>Huszonhat változó. <code>CALC A=10</code>, majd <code>CALC A*2</code>.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Négy korhű részlet, amit érdemes tudni</h3>
+    <ul class="lista">
+      <li>Az <strong>IGAZ értéke &minus;1</strong>, nem 1. Azért, mert a &minus;1 minden
+      bitje egyes — így az <code>AND</code> logikai és bitműveletként is ugyanaz marad.</li>
+      <li>A hatványozás <strong>erősebb az előjelnél</strong>:
+      <code>&minus;2^2</code> eredménye <strong>&minus;4</strong>, nem 4.</li>
+      <li>A hatványozás <strong>jobbra kötődik</strong>:
+      <code>2^3^2</code> eredménye <strong>512</strong> (azaz 2<sup>9</sup>), nem 64.</li>
+      <li>Az egynél kisebb számokról <strong>lemarad a vezető nulla</strong>:
+      a fél nem <code>0.5</code>, hanem <code>.5</code>. A gép hét jegyre kerekít.</li>
+    </ul>
+  </article>
+</section>
+
+<!-- =================== 6 =================== -->
+<section id="f6" aria-labelledby="h6x">
+  <div class="fejezetszam"><span class="lemez">06</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h6x">Kötegek — a .BAT fájlok</h2>
+  <p class="bevezeto">Egy <code>.BAT</code> fájl nem más, mint parancsok listája egy
+  szövegfájlban. Ha begépeled a nevét (kiterjesztés nélkül), a gép sorban végrehajtja őket.
+  A gép előbb az aktuális könyvtárban keresi, aztán a <code>\DOS</code> könyvtárban.</p>
+
+  <p>Köteget legegyszerűbben a <code>COPY CON</code> paranccsal írsz:
+  <code>COPY CON PROBA.BAT</code>, aztán a sorok, végül <strong>^Z</strong>.</p>
+
+  <article class="parancs" id="p-echo">
+    <h3><span class="par-nev">ECHO</span><span class="mit">Írj ki egy sort</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">ECHO <span class="valt">&lt;szöveg&gt;</span>
+@ECHO OFF          <span class="valt">ne mutasd magukat a parancsokat</span></pre>
+    <p>Kiírja a szöveget a képernyőre. A köteg elejére tett <code>@ECHO OFF</code> elrejti a
+    parancsok visszhangját, hogy csak az számítson, amit te akarsz kiíratni.</p>
+  </article>
+
+  <article class="parancs" id="p-rem">
+    <h3><span class="par-nev">REM</span><span class="mit">Megjegyzés</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">REM <span class="valt">&lt;bármi&gt;</span></pre>
+    <p>A gép nem csinál vele semmit. Magadnak írod — fél év múlva hálás leszel érte.</p>
+  </article>
+
+  <article class="parancs" id="p-pause">
+    <h3><span class="par-nev">PAUSE</span><span class="mit">Állj meg egy billentyűig</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">PAUSE</pre>
+    <p>Megállítja a köteget, amíg le nem nyomsz egy billentyűt. Akkor hasznos, ha a
+    következő lépés előtt el kell olvasni valamit.</p>
+  </article>
+
+  <article class="parancs" id="p-goto">
+    <h3><span class="par-nev">GOTO</span><span class="mit">Ugrás egy címkére</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">GOTO <span class="valt">&lt;címke&gt;</span>
+:<span class="valt">&lt;címke&gt;</span>           <span class="valt">a célpont, kettősponttal kezdve</span></pre>
+    <p>Átugrik a köteg egy másik pontjára. A címke sorát kettősponttal kell kezdeni.</p>
+  </article>
+
+  <article class="parancs" id="p-ifexist">
+    <h3><span class="par-nev">IF EXIST</span><span class="mit">Csak akkor, ha megvan a fájl</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">IF EXIST <span class="valt">&lt;fájl&gt;</span> <span class="valt">&lt;parancs&gt;</span></pre>
+    <p>A parancsot csak akkor hajtja végre, ha a fájl létezik. Ezzel lehet köteget úgy írni,
+    hogy ne álljon meg hibával, ha valami hiányzik.</p>
+  </article>
+
+  <article class="parancs" id="p-autoexec">
+    <h3><span class="par-nev">AUTOEXEC.BAT</span><span class="mit">Ami induláskor lefut</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">C:\AUTOEXEC.BAT</pre>
+    <p>Ha ez a fájl ott van a lemez gyökerében, a gép <strong>induláskor magától
+    végrehajtja</strong>. Ide tedd, amit minden bekapcsoláskor szeretnél.</p>
+    <figure class="kep">
+      <figcaption>A gépen lévő AUTOEXEC.BAT</figcaption>
+      <pre class="crt"><b>TYPE AUTOEXEC.BAT</b>
+@ECHO OFF
+ECHO BAROQUE 48 - THE DISK IS READY
+IF EXIST README.TXT ECHO README.TXT IS ON THE DISK
+C:\&gt;</pre>
+    </figure>
+  </article>
+</section>
+
+<!-- =================== 7 =================== -->
+<section id="f7" aria-labelledby="h7x">
+  <div class="fejezetszam"><span class="lemez">07</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h7x">A hálózat</h2>
+  <p class="bevezeto">A gép rá tud csatlakozni a vezeték nélküli hálózatra. Erre két dolog
+  kell: hogy lássa a világot, és hogy a világ új programot tudjon tölteni bele.</p>
+
+  <article class="parancs" id="p-net">
+    <h3><span class="par-nev">NET</span><span class="mit">Hálózat be, ki, elfelejt</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">NET                <span class="valt">a mostani állapot</span>
+NET ON             <span class="valt">kapcsold be</span>
+NET OFF            <span class="valt">kapcsold ki</span>
+NET FORGET         <span class="valt">felejtsd el a mentett hálózatot</span></pre>
+    <p>Argumentum nélkül kiírja, hogy épp online van-e a gép, milyen hálózaton, milyen
+    címen, mekkora térerővel, és melyik programszeletről fut.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza — a hálózat neve és a cím helyőrző</figcaption>
+      <pre class="crt"><b>NET</b>
+MODE  ONLINE   <span class="halvany">&lt;A-TE-HALOZATOD&gt;</span>
+ADDR  <span class="halvany">&lt;A-GEP-CIME&gt;</span>   -48 DBM
+SLOT  app0   UPDATE VIA POST /ota
+C:\&gt;</pre>
+    </figure>
+    <div class="doboz vigyazz">
+      <span class="fej">Helyőrző</span>
+      <div class="test"><p>A valódi képernyőn itt a <strong>te hálózatod neve</strong> és a
+      <strong>géped IP-címe</strong> áll. Ebben a könyvben szándékosan helyőrző van a
+      helyükön — ezek a te gépedre jellemző adatok, nem tartoznak a nyilvánosságra.</p></div>
+    </div>
+    <div class="tabkeret">
+    <table>
+      <thead><tr><th>Sor</th><th>Mit mond</th></tr></thead>
+      <tbody>
+        <tr><td>MODE</td><td><code>ONLINE</code> vagy <code>OFF</code>, utána a hálózat neve.</td></tr>
+        <tr><td>ADDR</td><td>A gép címe a hálózaton, és a térerő. A &minus;48&nbsp;dBm erős jel; &minus;80 alatt már gyenge.</td></tr>
+        <tr><td>SLOT</td><td>Melyik programszeletről fut a gép, és hogy hova kell küldeni az új programot.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="doboz jo">
+      <span class="fej">Tipp</span>
+      <div class="test"><p>A <code>NET OFF</code> nem csak takarékoskodik: a rádió
+      elhallgatásával <strong>tisztább marad a kép</strong> is.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- =================== 8 =================== -->
+<section id="f8" aria-labelledby="h8x">
+  <div class="fejezetszam"><span class="lemez">08</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h8x">A hang</h2>
+  <p class="bevezeto">A gép tud hangot adni — ha van mibe. A hangszóró a gép digitális
+  hangkimenetére kapcsolódik.</p>
+
+  <article class="parancs" id="p-beep">
+    <h3><span class="par-nev">BEEP</span><span class="mit">Próbahang</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">BEEP</pre>
+    <p>Megszólaltat egy rövid hangot. Ez a leggyorsabb módja annak, hogy kiderüljön,
+    jól van-e bekötve a hangszóró.</p>
+  </article>
+
+  <article class="parancs" id="p-audio">
+    <h3><span class="par-nev">AUDIO</span><span class="mit">A hangkimenet beállításai</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">AUDIO              <span class="valt">a mostani állapot</span>
+AUDIO 0            <span class="valt">az órajel lába: IO0</span>
+AUDIO 19           <span class="valt">az órajel lába: IO19</span>
+AUDIO VOL <span class="valt">&lt;n&gt;</span>      <span class="valt">hangerő 0-tól 10-ig</span></pre>
+    <p>A gép két panelváltozatban létezik, és a hang órajele <strong>nem ugyanazon a lábon
+    van</strong> a kettőn. Ez a parancs állítja át. Ha a <code>BEEP</code> néma, ez az első hely,
+    ahol keresd a hibát.</p>
+    <figure class="kep">
+      <figcaption>A gép válasza</figcaption>
+      <pre class="crt"><b>AUDIO</b>
+BCLK  UNKNOWN - RUN BEEP
+DIN   IO17   LRCLK IO18   RATE 44100 HZ
+VOL   3 OF 10
+C:\&gt;</pre>
+    </figure>
+    <p class="halk">A <code>BCLK UNKNOWN</code> azt jelenti, hogy a gép <em>még nem tudja</em>,
+    melyik lábon van az órajel — amíg egyszer le nem futott a <code>BEEP</code>.</p>
+  </article>
+
+  <article class="parancs" id="p-tape">
+    <h3><span class="par-nev">TAPE</span><span class="mit">Mentés magnóra</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">TAPE</pre>
+    <p>Kiment egy blokkot „magnóra” — hanggal, ahogy 1983-ban. A <code>\TAPES</code>
+    könyvtár ehhez tartozik.</p>
+    <div class="doboz vigyazz">
+      <span class="fej">Fejlesztés alatt</span>
+      <div class="test"><p>A magnó-rész még nincs kész. A parancs létezik, de a
+      teljes mentés-visszatöltés kör még nem járható végig.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- =================== 9 =================== -->
+<section id="f9" aria-labelledby="h9x">
+  <div class="fejezetszam"><span class="lemez">09</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h9x">A BASIC</h2>
+  <p class="bevezeto">A gépben ott lakik egy teljes BASIC-értelmező. Ez a fejezet csak
+  az ajtót mutatja meg — a BASIC saját kézikönyvet kapott.</p>
+
+  <article class="parancs" id="p-bbasic">
+    <h3><span class="par-nev">BBASIC</span><span class="mit">Belépés a BAROQUE BASIC-be</span></h3>
+    <div class="veset" aria-hidden="true"></div>
+    <pre class="szintaxis">BBASIC             <span class="valt">a BASIC indítása</span>
+SYSTEM             <span class="valt">vissza ide, a parancssorba</span></pre>
+    <p>A <code>BBASIC</code> parancs elindítja a BASIC-et. Ettől kezdve a gép
+    <code>Ok</code> jellel válaszol a <code>C:\&gt;</code> helyett — ez a BASIC promptja.
+    Számmal kezdett sor a programba kerül; szám nélküli sor azonnal lefut.
+    A <code>SYSTEM</code> hozza vissza a parancssort.</p>
+    <figure class="kep">
+      <figcaption>Egy teljes BASIC-menet, a gép valódi képernyője</figcaption>
+      <pre class="crt"><b>BBASIC</b>
+BAROQUE BASIC 1.1
+49152 BYTES FREE
+Ok
+<b>10 FOR I = 1 TO 5</b>
+<b>20 PRINT I; I*I</b>
+<b>30 NEXT I</b>
+<b>RUN</b>
+ 1  1
+ 2  4
+ 3  9
+ 4  16
+ 5  25
+Ok</pre>
+    </figure>
+
+    <h3>Ciklus és alprogram</h3>
+    <p>A <code>FOR</code> ismeri a <code>STEP</code>-et, a negatívat is, és a ciklusok
+    <strong>egymásba ágyazhatók</strong>. A <code>GOSUB</code> alprogramot hív, a
+    <code>RETURN</code> visszatér belőle.</p>
+    <figure class="kep">
+      <figcaption>Visszaszámlálás negatív STEP-pel</figcaption>
+      <pre class="crt"><b>10 FOR C = 10 TO 0 STEP -2</b>
+<b>20 PRINT C;</b>
+<b>30 NEXT</b>
+<b>40 PRINT "LIFTOFF"</b>
+<b>RUN</b>
+ 10  8  6  4  2  0 LIFTOFF
+Ok</pre>
+    </figure>
+    <figure class="kep">
+      <figcaption>Alprogram egy cikluson belül</figcaption>
+      <pre class="crt"><b>10 FOR N = 1 TO 3</b>
+<b>20 GOSUB 100</b>
+<b>30 NEXT</b>
+<b>40 END</b>
+<b>100 PRINT "SOR"; N</b>
+<b>110 RETURN</b>
+<b>RUN</b>
+SOR 1
+SOR 2
+SOR 3
+Ok</pre>
+    </figure>
+    <div class="doboz jo">
+      <span class="fej">Korhű</span>
+      <div class="test"><p>Figyeld a szóközöket: a <code>PRINT</code> a szám <strong>elé
+      és mögé is</strong> tesz egyet — az első az előjel helye, a második az elválasztás.
+      Ezért ad a <code>PRINT 1;2;3</code> <code>&nbsp;1&nbsp;&nbsp;2&nbsp;&nbsp;3&nbsp;</code>
+      eredményt. Szöveg után nincs szóköz, ezért lesz a <code>PRINT "SOR"; N</code>
+      sorból <code>SOR 1</code>.</p></div>
+    </div>
+    <div class="doboz jo">
+      <span class="fej">A legszebb szám</span>
+      <div class="test"><p>A <code>FRE</code> nem felirat, hanem <strong>könyvelés</strong>:
+      a 49&nbsp;152-ből minden programsor elfogyaszt három bájt fejlécet plusz a sor
+      szövegét — a sorszám nélkül. A gép valóban megszámolja.</p></div>
+    </div>
+    <p>A teljes utasításkészlet, a változók, a függvények és a többi korhű részlet a
+    <strong>BAROQUE&nbsp;BASIC kézikönyvben</strong> következik.</p>
+  </article>
+</section>
+
+<!-- =================== 10 =================== -->
+<section id="f10" aria-labelledby="h10x">
+  <div class="fejezetszam"><span class="lemez">10</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h10x">Hibaüzenetek</h2>
+  <p class="bevezeto">A gép röviden szól, ha valami nem megy. Itt van, mit jelentenek.</p>
+
+  <figure class="kep">
+    <figcaption>Három hiba, ahogy a gép kiírja</figcaption>
+    <pre class="crt"><b>BLARG</b>
+BAD COMMAND OR FILE NAME
+C:\&gt;<b>TYPE NINCSILYEN.TXT</b>
+FILE NOT FOUND
+C:\&gt;<b>? 1/0</b>
+DIVISION BY ZERO
+C:\&gt;</pre>
+  </figure>
+
+  <div class="tabkeret">
+  <table>
+    <thead><tr><th>Üzenet</th><th>Mit jelent, és mit tegyél</th></tr></thead>
+    <tbody>
+      <tr><td>BAD COMMAND OR FILE NAME</td><td>Nincs ilyen parancs, és nincs ilyen nevű <code>.BAT</code> fájl sem. Nézd meg a <code>HELP</code> listáját — vagy egyszerűen elgépelted.</td></tr>
+      <tr><td>FILE NOT FOUND</td><td>A megnevezett fájl nincs meg ott, ahol keresed. A <code>DIR</code> megmondja, mi van ott valójában.</td></tr>
+      <tr><td>PATH NOT FOUND</td><td>A könyvtár nincs meg. Ezt kapod akkor is, ha a <code>DIR</code> után fájlnevet írsz könyvtár helyett.</td></tr>
+      <tr><td>DIVISION BY ZERO</td><td>Nullával osztottál a <code>CALC</code>-ban vagy a BASIC-ben.</td></tr>
+      <tr><td>INVALID DATE / INVALID TIME</td><td>A <code>DATE</code> vagy a <code>TIME</code> kérdésére nem dátumot, illetve nem időt gépeltél. Üres ENTER hagyja változatlanul.</td></tr>
+      <tr><td>NO SUCH PHOSPHOR</td><td>A <code>MODE</code> csak hármat ismer: <code>AMBER</code>, <code>GREEN</code>, <code>PAPER</code>.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- =================== 11 =================== -->
+<section id="f11" aria-labelledby="h11x">
+  <div class="fejezetszam"><span class="lemez">11</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h11x">Amiben szándékosan eltér a DOS-tól</h2>
+  <p class="bevezeto">A gép nem másolat. Ahol eltér a korabeli mintától, ott azt
+  <strong>szándékosan</strong> teszi — és jobb, ha ezt tudod, mint ha hibának hiszed.</p>
+
+  <div class="doboz elter">
+    <span class="fej">1. CHKDSK /F</span>
+    <div class="test"><p><strong>Nem javít.</strong> A gép fájlrendszere nem ad rá
+    műveletet. A parancs kiírja, mit talált — de nem állítja, hogy megoldotta.</p></div>
+  </div>
+  <div class="doboz elter">
+    <span class="fej">2. LABEL</span>
+    <div class="test"><p>A lemez neve a gép beállítás-tárában van, nem a lemezen.
+    Ezért <strong>túléli a FORMAT-ot</strong>.</p></div>
+  </div>
+  <div class="doboz elter">
+    <span class="fej">3. $E a PROMPT-ban</span>
+    <div class="test"><p>A gépben <strong>nincs ANSI-értelmező</strong>, ezért a
+    <code>$E</code> kód elfogadott, de nem csinál semmit. Szándékosan: jobb, ha nem
+    történik semmi, mint ha szemét kerülne a képernyőre.</p></div>
+  </div>
+  <div class="doboz elter">
+    <span class="fej">4. A [DISK] sorok</span>
+    <div class="test"><p>A lemezműveletek után megjelenő <code>[DISK]</code> kezdetű sor a
+    gép saját naplója — méretet és eltelt időt mond. A korabeli DOS ilyet nem írt ki.
+    Itt marad, mert egy saját építésű gépnél <strong>hasznos látni, mi történt</strong>.</p></div>
+  </div>
+  <div class="doboz elter">
+    <span class="fej">5. Amivel több a koránál</span>
+    <div class="test"><p>A <code>&amp;B</code> bináris számalap, a <code>CALC</code> hexa- és
+    binármellékkijelzése, a három fénypor, a <code>DIR</code> mintájában a bárhol álló
+    <code>*</code>, és az, hogy a <code>PROMPT</code> beállítása túléli a kikapcsolást.</p></div>
+  </div>
+</section>
+
+<!-- =================== 12 =================== -->
+<section id="f12" aria-labelledby="h12x">
+  <div class="fejezetszam"><span class="lemez">12</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="h12x">Ami még nincs</h2>
+  <p class="bevezeto">Egy kézikönyv, ami elhallgatja a hiányt, hazudik. Ez a lista ezért
+  van itt — és ezért fog rövidülni.</p>
+
+  <div class="doboz nincs">
+    <span class="fej">Még nincs</span>
+    <div class="test">
+      <ul class="lista">
+        <li><code>MOVE</code> — fájl áthelyezése másik könyvtárba.</li>
+        <li><code>XCOPY</code> — könyvtár másolása a tartalmával együtt.</li>
+        <li>A <code>TAPE</code> teljes mentés-visszatöltés köre.</li>
+        <li>Fájlkezelő ASCII-képernyővel — <strong>BAROQUE COMMANDER</strong> lesz a neve.</li>
+        <li>A BASIC-ből: <code>INPUT</code>, <code>SAVE</code>/<code>LOAD</code>/<code>FILES</code>,
+        és a szöveges változók (<code>A$</code>).</li>
+      </ul>
+    </div>
+  </div>
+  <p>Ez a könyv <strong>együtt nő a géppel</strong>. Ugyanezen a címen fog frissülni —
+  nem kell új linket keresned.</p>
+</section>
+
+<!-- =================== A =================== -->
+<section id="fa" aria-labelledby="hax">
+  <div class="fejezetszam"><span class="lemez">A</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="hax">A függelék — a PROMPT kódjai</h2>
+  <p class="bevezeto">Ezeket a <code>$</code> kezdetű kódokat teheted a
+  <a href="#p-prompt">PROMPT</a> mintájába. Minden más karakter úgy jelenik meg, ahogy
+  beírtad.</p>
+
+  <div class="tabkeret">
+  <table>
+    <thead><tr><th>Kód</th><th>Mit tesz a helyére</th></tr></thead>
+    <tbody>
+      <tr><td>$P</td><td>Az aktuális útvonal, meghajtóval együtt — például <code>C:\DOS</code></td></tr>
+      <tr><td>$N</td><td>A meghajtó betűjele: <code>C</code></td></tr>
+      <tr><td>$G</td><td>A <code>&gt;</code> jel</td></tr>
+      <tr><td>$L</td><td>A <code>&lt;</code> jel</td></tr>
+      <tr><td>$B</td><td>A <code>|</code> jel</td></tr>
+      <tr><td>$Q</td><td>Az <code>=</code> jel</td></tr>
+      <tr><td>$S</td><td>Egy szóköz</td></tr>
+      <tr><td>$$</td><td>Egy <code>$</code> jel</td></tr>
+      <tr><td>$T</td><td>A pontos idő — <strong>minden kiíráskor újraszámolva</strong></td></tr>
+      <tr><td>$D</td><td>A mai dátum</td></tr>
+      <tr><td>$V</td><td>A rendszer verziószáma</td></tr>
+      <tr><td>$_</td><td>Sortörés — a prompt így lehet kétsoros</td></tr>
+      <tr><td>$H</td><td>Egy karakter törlése visszafelé</td></tr>
+      <tr><td>$E</td><td>Escape. <strong>Elfogadott, de nem csinál semmit</strong> — a gépben nincs ANSI-értelmező.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Az alapértelmezés: <code>PROMPT $P$G</code>. A puszta <code>PROMPT</code> ezt állítja
+  vissza. Néhány ötlet:</p>
+  <div class="tabkeret">
+  <table>
+    <thead><tr><th>Minta</th><th>Eredmény</th></tr></thead>
+    <tbody>
+      <tr><td>$P$G</td><td><code>C:\&gt;</code> &mdash; az alapértelmezés</td></tr>
+      <tr><td>$T$G</td><td><code>09:35:19&gt;</code> &mdash; óra a prompt helyén</td></tr>
+      <tr><td>$P$_$G</td><td>Kétsoros prompt: az út fölül, a jel alatta</td></tr>
+      <tr><td>BAROQUE$S$P$G</td><td><code>BAROQUE C:\&gt;</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- =================== B =================== -->
+<section id="fb" aria-labelledby="hbx">
+  <div class="fejezetszam"><span class="lemez">B</span><span class="vonalka" aria-hidden="true"></span></div>
+  <h2 id="hbx">B függelék — minden parancs</h2>
+  <p class="bevezeto">Ez a gép saját <code>HELP</code> listája, szó szerint. Ha a gép egyszer
+  többet tud, mint ez a könyv, akkor <strong>ez a lista mond igazat</strong>, nem a könyv.</p>
+
+  <figure class="kep">
+    <figcaption>A HELP teljes tartalma</figcaption>
+    <pre class="crt">DIR [PATH|MASK]    LIST A DIRECTORY - DIR *.TXT  (/P PAUSES)
+TREE [PATH]        SHOW THE DIRECTORY TREE
+CD / MD / RD       CHANGE, MAKE, REMOVE A DIRECTORY
+DEL &lt;FILE&gt;         DELETE A FILE
+REN &lt;OLD&gt; &lt;NEW&gt;    RENAME A FILE - SAME DIRECTORY
+TYPE &lt;FILE&gt; [/P]   SHOW A FILE
+MORE &lt;FILE&gt;        SHOW A FILE, A PAGE AT A TIME
+COPY &lt;FROM&gt; &lt;TO&gt;   COPY A FILE
+COPY CON &lt;FILE&gt;    KEY A FILE IN - ^Z ENDS, ^C CANCELS
+&lt;NAME&gt;             RUN &lt;NAME&gt;.BAT FROM HERE OR FROM \DOS
+ECHO REM PAUSE     IN .BAT - ALSO GOTO :LABEL, IF EXIST
+VOL / MEM          VOLUME NAME, MEMORY
+CHKDSK [/V] [/F]   CHECK THE DISK - READS EVERY FILE
+PROMPT [$CODES]    SET THE PROMPT - PROMPT ALONE RESETS IT
+CALC &lt;EXPR&gt;   ?    CALCULATE - CALC ALONE LISTS THE OPERATORS
+BBASIC             BAROQUE BASIC - SYSTEM COMES BACK HERE
+LABEL &lt;NAME&gt;       SET THE VOLUME NAME
+DATE / TIME        SHOW OR SET THE CLOCK
+FORMAT C:          MAKE A FRESH DRIVE C
+CLS                CLEAR THE SCREEN
+FRE                FREE WORKSPACE IN BYTES
+MODE &lt;PHOSPHOR&gt;    AMBER / GREEN / PAPER
+LOGO               SHOW THE MARK
+NET [ON|OFF]       NETWORK - OFF KEEPS THE PICTURE CLEAN
+BEEP               TEST TONE
+TAPE               SAVE A BLOCK TO TAPE
+AUDIO [0|19|VOL n] BCLK PIN, STATUS, LOUDNESS
+STAT               TIMING AND MEMORY
+VER                VERSION</pre>
+  </figure>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <div class="belso">
+    <p><strong>BAROQUE-DOS Kézikönyv</strong> &middot; a 0.2 verzióhoz &middot;
+    Creative Pearls, 2026.</p>
+    <p>Minden képernyőpélda ebben a könyvben a gép valódi válasza, a
+    <code>2026-09-26</code> napi állapotból. A hálózat neve és a gép címe
+    szándékosan helyőrzővel szerepel.</p>
+    <p>A BAROQUE&nbsp;BASIC külön kézikönyvet kap. Ez a lap
+    <strong>ugyanezen a címen frissül</strong>, ahogy a gép okosodik.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var gyoker = document.documentElement;
+
+  /* ---------- fenypor ---------- */
+  var fGombok = Array.prototype.slice.call(
+    document.querySelectorAll('button[data-fenypor]'));
+
+  function fenyporAllit(nev, ments) {
+    gyoker.setAttribute('data-fenypor', nev);
+    fGombok.forEach(function (g) {
+      g.setAttribute('aria-pressed', g.getAttribute('data-fenypor') === nev ? 'true' : 'false');
+    });
+    if (ments) { try { localStorage.setItem('b48-fenypor', nev); } catch (e) {} }
+  }
+
+  fGombok.forEach(function (g) {
+    g.addEventListener('click', function () {
+      fenyporAllit(g.getAttribute('data-fenypor'), true);
+    });
+  });
+
+  var mentettF = null;
+  try { mentettF = localStorage.getItem('b48-fenypor'); } catch (e) {}
+  if (mentettF === 'amber' || mentettF === 'green' || mentettF === 'paper') {
+    fenyporAllit(mentettF, false);
+  } else {
+    /* Nincs mentett valasztas: a gazda temaja / a rendszer donti el.
+       A gombok jelzese kovesse, amit a lap tenylegesen mutat. */
+    gyoker.removeAttribute('data-fenypor');
+    var vilagos = gyoker.getAttribute('data-theme') === 'light' ||
+      (gyoker.getAttribute('data-theme') !== 'dark' &&
+       window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+    var kezdo = vilagos ? 'paper' : 'amber';
+    fGombok.forEach(function (g) {
+      g.setAttribute('aria-pressed', g.getAttribute('data-fenypor') === kezdo ? 'true' : 'false');
+    });
+  }
+
+  /* ---------- betumeret ---------- */
+  var MERETEK = [17, 19, 22, 26, 30];
+  var mIdx = 1;
+  var kijelzo = document.getElementById('meret-kijelzo');
+
+  var keret = document.querySelector('.keret');
+
+  function meretAllit(i, ments) {
+    mIdx = Math.max(0, Math.min(MERETEK.length - 1, i));
+    gyoker.style.setProperty('--alap', MERETEK[mIdx] + 'px');
+    kijelzo.textContent = MERETEK[mIdx] + ' px';
+    document.getElementById('kisebb').disabled = (mIdx === 0);
+    document.getElementById('nagyobb').disabled = (mIdx === MERETEK.length - 1);
+    /* ⭐ A ket legnagyobb meretnel a ket hasab mar nem fer el egymas mellett:
+       a lap magatol egy hasabra vált, es a tabla a szoveg fole kerul. */
+    keret.classList.toggle('egyhasab', MERETEK[mIdx] >= 26);
+    if (ments) { try { localStorage.setItem('b48-meret', String(mIdx)); } catch (e) {} }
+  }
+
+  document.getElementById('kisebb').addEventListener('click', function () { meretAllit(mIdx - 1, true); });
+  document.getElementById('nagyobb').addEventListener('click', function () { meretAllit(mIdx + 1, true); });
+
+  var mentettM = null;
+  try { mentettM = localStorage.getItem('b48-meret'); } catch (e) {}
+  meretAllit(mentettM === null ? 1 : parseInt(mentettM, 10) || 1, false);
+
+  /* ---------- a mutatotabla szuroje ---------- */
+  var szuro = document.getElementById('szuro');
+  var talalat = document.getElementById('talalat');
+  var tetelek = Array.prototype.slice.call(document.querySelectorAll('.mutato ul li'));
+  var fejezetek = Array.prototype.slice.call(document.querySelectorAll('.mutato > ol > li'));
+
+  function ekezetlen(s) {
+    return s.toLowerCase()
+      .replace(/[áàâä]/g, 'a').replace(/[éèêë]/g, 'e').replace(/[íìîï]/g, 'i')
+      .replace(/[óòôöőõ]/g, 'o').replace(/[úùûüű]/g, 'u');
+  }
+
+  szuro.addEventListener('input', function () {
+    var q = ekezetlen(szuro.value.trim());
+    if (!q) {
+      tetelek.forEach(function (li) { li.hidden = false; });
+      fejezetek.forEach(function (li) { li.hidden = false; });
+      talalat.innerHTML = '&nbsp;';
+      return;
+    }
+    var db = 0;
+    tetelek.forEach(function (li) {
+      var egyezik = ekezetlen(li.textContent).indexOf(q) !== -1;
+      li.hidden = !egyezik;
+      if (egyezik) db++;
+    });
+    fejezetek.forEach(function (li) {
+      var cim = li.querySelector('.fejezet');
+      var cimEgyezik = cim && ekezetlen(cim.textContent).indexOf(q) !== -1;
+      var vanGyerek = li.querySelector('ul li:not([hidden])');
+      li.hidden = !(cimEgyezik || vanGyerek);
+    });
+    talalat.textContent = db + (db === 1 ? ' parancs' : ' parancs');
+  });
+
+  /* ---------- hol jarunk (gorgetes-jelzo) ---------- */
+  var linkek = {};
+  Array.prototype.slice.call(document.querySelectorAll('.mutato a[href^="#"]'))
+    .forEach(function (a) { linkek[a.getAttribute('href').slice(1)] = a; });
+
+  var celok = Array.prototype.slice.call(
+    document.querySelectorAll('section[id], article.parancs[id]'))
+    .filter(function (el) { return linkek[el.id]; });
+
+  if ('IntersectionObserver' in window && celok.length) {
+    var lathato = {};
+    var figyelo = new IntersectionObserver(function (bejegyzesek) {
+      bejegyzesek.forEach(function (b) { lathato[b.target.id] = b.isIntersecting; });
+      var also = null;
+      for (var i = 0; i < celok.length; i++) {
+        if (lathato[celok[i].id]) { also = celok[i].id; break; }
+      }
+      for (var k in linkek) {
+        if (Object.prototype.hasOwnProperty.call(linkek, k)) {
+          if (k === also) { linkek[k].setAttribute('aria-current', 'true'); }
+          else { linkek[k].removeAttribute('aria-current'); }
+        }
+      }
+    }, { rootMargin: '-8% 0px -70% 0px', threshold: 0 });
+    celok.forEach(function (el) { figyelo.observe(el); });
+  }
+})();
+</script>

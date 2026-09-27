@@ -11,16 +11,22 @@ The boot screen on it is drawn live, not photographed.
 
 ## Status
 
-The repository is **private**. GitHub Pages on a private repository is a paid
-feature, so the site is not published yet — publishing is a switch we flip when
-we go public. Until then, open `index.html` locally.
+The site is **not published yet**, because this repository is **private**.
+
+⚠ To be precise, so nobody reads this as "Pages costs money": GitHub Pages is
+**free from a public repository** — that is how `peterkurtosi.github.io/segitseg`
+runs. Only Pages *from a private repository* needs a paid plan. Publishing this
+page therefore costs nothing; it simply means making this repository public.
+
+That is a decision, not a technicality, and it is Peter's to make. Until then,
+open `index.html` locally.
 
 ## Where the work lives
 
 The project's working directory (ideas, measurements, the vendor documentation,
 the firmware sketches) is **not** in this repository:
 
-`OneDrive\Desktop\Own Projects for Claud\ClaudeCode - Vintage Szamitogep`
+`OneDrive\Desktop\Own Projects for Claud\ClaudeCode - BAROQUE 48`
 
 - `03-STATE/OTLET-TAR.md` — every idea, with the reasoning and what was rejected
 - `08-REFERENCE/panel-gyari-ESP32-8048S070/` — the manufacturer's schematics
