@@ -11,15 +11,23 @@ The boot screen on it is drawn live, not photographed.
 
 ## Status
 
-The site is **not published yet**, because this repository is **private**.
+**The site is live:** https://peterkurtosi.github.io/baroque48/
 
-⚠ To be precise, so nobody reads this as "Pages costs money": GitHub Pages is
-**free from a public repository** — that is how `peterkurtosi.github.io/segitseg`
-runs. Only Pages *from a private repository* needs a paid plan. Publishing this
-page therefore costs nothing; it simply means making this repository public.
+Published on 2026-09-27, once the machine had a DOS, a BASIC and two manuals
+worth showing. GitHub Pages is free from a public repository — that is all it
+took.
 
-That is a decision, not a technicality, and it is Peter's to make. Until then,
-open `index.html` locally.
+## What is here
+
+    index.html                    the page itself, in Hungarian, German and English
+    kep/                          three photographs of the real machine
+    kezikonyv/baroque-dos.html    the command-line manual, 28 screens
+    kezikonyv/baroque-basic.html  the BASIC manual, 15 chapters
+
+⭐ In both manuals **every screen line is the machine's real answer**. The BASIC
+manual is generated: a script runs 48 examples on the machine, stores what it
+replied, and builds the page from that. A gate re-queries the machine and checks
+that all 293 screen lines still match. Not one example was typed from memory.
 
 ## Where the work lives
 
