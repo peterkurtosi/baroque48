@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BAROQUE 48 — próbáld ki</title>
+<meta name="description" content="A BAROQUE 48 a böngésződben. Ugyanaz a DOS, ugyanaz a BASIC, ugyanaz a lemez — és minden válasza a valódi géphez van mérve.">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BAROQUE 48 — próbáld ki">
+<meta property="og:description" content="Gépelj bele. 465 mért sor mondja, hogy ugyanazt válaszolja, mint a vas.">
+
+<!-- ⚠ SEMMILYEN KÜLSŐ KÉRÉS. Nincs webfont, nincs statisztika, nincs nyomkövetés.
+     Ugyanaz a szabály, mint a főoldalon.
+
+     ⭐⭐ AMI EZT A LAPOT KÜLÖNLEGESSÉ TESZI
+     Nem videó és nem képsor a gépről: ez MAGA A GÉP. A `baroque48.js` a
+     `01-SOURCE` C-forrásának a másolata, a lemez a valódi gép lemeze, és
+     hogy ugyanazt mondja-e, azt nem ÁLLÍTJUK, hanem MÉRJÜK:
+         04-TOOLS/meroeszkozok/emu_korpusz_gyujt.py   megkérdezi a gépet
+         04-TOOLS/meroeszkozok/emu_kapu.js            összeveti a másolattal
+     A lap alján álló szám ennek a kapunak az eredménye.
+
+     ⭐ HÁROM NYELV: a MAGYAR a HTML-ben áll, tehát JavaScript nélkül is az
+     olvasható, és alapból mindig az jön. -->
+<style>
+/* ── A FÉNYPOROK ────────────────────────────────────────────────
+   Ugyanazok az értékek, mint a főoldalon: P3 borostyán, P1 zöld, P4 fehér.
+   ⚠ A kontrasztok mérve: 6,2:1 · 7,0:1 · 8,2:1 — mind az AA fölött. */
+:root{
+  --ground:#0B0D12;
+  --glow:#FFB000;
+  --dim:#C08A10;
+  --edge:#1C2029;
+  /* a ház sárgaréze — a gép fizikai kerete */
+  --rez1:#3A2A10; --rez2:#6B4E1A; --rez3:#A8811F; --rez4:#D9B24C;
+}
+:root[data-mode="green"]{ --glow:#33FF33; --dim:#2FB82F; }
+:root[data-mode="paper"]{ --glow:#E8E8E8; --dim:#A8A8A8; }
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--ground); color:var(--glow);
+  font-family:ui-monospace,"Cascadia Mono","SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  font-size:18px; line-height:1.75;
+  padding:clamp(14px,3vw,34px) 16px 64px;
+  display:flex; flex-direction:column; align-items:center;
+}
+main{width:100%; max-width:80ch}
+
+h1{font-size:1.5rem; font-weight:700; letter-spacing:.08em; line-height:1.2}
+h2{
+  font-size:1.05rem; letter-spacing:.14em; text-transform:uppercase;
+  margin:clamp(34px,6vw,56px) 0 14px; color:var(--glow);
+  display:flex; align-items:center; gap:14px;
+}
+h2::after{content:"";flex:1;height:1px;background:var(--edge)}
+p{margin:0 0 14px; color:var(--dim)}
+p strong,li strong{color:var(--glow); font-weight:700}
+a{color:var(--glow)}
+.halk{color:var(--dim)}
+
+/* ── a fejléc ──────────────────────────────────────────────── */
+.fej{display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 18px; margin-bottom:6px}
+.vissza{font-size:.82rem; letter-spacing:.1em; text-decoration:none; border-bottom:1px solid var(--edge)}
+.vissza:hover{border-bottom-color:var(--glow)}
+
+/* ── kapcsolósorok ──────────────────────────────────────────────
+   ⚠ A jelentést a SZÓ hordozza, nem a szín. */
+.sor{display:flex; gap:0; flex-wrap:wrap; width:fit-content;
+     border:1px solid var(--edge); border-radius:6px; overflow:hidden}
+.sor button{
+  font:inherit; font-size:.82rem; letter-spacing:.1em;
+  background:transparent; color:var(--dim); border:0;
+  border-right:1px solid var(--edge); padding:9px 16px; cursor:pointer;
+}
+.sor button:last-child{border-right:0}
+.sor button:hover{color:var(--glow)}
+.sor button[aria-pressed="true"]{color:var(--ground); background:var(--glow); font-weight:700}
+.sor button:focus-visible{outline:2px solid var(--glow); outline-offset:-2px}
+.nyelvsor{margin-bottom:20px}
+
+/* ── A GÉP ──────────────────────────────────────────────────────
+   A keret sárgaréz, a képernyő fénypor. Nem díszítés: a gép fizikailag
+   is így néz ki a munkapadon. */
+.gep{
+  margin-top:20px;
+  border-radius:14px;
+  padding:clamp(10px,2.4vw,20px);
+  background:linear-gradient(160deg,var(--rez2) 0%,var(--rez1) 26%,var(--rez3) 62%,var(--rez1) 100%);
+  box-shadow:0 18px 44px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.14);
+}
+.gepfej{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px;
+  padding:2px 6px 12px; color:#241703;
+}
+.jel{font-weight:700; letter-spacing:.16em; font-size:clamp(.95rem,2.6vw,1.25rem)}
+.jel .szam{
+  display:inline-block; margin-left:.45em; padding:.05em .45em;
+  border:2px solid #241703; border-radius:4px; letter-spacing:.06em;
+}
+.lampak{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
+.lampa{
+  font-size:.7rem; letter-spacing:.1em; padding:5px 10px; border-radius:5px;
+  background:rgba(0,0,0,.42); color:var(--rez4); white-space:nowrap;
+}
+.lampa b{color:#F3D98A; font-weight:700}
+
+/* a képernyő */
+.kepernyo{
+  background:var(--ground);
+  border-radius:8px;
+  padding:clamp(12px,2.6vw,22px);
+  box-shadow:inset 0 0 90px rgba(0,0,0,.75), 0 0 0 2px rgba(0,0,0,.5);
+  overflow-x:auto; cursor:text;
+}
+.kepernyo pre{
+  font:inherit;
+  /* ⭐ 64 oszlop MINDIG kiférjen: a betűméret a szélességhez igazodik. */
+  font-size:clamp(7px,calc((100vw - 96px)/44),17px);
+  line-height:1.45; color:var(--glow); white-space:pre;
+  text-shadow:0 0 10px color-mix(in srgb, var(--glow) 34%, transparent);
+  margin:0;
+}
+@media(min-width:780px){ .kepernyo pre{font-size:17px} }
+.kur{
+  display:inline-block; width:.62em; height:1.05em; background:var(--glow);
+  vertical-align:-.18em; animation:villog 1s steps(1,end) infinite;
+}
+@keyframes villog{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.kur{animation:none}}
+/* ⚠ A billentyűzet-fogó: LÁTHATATLAN, de FÓKUSZÁLHATÓ — enélkül a
+     telefonokon nem jönne elő a billentyűzet. */
+#fogo{position:absolute; left:-9999px; width:1px; height:1px; opacity:0}
+
+/* a gép alatti kapcsolók */
+.pult{display:flex; flex-wrap:wrap; gap:12px 18px; align-items:center;
+      padding:14px 6px 2px; color:#241703}
+.pultcim{font-size:.72rem; letter-spacing:.12em; font-weight:700}
+.pult .sor{border-color:rgba(0,0,0,.45)}
+.pult .sor button{color:#3A2A10; border-right-color:rgba(0,0,0,.45)}
+.pult .sor button:hover{color:#1A1103; background:rgba(255,255,255,.18)}
+.pult .sor button[aria-pressed="true"]{background:#241703; color:var(--rez4)}
+
+.segit{font-size:.78rem; color:var(--dim); margin:14px 0 0; line-height:1.6}
+kbd{
+  font:inherit; font-size:.92em; border:1px solid var(--edge); border-radius:4px;
+  padding:1px 6px; color:var(--glow);
+}
+
+/* ── a bemutatók ────────────────────────────────────────────── */
+.bemutatok{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:16px}
+.bemutato{
+  text-align:left; font:inherit; cursor:pointer;
+  background:transparent; color:var(--dim);
+  border:1px solid var(--edge); border-radius:8px; padding:14px 16px;
+}
+.bemutato:hover{border-color:var(--glow); color:var(--glow)}
+.bemutato:focus-visible{outline:2px solid var(--glow); outline-offset:2px}
+.bemutato b{display:block; color:var(--glow); font-size:.95rem; letter-spacing:.04em; margin-bottom:5px}
+.bemutato span{font-size:.8rem; line-height:1.55; display:block}
+.bemutato[disabled]{opacity:.42; cursor:default}
+.allj{margin-top:14px}
+
+ul{list-style:none; margin:0 0 14px}
+li{color:var(--dim); padding:6px 0; display:flex; gap:12px; align-items:flex-start}
+li::before{content:"\203A"; color:var(--glow); flex:none}
+
+.doboz{border-left:3px solid var(--glow); padding:2px 0 2px 18px; margin:20px 0}
+.doboz p:last-child{margin-bottom:0}
+
+table{width:100%; border-collapse:collapse; margin:10px 0 18px; font-size:.86rem}
+th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--edge); vertical-align:top}
+th{color:var(--glow); font-weight:700; letter-spacing:.06em}
+td{color:var(--dim)}
+td code{color:var(--glow)}
+
+footer{margin-top:48px; padding-top:18px; border-top:1px solid var(--edge);
+       font-size:.8rem; color:var(--dim); line-height:1.7}
+</style>
+</head>
+<body>
+<main>
+
+<div class="fej">
+  <h1>BAROQUE&nbsp;48</h1>
+  <a class="vissza" href="../" data-t="vissza">&larr; vissza a gépre</a>
+</div>
+<p data-t="alcim">Ez itt <strong>maga a gép</strong>, nem videó róla. Gépelj bele.</p>
+
+<div class="sor nyelvsor" role="group" aria-label="Nyelv / Sprache / Language">
+  <button type="button" data-nyelv="hu" aria-pressed="true">MAGYAR</button>
+  <button type="button" data-nyelv="de" aria-pressed="false">DEUTSCH</button>
+  <button type="button" data-nyelv="en" aria-pressed="false">ENGLISH</button>
+</div>
+
+<!-- ══ A GÉP ══════════════════════════════════════════════════ -->
+<div class="gep">
+  <div class="gepfej">
+    <span class="jel">BAROQUE<span class="szam">48</span></span>
+    <span class="lampak">
+      <span class="lampa">RAM <b id="lampaRam">49152</b></span>
+      <span class="lampa">DRIVE <b id="lampaLemez">C:</b></span>
+      <span class="lampa">MODE <b id="lampaMode">AMBER</b></span>
+    </span>
+  </div>
+
+  <div class="kepernyo" id="kepernyo">
+    <pre id="kep" aria-live="polite" aria-atomic="false"></pre>
+  </div>
+  <label for="fogo" class="halk" style="position:absolute;left:-9999px">
+    <span data-t="fogocim">Gépelj a BAROQUE 48-nak</span>
+  </label>
+  <input id="fogo" autocomplete="off" autocorrect="off" autocapitalize="characters"
+         spellcheck="false" aria-describedby="segit">
+
+  <div class="pult">
+    <span class="pultcim" data-t="fenyporcim">FÉNYPOR</span>
+    <div class="sor" role="group" aria-label="Fénypor">
+      <button type="button" data-mode="amber" aria-pressed="true">AMBER</button>
+      <button type="button" data-mode="green" aria-pressed="false">GREEN</button>
+      <button type="button" data-mode="paper" aria-pressed="false">PAPER</button>
+    </div>
+  </div>
+</div>
+
+<p class="segit" id="segit" data-t="segit">
+  Kattints a képernyőre, és gépelj. <kbd>ENTER</kbd> végrehajt &middot;
+  <kbd>&#9003;</kbd> töröl &middot; <kbd>Ctrl</kbd>+<kbd>C</kbd> megszakít &middot;
+  <kbd>Ctrl</kbd>+<kbd>Z</kbd> zárja a <code>COPY&nbsp;CON</code> fájlt.
+  Írd be: <strong>HELP</strong>. A fénypor-gomb a gép saját <strong>MODE</strong>
+  parancsát adja ki &mdash; és fordítva is működik.
+</p>
+
+<!-- ══ BEMUTATÓK ══════════════════════════════════════════════ -->
+<h2 data-t="c_bemutato">Vezetett körök</h2>
+<p data-t="bemutato_bev">Nem tudod, mit írj? Válassz egyet &mdash; a gép magától
+begépeli, ahogy egy ember tenné.</p>
+<div class="bemutatok" id="bemutatok"></div>
+<div class="allj"><div class="sor"><button type="button" id="alljGomb" hidden>&#9632; ÁLLJ</button></div></div>
+
+<!-- ══ AMIT TUD ═══════════════════════════════════════════════ -->
+<h2 data-t="c_tud">Amit tud</h2>
+<div data-t="tud">
+<table>
+<tr><th>DOS</th><td><code>DIR</code> <code>TREE</code> <code>CD</code> <code>MD</code>
+  <code>RD</code> <code>DEL</code> <code>TYPE</code> <code>MORE</code> <code>COPY</code>
+  <code>COPY CON</code> <code>REN</code> <code>VOL</code> <code>LABEL</code>
+  <code>MEM</code> <code>FRE</code> <code>PROMPT</code> <code>DATE</code>
+  <code>TIME</code> <code>CLS</code> <code>MODE</code> <code>VER</code>
+  <code>HELP</code> &middot; és a <code>.BAT</code> fájlok
+  (<code>ECHO</code> <code>REM</code> <code>PAUSE</code> <code>GOTO</code>
+  <code>IF EXIST</code>)</td></tr>
+<tr><th>CALC</th><td><code>? 2^10</code> &middot; <code>? &amp;HFF + 1</code> &middot;
+  <code>? (17 MOD 5) * 3</code> &mdash; egész eredménynél hexa és bináris alakban is</td></tr>
+<tr><th>BASIC</th><td><code>PRINT</code> <code>LET</code> <code>IF/THEN</code>
+  <code>GOTO</code> <code>FOR/NEXT/STEP</code> <code>GOSUB/RETURN</code>
+  <code>INPUT</code> <code>REM</code> <code>END</code> <code>STOP</code> &middot;
+  <code>A$</code>&hellip;<code>Z$</code> &middot;
+  <code>LEFT$ RIGHT$ MID$ CHR$ STR$ LEN VAL ASC</code> &middot;
+  <code>LIST RUN NEW CLEAR FRE</code> &middot;
+  <code>SAVE LOAD FILES KILL</code> &middot; <code>SYSTEM</code></td></tr>
+</table>
+<div class="doboz">
+<p><strong>Ami csak a vason van:</strong> a hálózat (<code>NET</code>), a hang
+(<code>BEEP</code>, <code>TAPE</code>, <code>AUDIO</code>) és a
+<code>FORMAT</code>. Ezekre a demó nem azt mondja, hogy „ismeretlen parancs"
+&mdash; az hazugság lenne, hiszen a gép <em>ismeri</em> őket. Azt mondja meg,
+hogy vas kell hozzájuk.</p>
+</div>
+</div>
+
+<!-- ══ HONNAN TUDJUK ══════════════════════════════════════════ -->
+<h2 data-t="c_honnan">Honnan tudjuk, hogy igazat mond</h2>
+<div data-t="honnan">
+<p>Egy emulátor könnyen hazudik. Elég egy szóköz eltérés a <code>PRINT</code>
+után, és már nem azt mutatja, amit a gép &mdash; a látogató viszont azt hinné,
+hogy igen.</p>
+<p>Ezért a hasonlóságot <strong>nem állítjuk, hanem mérjük</strong>:</p>
+<ul>
+<li>egy szkript végigkérdezi a <strong>valódi BAROQUE 48-at</strong> soros
+vonalon, és JSON-ba menti a válaszait;</li>
+<li>egy kapu ugyanazokat a parancsokat lefuttatja ezen a másolaton;</li>
+<li>és <strong>soronként</strong> összeveti a kettőt.</li>
+</ul>
+<div class="doboz">
+<p><strong id="kapuszam">465 mért sor &mdash; mind egyezik.</strong></p>
+<p class="halk">Ebből 6 sor olyan mezőt tartalmaz, ami menet közben változik
+(óra, heap, fájl-időbélyeg); ezeknél a számjegyek helyére <code>#</code> kerül.
+A soros napló <code>[DISK]</code> és <code>[BATCH]</code> sorai kimaradnak:
+azokat a gép a huzalra küldi, nem a képernyőre.</p>
+</div>
+<p>A lemez sem kitalált: ugyanazok a könyvtárak és fájlok vannak rajta, mint a
+valódi gépen, ugyanazokkal a méretekkel. A <code>README.TXT</code>
+<strong>170 bájtja</strong> csak akkor jön ki, ha a két üres sora is megvan
+&mdash; a lemezképet készítő szkript ezt <em>ellenőrzi</em>, és ha nem stimmel,
+nem készít fájlt.</p>
+<p class="halk">A mérőeszközök a forrásban:
+<code>04-TOOLS/meroeszkozok/emu_korpusz_gyujt.py</code>,
+<code>emu_kapu.js</code>, <code>emu_lemezkep.py</code>.</p>
+</div>
+
+<h2 data-t="c_kulonbseg">Amiben a másolat más</h2>
+<div data-t="kulonbseg">
+<ul>
+<li>A képernyő <strong>22 sor</strong>, ahogy a gépen. Ami felül kimegy, az
+elment &mdash; ezért van értelme a <code>-- MORE --</code> lapozásnak.</li>
+<li>A gép órája a tiéd. A valódi gépen <code>DATE</code>-tel állítod be, és
+addig 1980-at ír &mdash; ami az igazság, nem kitalálás.</li>
+<li>A lemez a böngésző memóriájában él: <strong>frissítésre elfelejt
+mindent</strong>. A vason a saját flashében marad.</li>
+<li>Itt nincs kijelző-DMA, ami a memóriáért versenyezne &mdash; a valódi gépen
+az a verseny tartotta három hétig a projektet.</li>
+</ul>
+</div>
+
+<footer data-t="lab">
+<p>BAROQUE 48 &middot; Creative Pearls, 2026 &middot;
+<a href="../kezikonyv/baroque-dos.html">DOS-kézikönyv</a> &middot;
+<a href="../kezikonyv/baroque-basic.html">BASIC-kézikönyv</a> &middot;
+<a href="../">a gépről</a></p>
+<p class="halk">A másolat a <code>01-SOURCE</code> C-forrásából készült.
+Ez a lap semmilyen külső kérést nem küld.</p>
+</footer>
+
+</main>
+
+<script src="baroque48.js"></script>
+<script src="baroque48-basic.js"></script>
+<script src="baroque48-dos.js"></script>
+<script src="lemezkep.js"></script>
+<script>
+/* =====================================================================
+ *  A LAP ÉLETE
+ * ===================================================================== */
+(function () {
+  'use strict';
+  var OSZLOPOK = Baroque48.OSZLOPOK;       /* 64 */
+  var SOROK = Baroque48.SOROK;             /* 22 */
+
+  function biztos(f, alap) { try { return f(); } catch (e) { return alap; } }
+
+  /* ── a gép felépítése a MÉRT lemezképpel ──────────────────── */
+  function idobol(datum, ido) {
+    var m = /^(\d\d)-(\d\d)-(\d\d)$/.exec(datum || '');
+    var i = /^(\d\d):(\d\d)$/.exec(ido || '');
+    if (!m || !i) return new Date(1980, 0, 1);
+    var ev = +m[3];
+    ev += (ev < 80) ? 2000 : 1900;
+    return new Date(ev, +m[2] - 1, +m[1], +i[1], +i[2], 0);
+  }
+
+  var gep;
+  function ujGep() {
+    gep = new Baroque48({ cimke: BAROQUE48_LEMEZ.cimke, szabadBajt: 49152 });
+    gep.lemez.szabadBajt = BAROQUE48_LEMEZ.szabad;
+    gep.lemezBetolt({
+      cimke: BAROQUE48_LEMEZ.cimke,
+      tetelek: BAROQUE48_LEMEZ.tetelek.map(function (t) {
+        return {
+          ut: t.ut, dir: t.dir, meret: t.meret,
+          tartalom: t.tartalom, ido: idobol(t.datum, t.ido)
+        };
+      })
+    });
+    /* ⭐ Ha a gépen `MODE GREEN`-t írsz, a LAP is átszíneződik. */
+    gep.fenyporValtott = function (f) { modotAllit(f.toLowerCase(), true); };
+    gep.indul({ oratKerdez: false });
+  }
+
+  /* ── a képernyő kirajzolása ───────────────────────────────── */
+  var kepEl = document.getElementById('kep');
+  var puffer = '';
+
+  function tordel(sorok) {
+    var ki = [];
+    for (var i = 0; i < sorok.length; i++) {
+      var l = sorok[i];
+      if (!l.length) { ki.push(''); continue; }
+      while (l.length > OSZLOPOK) { ki.push(l.slice(0, OSZLOPOK)); l = l.slice(OSZLOPOK); }
+      ki.push(l);
+    }
+    return ki;
+  }
+
+  function vedd(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function rajzol() {
+    var s = gep.kep.sorok.slice();
+    s[s.length - 1] = s[s.length - 1] + puffer;
+    var t = tordel(s);
+    /* ⭐ 22 sor, ahogy a gépen: ami felül kimegy, az elment. */
+    if (t.length > SOROK) t = t.slice(t.length - SOROK);
+    while (t.length < SOROK) t.push('');
+
+    var h = '';
+    for (var i = 0; i < t.length; i++) {
+      var utolso = (i === t.length - 1);
+      h += vedd(t[i]);
+      if (utolso) h += '<span class="kur"></span>';
+      if (!utolso) h += '\n';
+    }
+    kepEl.innerHTML = h;
+
+    document.getElementById('lampaRam').textContent = gep.bbSzabad();
+    document.getElementById('lampaLemez').textContent =
+      'C:' + gep.dosAlak(gep.lemez.bont(gep.kvt));
+  }
+
+  /* ── a billentyűzet ───────────────────────────────────────── */
+  var fogo = document.getElementById('fogo');
+  var kepernyo = document.getElementById('kepernyo');
+
+  kepernyo.addEventListener('mousedown', function (e) {
+    /* ⚠ Ne rontsuk el a szöveg kijelölését: csak akkor fókuszálunk, ha
+     *   nem húzott jelölést. */
+    setTimeout(function () {
+      if (!String(window.getSelection())) fogo.focus({ preventScroll: true });
+    }, 0);
+  });
+
+  function sortKuld(s) {
+    gep.be(s);
+    puffer = '';
+    rajzol();
+  }
+
+  fogo.addEventListener('keydown', function (e) {
+    if (fut) { if (e.key === 'Escape') alljunk(); return; }
+    if (e.ctrlKey || e.metaKey) {
+      var k = (e.key || '').toLowerCase();
+      if (k === 'c') { e.preventDefault(); gep.vezerloKar(3); puffer = ''; rajzol(); return; }
+      if (k === 'z') { e.preventDefault(); gep.vezerloKar(26); puffer = ''; rajzol(); return; }
+      return;                                   /* a másolás maradjon a böngészőé */
+    }
+    if (e.key === 'Enter') { e.preventDefault(); sortKuld(puffer); return; }
+    if (e.key === 'Backspace') { e.preventDefault(); puffer = puffer.slice(0, -1); rajzol(); return; }
+    if (e.key && e.key.length === 1) {
+      e.preventDefault();
+      /* ⚠ A gép 64 oszlopos, de a sor a saját pufferében hosszabb is lehet —
+       *   a valódi gépen is. A tördelést a kijelző intézi. */
+      if (puffer.length < 160) puffer += e.key;
+      rajzol();
+    }
+  });
+
+  /* a telefonok billentyűzete `input`-ot küld, nem mindig `keydown`-t */
+  fogo.addEventListener('input', function () {
+    if (fut) { fogo.value = ''; return; }
+    if (fogo.value) {
+      var v = fogo.value;
+      fogo.value = '';
+      for (var i = 0; i < v.length && puffer.length < 160; i++) {
+        if (v[i] === '\n') { sortKuld(puffer); return; }
+        puffer += v[i];
+      }
+      rajzol();
+    }
+  });
+
+  /* ── fénypor: a lap ÉS a gép ──────────────────────────────── */
+  var NEVEK = { amber: 'AMBER', green: 'GREEN', paper: 'PAPER' };
+  function modotAllit(m, gepbol) {
+    if (!NEVEK[m]) return;
+    document.documentElement.setAttribute('data-mode', m);
+    document.querySelectorAll('[data-mode]').forEach(function (b) {
+      if (b.tagName === 'BUTTON') b.setAttribute('aria-pressed', String(b.dataset.mode === m));
+    });
+    document.getElementById('lampaMode').textContent = NEVEK[m];
+    biztos(function () { return localStorage.setItem('baroque48-mode', m); });
+    /* ⭐ Ha a gombra kattintottak, a GÉPNEK is szólunk — a parancs ott lesz a
+     *   képernyőn, ahogy egy valódi gépen. ⚠ Ha a gép szólt nekünk, nem
+     *   küldünk vissza parancsot: az végtelen kört nyitna. */
+    if (!gepbol && gep && gep.fenypor !== NEVEK[m]) sortKuld('MODE ' + NEVEK[m]);
+  }
+
+  document.querySelectorAll('.pult [data-mode]').forEach(function (b) {
+    b.addEventListener('click', function () { modotAllit(b.dataset.mode); });
+  });
+
+  /* ── VEZETETT KÖRÖK ────────────────────────────────────────
+     ⭐ A gép magától begépeli, ahogy egy ember tenné. A sorok NEM
+       kitaláltak: mind szerepel a kézikönyvben vagy a mért korpuszban. */
+  var BEMUTATOK = [
+    { kulcs: 'kor',    sorok: ['VER', 'DIR', 'TYPE README.TXT'] },
+    { kulcs: 'lemez',  sorok: ['TREE', 'CD DOS', 'DIR', 'CD \\'] },
+    { kulcs: 'calc',   sorok: ['? 2^10', '? &HFF + 1', '? -2^2', '? SQR(2)', '? 255 AND 15'] },
+    { kulcs: 'elso',   sorok: ['BBASIC', '10 PRINT "SZIA!"',
+                               '20 PRINT "EN VAGYOK A BAROQUE 48."', 'LIST', 'RUN'] },
+    { kulcs: 'ciklus', sorok: ['NEW', '10 FOR I = 1 TO 5', '20 PRINT I; I*I',
+                               '30 NEXT I', 'RUN'] },
+    { kulcs: 'szoveg', sorok: ['NEW', 'A$ = "BAROQUE 48"',
+                               'PRINT LEFT$(A$, LEN(A$) - 3)',
+                               'PRINT CHR$(ASC("A") + 1)'] },
+    { kulcs: 'kerdez', sorok: ['NEW', '10 INPUT "HOGY HIVNAK"; N$',
+                               '20 PRINT "SZIA, " + N$ + "!"', 'RUN'] },
+    { kulcs: 'mentes', sorok: ['NEW', '10 PRINT "A LEMEZEN SZOVEG VAGYOK"',
+                               '20 PRINT "A DOS TYPE-ja elolvas"', 'SAVE "OLVASD"',
+                               'SYSTEM', 'TYPE OLVASD.BAS', 'DEL OLVASD.BAS'] },
+    { kulcs: 'batch',  sorok: ['TYPE AUTOEXEC.BAT', 'AUTOEXEC'] },
+    { kulcs: 'sugo',   sorok: ['HELP'] }
+  ];
+
+  var fut = false, ido = null;
+  var alljGomb = document.getElementById('alljGomb');
+
+  function lassu() {
+    return !window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function alljunk() {
+    fut = false;
+    if (ido) { clearTimeout(ido); ido = null; }
+    alljGomb.hidden = true;
+    document.querySelectorAll('.bemutato').forEach(function (b) { b.disabled = false; });
+    fogo.focus({ preventScroll: true });
+    rajzol();
+  }
+
+  function jatszd(sorok) {
+    if (fut) return;
+    fut = true;
+    alljGomb.hidden = false;
+    document.querySelectorAll('.bemutato').forEach(function (b) { b.disabled = true; });
+    puffer = '';
+    var si = 0, ki = 0;
+
+    function lepj() {
+      if (!fut) return;
+      if (si >= sorok.length) { alljunk(); return; }
+      var s = sorok[si];
+      if (!lassu()) {                      /* ⚠ csökkentett mozgás: azonnal */
+        gep.be(s); si++; puffer = ''; rajzol();
+        ido = setTimeout(lepj, 0);
+        return;
+      }
+      if (ki < s.length) {
+        puffer += s[ki++];
+        rajzol();
+        ido = setTimeout(lepj, 34);
+        return;
+      }
+      gep.be(s);
+      puffer = '';
+      rajzol();
+      si++; ki = 0;
+      ido = setTimeout(lepj, 620);         /* ⭐ egy pillanat, hogy lássad */
+    }
+    lepj();
+  }
+
+  alljGomb.addEventListener('click', alljunk);
+
+  /* ── NYELV ─────────────────────────────────────────────────
+     A magyar a HTML-ben áll: JavaScript nélkül is az olvasható, és
+     ⭐ INDULÓ NYELV MINDIG A MAGYAR. */
+  var BEM_SZOVEG = {
+    hu: {
+      kor:    ['Első pillantás', 'Ki vagy te, mi van a lemezen, és mit mond a README.'],
+      lemez:  ['A lemez', 'Könyvtárfa, be egy mappába, vissza a gyökérbe.'],
+      calc:   ['A számológép', 'Hatvány, hexa, előjel — és miért -4 a -2^2.'],
+      elso:   ['Az első program', 'Be a BASIC-be, két sor, LIST és RUN.'],
+      ciklus: ['Egy ciklus', 'FOR / NEXT — és a négyzetszámok.'],
+      szoveg: ['Szöveggel dolgozik', 'LEFT$, LEN, CHR$, ASC — egymásba ágyazva.'],
+      kerdez: ['A gép kérdez', 'INPUT: a program megáll és vár rád. Válaszolj neki!'],
+      mentes: ['Mentés lemezre', 'A BASIC sima szövegként ment — a DOS TYPE-ja elolvassa.'],
+      batch:  ['Egy .BAT fájl', 'A gép saját indítófájlja, és mi történik, ha lefuttatod.'],
+      sugo:   ['A teljes súgó', 'HELP — 29 sor, lapozva. Üss egy ENTER-t a folytatáshoz.']
+    },
+    de: {
+      kor:    ['Erster Blick', 'Wer bist du, was liegt auf der Diskette, was sagt die README.'],
+      lemez:  ['Die Diskette', 'Verzeichnisbaum, hinein in einen Ordner, zurück zur Wurzel.'],
+      calc:   ['Der Rechner', 'Potenz, Hex, Vorzeichen — und warum -2^2 gleich -4 ist.'],
+      elso:   ['Das erste Programm', 'Rein ins BASIC, zwei Zeilen, LIST und RUN.'],
+      ciklus: ['Eine Schleife', 'FOR / NEXT — und die Quadratzahlen.'],
+      szoveg: ['Mit Text arbeiten', 'LEFT$, LEN, CHR$, ASC — ineinander verschachtelt.'],
+      kerdez: ['Das Gerät fragt', 'INPUT: das Programm hält an und wartet. Antworte ihm!'],
+      mentes: ['Auf die Diskette', 'BASIC speichert als reinen Text — DOS TYPE liest ihn.'],
+      batch:  ['Eine .BAT-Datei', 'Die eigene Startdatei des Geräts, und was beim Ausführen passiert.'],
+      sugo:   ['Die ganze Hilfe', 'HELP — 29 Zeilen, seitenweise. ENTER für weiter.']
+    },
+    en: {
+      kor:    ['First look', 'Who you are, what is on the disk, what the README says.'],
+      lemez:  ['The disk', 'Directory tree, into a folder, back to the root.'],
+      calc:   ['The calculator', 'Powers, hex, sign — and why -2^2 is -4.'],
+      elso:   ['The first program', 'Into BASIC, two lines, LIST and RUN.'],
+      ciklus: ['A loop', 'FOR / NEXT — and the square numbers.'],
+      szoveg: ['Working with text', 'LEFT$, LEN, CHR$, ASC — nested into each other.'],
+      kerdez: ['The machine asks', 'INPUT: the program stops and waits for you. Answer it!'],
+      mentes: ['Saving to disk', 'BASIC saves plain text — the DOS TYPE reads it.'],
+      batch:  ['A .BAT file', "The machine's own start-up file, and what running it does."],
+      sugo:   ['The whole help', 'HELP — 29 lines, paged. Press ENTER to continue.']
+    }
+  };
+
+  function bemutatokatRajzol(nyelv) {
+    var d = BEM_SZOVEG[nyelv] || BEM_SZOVEG.hu;
+    var t = document.getElementById('bemutatok');
+    t.innerHTML = '';
+    BEMUTATOK.forEach(function (b) {
+      var sz = d[b.kulcs] || BEM_SZOVEG.hu[b.kulcs];
+      var g = document.createElement('button');
+      g.type = 'button';
+      g.className = 'bemutato';
+      g.innerHTML = '<b>' + vedd(sz[0]) + '</b><span>' + vedd(sz[1]) + '</span>';
+      g.addEventListener('click', function () { jatszd(b.sorok); });
+      t.appendChild(g);
+    });
+  }
+
+  var SZOVEG = {
+    hu: null,
+    de: {
+      vissza: '&larr; zurück zum Gerät',
+      alcim: 'Das hier ist <strong>das Gerät selbst</strong>, kein Video davon. Tippe hinein.',
+      fogocim: 'Tippe für den BAROQUE 48',
+      fenyporcim: 'LEUCHTSTOFF',
+      segit: 'Klick auf den Bildschirm und tippe. <kbd>ENTER</kbd> führt aus &middot; '
+        + '<kbd>&#9003;</kbd> löscht &middot; <kbd>Strg</kbd>+<kbd>C</kbd> bricht ab &middot; '
+        + '<kbd>Strg</kbd>+<kbd>Z</kbd> schließt die <code>COPY&nbsp;CON</code>-Datei. '
+        + 'Tippe: <strong>HELP</strong>. Der Leuchtstoff-Knopf gibt den geräteeigenen '
+        + '<strong>MODE</strong>-Befehl &mdash; und es geht auch andersherum.',
+      c_bemutato: 'Geführte Runden',
+      bemutato_bev: 'Du weißt nicht, was du tippen sollst? Wähle eine &mdash; das Gerät '
+        + 'tippt sie selbst, so wie ein Mensch es täte.',
+      c_tud: 'Was es kann',
+      c_honnan: 'Woher wir wissen, dass es die Wahrheit sagt',
+      honnan: '<p>Ein Emulator lügt leicht. Ein Leerzeichen Unterschied nach <code>PRINT</code> '
+        + 'genügt, und er zeigt nicht mehr das, was das Gerät zeigt &mdash; der Besucher '
+        + 'aber würde es glauben.</p>'
+        + '<p>Deshalb wird die Übereinstimmung <strong>nicht behauptet, sondern gemessen</strong>:</p>'
+        + '<ul><li>ein Skript befragt den <strong>echten BAROQUE 48</strong> über die serielle '
+        + 'Leitung und speichert seine Antworten als JSON;</li>'
+        + '<li>ein Prüftor führt dieselben Befehle auf dieser Kopie aus;</li>'
+        + '<li>und vergleicht beide <strong>Zeile für Zeile</strong>.</li></ul>'
+        + '<div class="doboz"><p><strong>465 gemessene Zeilen &mdash; alle stimmen überein.</strong></p>'
+        + '<p class="halk">6 davon enthalten ein Feld, das sich laufend ändert (Uhr, Heap, '
+        + 'Dateizeitstempel); dort treten <code>#</code> an die Stelle der Ziffern. Die '
+        + '<code>[DISK]</code>- und <code>[BATCH]</code>-Zeilen des seriellen Protokolls '
+        + 'bleiben außen vor: die schickt das Gerät auf die Leitung, nicht auf den '
+        + 'Bildschirm.</p></div>'
+        + '<p>Auch die Diskette ist nicht erfunden: dieselben Verzeichnisse und Dateien wie auf '
+        + 'dem echten Gerät, mit denselben Größen. Die <strong>170 Byte</strong> der '
+        + '<code>README.TXT</code> kommen nur heraus, wenn auch die zwei Leerzeilen da sind '
+        + '&mdash; das Skript <em>prüft</em> das und erzeugt sonst keine Datei.</p>'
+        + '<p class="halk">Die Messwerkzeuge im Quelltext: '
+        + '<code>04-TOOLS/meroeszkozok/emu_korpusz_gyujt.py</code>, <code>emu_kapu.js</code>, '
+        + '<code>emu_lemezkep.py</code>.</p>',
+      c_kulonbseg: 'Worin die Kopie anders ist',
+      kulonbseg: '<ul><li>Der Bildschirm hat <strong>22 Zeilen</strong>, wie am Gerät. Was oben '
+        + 'hinausläuft, ist fort &mdash; deshalb hat das <code>-- MORE --</code> Sinn.</li>'
+        + '<li>Die Uhr ist deine. Am echten Gerät stellst du sie mit <code>DATE</code>, und bis '
+        + 'dahin schreibt es 1980 &mdash; das ist die Wahrheit, keine Erfindung.</li>'
+        + '<li>Die Diskette lebt im Speicher des Browsers: <strong>ein Neuladen vergisst '
+        + 'alles</strong>. Auf dem Gerät bleibt sie im eigenen Flash.</li>'
+        + '<li>Hier gibt es kein Display-DMA, das um den Speicher konkurriert &mdash; am echten '
+        + 'Gerät hat dieser Wettlauf das Projekt drei Wochen lang aufgehalten.</li></ul>',
+      lab: '<p>BAROQUE 48 &middot; Creative Pearls, 2026 &middot; '
+        + '<a href="../kezikonyv/baroque-dos.html">DOS-Handbuch</a> &middot; '
+        + '<a href="../kezikonyv/baroque-basic.html">BASIC-Handbuch</a> &middot; '
+        + '<a href="../">über das Gerät</a></p>'
+        + '<p class="halk">Die Kopie entstand aus dem C-Quelltext in <code>01-SOURCE</code>. '
+        + 'Diese Seite sendet keine einzige externe Anfrage.</p>'
+    },
+    en: {
+      vissza: '&larr; back to the machine',
+      alcim: 'This is <strong>the machine itself</strong>, not a video of it. Type into it.',
+      fogocim: 'Type to the BAROQUE 48',
+      fenyporcim: 'PHOSPHOR',
+      segit: 'Click the screen and type. <kbd>ENTER</kbd> runs it &middot; '
+        + '<kbd>&#9003;</kbd> deletes &middot; <kbd>Ctrl</kbd>+<kbd>C</kbd> breaks &middot; '
+        + '<kbd>Ctrl</kbd>+<kbd>Z</kbd> closes the <code>COPY&nbsp;CON</code> file. '
+        + 'Type: <strong>HELP</strong>. The phosphor button issues the machine&rsquo;s own '
+        + '<strong>MODE</strong> command &mdash; and it works the other way round too.',
+      c_bemutato: 'Guided rounds',
+      bemutato_bev: 'Not sure what to type? Pick one &mdash; the machine types it itself, '
+        + 'the way a person would.',
+      c_tud: 'What it can do',
+      c_honnan: 'How we know it tells the truth',
+      honnan: '<p>An emulator lies easily. One space of difference after <code>PRINT</code> and '
+        + 'it is no longer showing what the machine shows &mdash; but the visitor would '
+        + 'believe it is.</p>'
+        + '<p>So the match is <strong>not claimed, it is measured</strong>:</p>'
+        + '<ul><li>a script asks the <strong>real BAROQUE 48</strong> over the serial line and '
+        + 'saves its answers as JSON;</li>'
+        + '<li>a gate runs the same commands on this copy;</li>'
+        + '<li>and compares the two <strong>line by line</strong>.</li></ul>'
+        + '<div class="doboz"><p><strong>465 measured lines &mdash; all of them match.</strong></p>'
+        + '<p class="halk">6 of them carry a field that changes as it runs (clock, heap, file '
+        + 'timestamp); there the digits become <code>#</code>. The serial log&rsquo;s '
+        + '<code>[DISK]</code> and <code>[BATCH]</code> lines are left out: the machine sends '
+        + 'those down the wire, not to the screen.</p></div>'
+        + '<p>The disk is not invented either: the same directories and files as on the real '
+        + 'machine, with the same sizes. The <strong>170 bytes</strong> of '
+        + '<code>README.TXT</code> only add up if its two blank lines are there too &mdash; the '
+        + 'script that builds the disk image <em>checks</em> this, and writes no file if it '
+        + 'does not add up.</p>'
+        + '<p class="halk">The measuring tools in the source: '
+        + '<code>04-TOOLS/meroeszkozok/emu_korpusz_gyujt.py</code>, <code>emu_kapu.js</code>, '
+        + '<code>emu_lemezkep.py</code>.</p>',
+      c_kulonbseg: 'Where the copy differs',
+      kulonbseg: '<ul><li>The screen is <strong>22 rows</strong>, as on the machine. What goes '
+        + 'off the top is gone &mdash; which is what makes <code>-- MORE --</code> mean '
+        + 'something.</li>'
+        + '<li>The clock is yours. On the real machine you set it with <code>DATE</code>, and '
+        + 'until then it writes 1980 &mdash; which is the truth, not an invention.</li>'
+        + '<li>The disk lives in the browser&rsquo;s memory: <strong>a reload forgets '
+        + 'everything</strong>. On the machine it stays in its own flash.</li>'
+        + '<li>There is no display DMA here competing for memory &mdash; on the real machine '
+        + 'that race held the project up for three weeks.</li></ul>',
+      lab: '<p>BAROQUE 48 &middot; Creative Pearls, 2026 &middot; '
+        + '<a href="../kezikonyv/baroque-dos.html">DOS manual</a> &middot; '
+        + '<a href="../kezikonyv/baroque-basic.html">BASIC manual</a> &middot; '
+        + '<a href="../">about the machine</a></p>'
+        + '<p class="halk">The copy was made from the C source in <code>01-SOURCE</code>. '
+        + 'This page sends no external requests at all.</p>'
+    }
+  };
+
+  /* a magyart a HTML-ből olvassuk ki induláskor */
+  SZOVEG.hu = {};
+  document.querySelectorAll('[data-t]').forEach(function (el) {
+    SZOVEG.hu[el.dataset.t] = el.innerHTML;
+  });
+
+  function nyelvetAllit(kod) {
+    if (!SZOVEG[kod]) kod = 'hu';
+    document.documentElement.lang = kod;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var sz = SZOVEG[kod][el.dataset.t];
+      if (sz !== undefined) el.innerHTML = sz;
+      else if (SZOVEG.hu[el.dataset.t] !== undefined) el.innerHTML = SZOVEG.hu[el.dataset.t];
+    });
+    document.querySelectorAll('[data-nyelv]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.nyelv === kod));
+    });
+    bemutatokatRajzol(kod);
+    biztos(function () { return localStorage.setItem('baroque48-nyelv', kod); });
+  }
+
+  document.querySelectorAll('[data-nyelv]').forEach(function (b) {
+    b.addEventListener('click', function () { nyelvetAllit(b.dataset.nyelv); });
+  });
+
+  /* ── indulás ──────────────────────────────────────────────── */
+  ujGep();
+  rajzol();
+
+  var cimNy = (/[?&]nyelv=(hu|de|en)/.exec(location.search) || [])[1];
+  var mentettNy = biztos(function () { return localStorage.getItem('baroque48-nyelv'); }, null);
+  nyelvetAllit(cimNy || mentettNy || 'hu');
+
+  var mentettMod = biztos(function () { return localStorage.getItem('baroque48-mode'); }, null);
+  if (mentettMod && NEVEK[mentettMod] && mentettMod !== 'amber') {
+    /* ⚠ A gépnek is szólunk, hogy a `MODE` válasza egyezzen a lap színével. */
+    gep.fenypor = NEVEK[mentettMod];
+    modotAllit(mentettMod, true);
+  }
+
+  fogo.focus({ preventScroll: true });
+})();
+</script>
+</body>
+</html>
