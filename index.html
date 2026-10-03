@@ -111,6 +111,7 @@ ul.nem li::before{content:"\2014"; color:var(--dim)}
 
 figure{margin:22px 0 0}
 figure img{display:block; width:100%; height:auto; border:1px solid var(--edge); border-radius:4px}
+figure video{display:block; width:100%; height:auto; border:1px solid var(--edge); border-radius:4px; background:#000}
 figcaption{font-size:.8rem; color:var(--dim); margin-top:9px; line-height:1.55}
 .harom{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:22px}
 .harom figure{margin:0}
@@ -200,6 +201,17 @@ READY
   </div>
 
   <h2 data-t="c_vas">Igazi vason</h2>
+  <figure data-t="hang">
+    <video controls preload="none" playsinline width="1280" height="720"
+           poster="kep/b48-magno-poszter.jpg">
+      <source src="kep/b48-magno.mp4" type="video/mp4">
+      A böngésző nem tudja lejátszani: <a href="kep/b48-magno.mp4">a videó letölthető</a>.
+    </video>
+    <figcaption><strong>Az első hang, 2026. október 3.</strong> Begépelve <code>TAPE</code>,
+    és a gép elmenti magát magnóra: öt másodperc vezetőhang, egy rövid recsegés (a fejléc,
+    benne a név), egy másodperc csend, aztán a sűrű sivítás &mdash; maga az adat.
+    Hangos: a kutyánk kimenekült tőle a teraszra.</figcaption>
+  </figure>
   <figure data-t="kep1">
     <img src="kep/b48-borostyan.jpg" width="1200" height="650" loading="lazy"
          alt="Hét colos LCD-panel a mérőpadon, rajta a BAROQUE 48 indulási képernyője borostyánsárga betűkkel: a név, a copyright-sor, 49152 BYTES FREE, READY, és egy kurzor-kocka.">
@@ -233,7 +245,9 @@ READY
       <li><span>az indulási képernyő, igazi 7 colos panelon</span></li>
       <li><span>három fénypor-mód, kapcsolhatóan</span></li>
       <li><span>a 48&nbsp;K-s munkaterület, bájtonként ellenőrizve bekapcsoláskor</span></li>
-      <li><span>I&sup2;S erősítő a panelon, készen a magnó-hangra</span></li>
+      <li><span><strong>a magnó-hang</strong> &mdash; a kísérlet, ami eldöntötte a projektet:
+        igazi ZX Spectrum-impulzusok, mikrofonnal visszamérve &mdash; 807&nbsp;Hz-es
+        vezetőhang, 2047&nbsp;Hz-es nulla bit, egy ezreléken belül</span></li>
     </ul>
     <p><strong>És két kézikönyv</strong> &mdash; bennük <em>minden</em> képernyősor
     a gép valódi válasza, egyetlen példa sincs begépelve:</p>
@@ -244,7 +258,8 @@ READY
     </p>
     <p><strong>Még nincs meg &mdash; és ez a java:</strong></p>
     <ul class="nem">
-      <li><span>a magnó-betöltés hangja &mdash; az a kísérlet, ami eldönti a projektet</span></li>
+      <li><span>hogy egy <strong>igazi ZX Spectrum</strong> betölti-e ezt a hangot &mdash;
+        ez a következő kísérlet</span></li>
       <li><span>a floppyk, a doboz, a billentyűzet</span></li>
     </ul>
     <p class="halk">Ez a lap azért van, mert száz ember mondta, hogy akar egyet, mielőtt
@@ -302,6 +317,15 @@ var SZOVEG = {
       + 'dass ein Kind ein Spiel <strong>LIST</strong>en und ändern konnte. Ein Vier-Megabyte-Spiel '
       + 'listet niemand.</p>',
     c_vas: 'Auf echter Hardware',
+    hang: '<video controls preload="none" playsinline width="1280" height="720" '
+      + 'poster="kep/b48-magno-poszter.jpg">'
+      + '<source src="kep/b48-magno.mp4" type="video/mp4">'
+      + 'Ihr Browser kann das Video nicht abspielen: <a href="kep/b48-magno.mp4">Video herunterladen</a>.'
+      + '</video>'
+      + '<figcaption><strong>Der erste Ton, 3. Oktober 2026.</strong> <code>TAPE</code> eingetippt, '
+      + 'und das Gerät speichert sich auf Kassette: fünf Sekunden Pilotton, ein kurzes Knarzen '
+      + '(der Header, mit dem Namen darin), eine Sekunde Stille, dann das dichte Kreischen &mdash; '
+      + 'das sind die Daten selbst. Laut: Unser Hund ist vor ihm auf die Terrasse geflohen.</figcaption>',
     kep1: '<img src="kep/b48-borostyan.jpg" width="1200" height="650" loading="lazy" '
       + 'alt="Ein 7-Zoll-LCD auf der Werkbank mit dem Startbildschirm des BAROQUE 48 in '
       + 'bernsteinfarbener Schrift: der Name, die Copyright-Zeile, 49152 BYTES FREE, READY '
@@ -325,7 +349,9 @@ var SZOVEG = {
       + '<li><span>der Startbildschirm auf einem echten 7-Zoll-Panel</span></li>'
       + '<li><span>drei Leuchtstoff-Modi, umschaltbar</span></li>'
       + '<li><span>der 48-K-Arbeitsbereich, beim Einschalten Byte für Byte geprüft</span></li>'
-      + '<li><span>ein I&sup2;S-Verstärker auf der Platine, bereit für den Kassettenton</span></li>'
+      + '<li><span><strong>der Kassettenton</strong> &mdash; das Experiment, das über das Projekt '
+      + 'entschieden hat: echte ZX-Spectrum-Impulse, mit dem Mikrofon nachgemessen &mdash; '
+      + '807&nbsp;Hz Pilotton, 2047&nbsp;Hz für das Null-Bit, auf ein Promille genau</span></li>'
       + '</ul>'
       + '<p><strong>Und zwei Handbücher</strong> &mdash; darin ist <em>jede</em> Bildschirmzeile '
       + 'die echte Antwort des Geräts, kein einziges Beispiel ist abgetippt:</p>'
@@ -335,7 +361,8 @@ var SZOVEG = {
       + '<a href="demo/">Im Browser ausprobieren</a></p>'
       + '<p><strong>Noch nicht da &mdash; und das ist das meiste davon:</strong></p>'
       + '<ul class="nem">'
-      + '<li><span>der Kassetten-Ladeton &mdash; das Experiment, das über das Projekt entscheidet</span></li>'
+      + '<li><span>ob ein <strong>echter ZX Spectrum</strong> diesen Ton laden kann &mdash; '
+      + 'das nächste Experiment</span></li>'
       + '<li><span>die Disketten, das Gehäuse, die Tastatur</span></li></ul>'
       + '<p class="halk">Diese Seite gibt es, weil hundert Menschen sagten, sie wollten eines, '
       + 'bevor eine einzige Zeile davon geschrieben war. Da schien es nur fair zu zeigen, wie weit '
@@ -378,6 +405,15 @@ var SZOVEG = {
       + 'is. What those machines taught was not the memory &mdash; it was that a child could '
       + '<strong>LIST</strong> a game and change it. Nobody lists a four-megabyte game.</p>',
     c_vas: 'On real hardware',
+    hang: '<video controls preload="none" playsinline width="1280" height="720" '
+      + 'poster="kep/b48-magno-poszter.jpg">'
+      + '<source src="kep/b48-magno.mp4" type="video/mp4">'
+      + 'Your browser cannot play this video: <a href="kep/b48-magno.mp4">download it</a>.'
+      + '</video>'
+      + '<figcaption><strong>The first sound, 3 October 2026.</strong> <code>TAPE</code> typed in, '
+      + 'and the machine saves itself to tape: five seconds of pilot tone, a short crackle (the '
+      + 'header, with the name in it), a second of silence, then the dense screech &mdash; the '
+      + 'data itself. Loud: our dog fled to the terrace.</figcaption>',
     kep1: '<img src="kep/b48-borostyan.jpg" width="1200" height="650" loading="lazy" '
       + 'alt="A 7-inch LCD panel on a workbench showing the BAROQUE 48 boot screen in amber '
       + 'text: the name, the copyright line, 49152 BYTES FREE, READY, and a cursor block.">'
@@ -400,7 +436,9 @@ var SZOVEG = {
       + '<li><span>the boot screen, on a real 7&Prime; panel</span></li>'
       + '<li><span>three phosphor modes, switchable</span></li>'
       + '<li><span>the 48&nbsp;K workspace, verified byte by byte at power-on</span></li>'
-      + '<li><span>an I&sup2;S amplifier on the board, ready for the tape sound</span></li>'
+      + '<li><span><strong>the tape sound</strong> &mdash; the experiment that decided the project: '
+      + 'real ZX Spectrum pulses, measured back with a microphone &mdash; 807&nbsp;Hz pilot tone, '
+      + '2047&nbsp;Hz zero bit, within one part in a thousand</span></li>'
       + '</ul>'
       + '<p><strong>And two manuals</strong> &mdash; in them <em>every</em> screen line is the '
       + 'machine&rsquo;s real answer; not a single example was typed in by hand:</p>'
@@ -410,7 +448,8 @@ var SZOVEG = {
       + '<a href="demo/">Try it in the browser</a></p>'
       + '<p><strong>Not there yet &mdash; and that is most of it:</strong></p>'
       + '<ul class="nem">'
-      + '<li><span>the tape-loading sound &mdash; the experiment that decides the project</span></li>'
+      + '<li><span>whether a <strong>real ZX Spectrum</strong> can load this sound &mdash; '
+      + 'the next experiment</span></li>'
       + '<li><span>the floppies, the case, the keyboard</span></li></ul>'
       + '<p class="halk">This page exists because a hundred people said they wanted one before a '
       + 'single line of it was written. It seemed only fair to show them exactly how far along it '

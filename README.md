@@ -17,10 +17,14 @@ Published on 2026-09-27, once the machine had a DOS, a BASIC and two manuals
 worth showing. GitHub Pages is free from a public repository — that is all it
 took.
 
+On 2026-10-03 the machine made its first sound: `TAPE` saves a block with real
+ZX Spectrum timings (807 Hz pilot tone, 2047 Hz zero bit), measured back with a
+microphone. The video is on the page, under *On real hardware*.
+
 ## What is here
 
     index.html                    the page itself, in Hungarian, German and English
-    kep/                          three photographs of the real machine
+    kep/                          three photographs of the real machine, and its first sound on video
     kezikonyv/baroque-dos.html    the command-line manual, 28 screens
     kezikonyv/baroque-basic.html  the BASIC manual, 15 chapters
 
