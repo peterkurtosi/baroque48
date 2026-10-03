@@ -675,7 +675,7 @@
         return true;
       }
     }
-    /* ⭐ A datum utan az IDO jon — merve a gepen: a `DATE` ket kerdest nyit. */
+    /* ⭐ Induloskor a datum utan az IDO jon — az `oraLancol` csak ott all. */
     if (mire === 'DATUM' && this.oraLancol) { this.oraLancol = false; this.idotKerdez(); }
     return true;
   };
@@ -734,8 +734,10 @@
         return vege();
       case 'DATE':
         if (arg) { if (!this.datumotErtelmez(arg)) this.kiirSor('INVALID DATE'); }
-        /* ⭐ merve: a `DATE` utan az IDO kerdese kovetkezik */
-        else { this.oraLancol = true; this.datumotKerdez(); }
+        /* ⭐ merve 2026-10-03: a `DATE` CSAK a datumot kerdezi, ahogy a DOS.
+         *   (Addig a gep utana az idot is megkerdezte - a firmware-ben javitva;
+         *   a datum-ido lanc most csak induloskor jon.) */
+        else { this.datumotKerdez(); }
         return vege();
       case 'TIME':
         if (arg) { if (!this.idotErtelmez(arg)) this.kiirSor('INVALID TIME'); }

@@ -1160,7 +1160,8 @@ C:\&gt;</pre>
     <div class="veset" aria-hidden="true"></div>
     <pre class="szintaxis">DATE</pre>
     <p>Kiírja a mai dátumot, majd megkérdezi az újat <code>NN-HH-ÉÉ</code> alakban.
-    Utána <strong>rögtön az időt is kérdezi</strong>.</p>
+    Csak a dátumot &mdash; az idő a <code>TIME</code> dolga, ahogy a DOS-ban. Induláskor a gép
+    <strong>mindkettőt</strong> megkérdezi, egymás után.</p>
     <figure class="kep">
       <figcaption>A gép válasza</figcaption>
       <pre class="crt"><b>DATE</b>
@@ -1400,7 +1401,9 @@ C:\&gt;</pre>
       <tbody>
         <tr><td>MODE</td><td><code>ONLINE</code> vagy <code>OFF</code>, utána a hálózat neve.</td></tr>
         <tr><td>ADDR</td><td>A gép címe a hálózaton, és a térerő. A &minus;48&nbsp;dBm erős jel; &minus;80 alatt már gyenge.</td></tr>
-        <tr><td>SLOT</td><td>Melyik programszeletről fut a gép, és hogy hova kell küldeni az új programot.</td></tr>
+        <tr><td>SLOT</td><td>Melyik programszeletről fut a gép, és hogy hova kell küldeni az új programot.
+        Minden frissítés a <em>másik</em> szeletbe ír, ezért az <code>app0</code> és az
+        <code>app1</code> frissítésenként váltakozik.</td></tr>
       </tbody>
     </table>
     </div>
@@ -1433,20 +1436,26 @@ C:\&gt;</pre>
     <pre class="szintaxis">AUDIO              <span class="valt">a mostani állapot</span>
 AUDIO 0            <span class="valt">az órajel lába: IO0</span>
 AUDIO 19           <span class="valt">az órajel lába: IO19</span>
-AUDIO VOL <span class="valt">&lt;n&gt;</span>      <span class="valt">hangerő 0-tól 10-ig</span></pre>
+AUDIO VOL <span class="valt">&lt;n&gt;</span>      <span class="valt">hangerő 0-tól 10-ig</span>
+AUDIO FORGET       <span class="valt">felejtsd el a lábat (panelcsere után)</span></pre>
     <p>A gép két panelváltozatban létezik, és a hang órajele <strong>nem ugyanazon a lábon
-    van</strong> a kettőn. Ez a parancs állítja át. Ha a <code>BEEP</code> néma, ez az első hely,
-    ahol keresd a hibát.</p>
+    van</strong> a kettőn. Ez a parancs állítja át &mdash; és a gép <strong>megjegyzi</strong>:
+    újraindítás után is tudja, ezt jelzi a <code>(SAVED)</code>. Ha a <code>BEEP</code> néma,
+    ez az első hely, ahol keresd a hibát.</p>
     <figure class="kep">
       <figcaption>A gép válasza</figcaption>
       <pre class="crt"><b>AUDIO</b>
-BCLK  UNKNOWN - RUN BEEP
-DIN   IO17   LRCLK IO18   RATE 44100 HZ
+BCLK  IO0   PANEL V1.1 - NATIVE USB PRESENT   (SAVED)
+DIN   IO17   LRCLK IO18
+SAMPLE RATE 44100/SEC   BEEP TONE 1000 HZ
 VOL   3 OF 10
 C:\&gt;</pre>
     </figure>
-    <p class="halk">A <code>BCLK UNKNOWN</code> azt jelenti, hogy a gép <em>még nem tudja</em>,
-    melyik lábon van az órajel — amíg egyszer le nem futott a <code>BEEP</code>.</p>
+    <p class="halk">A <code>SAMPLE RATE 44100/SEC</code> a mintavétel: ennyi mintát küld a gép
+    másodpercenként az erősítőnek. Ez <em>nem</em> a hang magassága &mdash; a csippanás
+    1000&nbsp;Hz. Egy új gépen az első sor <code>BCLK UNKNOWN</code>: a gép <em>még nem tudja</em>,
+    melyik lábon van az órajel, amíg valaki egyszer meg nem hallgatta a <code>BEEP</code>-et,
+    és be nem írta az <code>AUDIO 0</code>-t vagy a <code>19</code>-et.</p>
   </article>
 
   <article class="parancs" id="p-tape">
